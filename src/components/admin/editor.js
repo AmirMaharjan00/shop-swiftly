@@ -4,13 +4,29 @@ export default function Editor( { editorClose } ) {
     const [ formInfo, setFormInfo ] = useState({})
     const [ activeSidebarElement, setActiveSidebarElement ] = useState( 'category' )
     const [ categoryList, setCategoryList ] = useState([{ label: 'uncategorized', slug: 'uncategorized' }])
-    const [ categoryItem, setCategoryItem ] = useState({})
+    const [ categoryItem, setCategoryItem ] = useState({ label: '', slug: '' })
     const [ tagList, setTagList ] = useState([])
-    const [ tagItem, setTagItem ] = useState({})
+    const [ tagItem, setTagItem ] = useState({ label: '', slug: '' })
 
     // handle form submit
-    const handleFormSubmit = () => {
+    const handleFormSubmit = ( event ) => {
+        event.preventDefault()
+        setFormInfo({
+            ...formInfo,
+            'category': categoryList,
+            'tag': tagList
+        })
+        console.log( formInfo )
+    }
 
+    // handle title and excerpt change
+    const handleTitleExcerptChange = ( event ) => {
+        let elementName = event.target.name
+        let elementValue = event.target.value
+        setFormInfo({
+            ...formInfo,
+            [elementName]: elementValue
+        })
     }
     
     // handle sidebar element click
@@ -20,16 +36,14 @@ export default function Editor( { editorClose } ) {
 
     // handle add new category click
     const handleCategoryAddClick = ( event ) => {
-        categoryList.push( categoryItem )
-        setCategoryList( categoryList )
+        setCategoryList([...categoryList, categoryItem ])
         setCategoryItem({ label: '', slug: '' })
         event.preventDefault()
     }
 
     // handle add new tag click
     const handleTagAddClick = ( event ) => {
-        tagList.push( tagItem )
-        setTagList( tagList )
+        setTagList([ ...tagList, tagItem ])
         setTagItem({ label: '', slug: '' })
         event.preventDefault()
     }
@@ -50,6 +64,11 @@ export default function Editor( { editorClose } ) {
         })
     }
 
+    // handle checkbox change
+    const handleCheckboxChange = ( event ) => {
+        // console.log( event ) event.target.checked
+    }
+
     return (
         <>
             <div className='swt-admin-editor' id='swt-admin-editor'>
@@ -58,8 +77,8 @@ export default function Editor( { editorClose } ) {
                     <form onSubmit={ handleFormSubmit } >
                         <div className='editor-area'>
                             <div className='editor-main'>
-                                <input type='text' placeholder='Title' name='product_name' id='product_name' />
-                                <textarea placeholder='Description' name='product_description' id='product_description' rows='15'></textarea>
+                                <input type='text' placeholder='Title' name='product_name' id='product_name' onChange={ handleTitleExcerptChange } />
+                                <textarea placeholder='Description' name='product_except' id='product_except' rows='15' onChange={ handleTitleExcerptChange }></textarea>
                             </div>
                             <div className='editor-sidebar'>
                                 <button className='editor-submit'>Publish</button>
@@ -72,6 +91,7 @@ export default function Editor( { editorClose } ) {
                                             changeEvent = { handleAddNewCategoryChange }
                                             currentItem = { categoryItem }
                                             currentList = { categoryList }
+                                            checkboxChange = { handleCheckboxChange }
                                             buttonEvent = { handleCategoryAddClick }
                                             buttonLabel = 'Add Category'
                                         /> }
@@ -84,6 +104,7 @@ export default function Editor( { editorClose } ) {
                                             changeEvent = { handleAddNewTagChange }
                                             currentItem = { tagItem }
                                             currentList = { tagList }
+                                            checkboxChange = { handleCheckboxChange }
                                             buttonEvent = { handleTagAddClick }
                                             buttonLabel = 'Add Tag'
                                         /> }
@@ -99,7 +120,7 @@ export default function Editor( { editorClose } ) {
     );
 }
 
-const EditorComponentTag = ({ attribute, changeEvent, currentItem, currentList, buttonEvent, buttonLabel  }) => {
+const EditorComponentTag = ({ attribute, changeEvent, currentItem, currentList, checkboxChange, buttonEvent, buttonLabel  }) => {
     return (
         <div className='element-body'>
             <input type='text' placeholder={ 'Add new ' + attribute } name={ attribute } id={ attribute } onChange={ changeEvent } value={ currentItem.label }/>
@@ -107,7 +128,7 @@ const EditorComponentTag = ({ attribute, changeEvent, currentItem, currentList, 
                 { currentList.map(( element, index ) => { 
                     return (
                         <p key={ index } className={ attribute + '-item' }>
-                            <input type='checkbox' value={ element.slug } id={ element.slug } />
+                            <input type='checkbox' value={ element.slug } id={ element.slug } onChange={ checkboxChange }/>
                             <label htmlFor={ element.slug }>{ element.label }</label>
                         </p>
                     )
