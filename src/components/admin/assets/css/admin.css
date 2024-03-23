@@ -23,7 +23,7 @@ DASHBOARD
     /*========= SIDEBAR ===========*/
     #swt-dashboard .swt-admin-sidebar {
         flex: 0 1 20%;
-        background: #ffa5a56b;
+        background: #5125d2;
         height: 100vh;
     }
 
@@ -44,7 +44,7 @@ DASHBOARD
         list-style: none;
         padding: 15px;
         font-size: 20px;
-        color: #646464;
+        color: #fff;
     }
 
     .swt-admin-sidebar .sidebar-body .sidebar-item:not(:last-child) {
@@ -117,8 +117,9 @@ DASHBOARD
     }
 
     .swt-admin-pages .products-element.products-table-head {
-        background: #ffa5a56b;
+        background: #5125d2;
         padding: 10px;
+        color: #fff;
     }
 
     .products-element .head-item {
@@ -350,7 +351,7 @@ DASHBOARD
 /*================== EDITOR ========================*/
     #swt-admin-editor {
         position: absolute;
-        background: #ffa5a5db;
+        background: #5125d2;
         width: 80%;
         top: 50%;
         left: 50%;
@@ -407,7 +408,7 @@ DASHBOARD
 
     #swt-admin-editor .editor-sidebar {
         text-align: center;
-        background: #ff000038;
+        background: #5a2aeb;
     }
 
     #swt-admin-editor .editor-sidebar button.editor-submit {
@@ -418,12 +419,13 @@ DASHBOARD
     }
 
     #swt-admin-editor .sidebar-element {
-        background: #ff000038;
+        background: #5125d2;
         color: white;
         padding: 10px;
         cursor: pointer;
     }
 
+    #swt-admin-editor .sidebar-element.isactive,
     #swt-admin-editor .sidebar-element:hover {
         background: #5b222238;
     }
