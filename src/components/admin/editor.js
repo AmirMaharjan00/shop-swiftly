@@ -5,18 +5,19 @@ export default function Editor( { editorClose } ) {
     const [ activeSidebarElement, setActiveSidebarElement ] = useState( 'category' )
     const [ categoryList, setCategoryList ] = useState([{ label: 'uncategorized', slug: 'uncategorized' }])
     const [ categoryItem, setCategoryItem ] = useState({ label: '', slug: '' })
+    const [ checkedCategory, setCheckedCategory ] = useState([])
     const [ tagList, setTagList ] = useState([])
     const [ tagItem, setTagItem ] = useState({ label: '', slug: '' })
+    const [ checkedTag, setCheckedTag ] = useState([])
 
     // handle form submit
     const handleFormSubmit = ( event ) => {
         event.preventDefault()
         setFormInfo({
             ...formInfo,
-            'category': categoryList,
-            'tag': tagList
+            'category': checkedCategory,
+            'tag': checkedTag
         })
-        console.log( formInfo )
     }
 
     // handle title and excerpt change
@@ -64,9 +65,26 @@ export default function Editor( { editorClose } ) {
         })
     }
 
-    // handle checkbox change
-    const handleCheckboxChange = ( event ) => {
-        // console.log( event ) event.target.checked
+    // handle category checkbox change
+    const handleCategoryCheckboxChange = ( event ) => {
+        let value = event.target.value
+        if( event.target.checked ) {
+            setCheckedCategory([
+                ...checkedCategory,
+                { label: value, slug: value }
+            ])
+        }
+    }
+
+    // handle tags checkbox change
+    const handleTagCheckboxChange = ( event ) => {
+        let value = event.target.value
+        if( event.target.checked ) {
+            setCheckedTag([
+                ...checkedTag,
+                { label: value, slug: value }
+            ])
+        }
     }
 
     return (
@@ -91,7 +109,7 @@ export default function Editor( { editorClose } ) {
                                             changeEvent = { handleAddNewCategoryChange }
                                             currentItem = { categoryItem }
                                             currentList = { categoryList }
-                                            checkboxChange = { handleCheckboxChange }
+                                            checkboxChange = { handleCategoryCheckboxChange }
                                             buttonEvent = { handleCategoryAddClick }
                                             buttonLabel = 'Add Category'
                                         /> }
@@ -104,7 +122,7 @@ export default function Editor( { editorClose } ) {
                                             changeEvent = { handleAddNewTagChange }
                                             currentItem = { tagItem }
                                             currentList = { tagList }
-                                            checkboxChange = { handleCheckboxChange }
+                                            checkboxChange = { handleTagCheckboxChange }
                                             buttonEvent = { handleTagAddClick }
                                             buttonLabel = 'Add Tag'
                                         /> }
