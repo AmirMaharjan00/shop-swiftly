@@ -1,474 +1,523 @@
-/*
-==========================
-DASHBOARD
-==========================
-*/
-    * {
-        margin: 0;
-        padding: 0;
-    }
-
-    #root #swt-dashboard {
-        display: flex;
-    }
-
-    #root .editor-overlay {
-        width: 100%;
-        position: absolute;
-        content: '';
-        background: #000000a6;
-        height: 100%;
-    }
-
-    /*========= SIDEBAR ===========*/
-    #swt-dashboard .swt-admin-sidebar {
-        flex: 0 1 20%;
-        background: #5125d2;
-        height: 100vh;
-    }
-
-    /*=========== SIDEBAR HEAD =============*/
-    .swt-admin-sidebar .sidebar-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        margin-bottom: 10px;
-    }
-
-    /*=========== SIDEBAR BODY =============*/
-    .swt-admin-sidebar .sidebar-body .sidebar-items a {
-        text-decoration: none;
-    }
-
-    .swt-admin-sidebar .sidebar-body .sidebar-item {
-        list-style: none;
-        padding: 15px;
-        font-size: 20px;
-        color: #fff;
-    }
-
-    .swt-admin-sidebar .sidebar-body .sidebar-item:not(:last-child) {
-        border-bottom: 1px solid #ffffff;
-    }
-
-    .swt-admin-sidebar .sidebar-body .sidebar-item:hover {
-        background: #ffa5a56b;
-        cursor: pointer;
-        color: #000000;
-    }
-
-    /*========= ADMIN MAIN ==========*/
-    #swt-dashboard .swt-admin-main {
-        flex: 0 1 80%;
-        padding: 15px;
-    }
-
-    /*========= PRODUCTS =============*/    
-    .swt-admin-main .admin-products .product-add {
-        border: 1px dashed blue;
-        background: transparent;
-        padding: 5px 10px;
-        color: blue;
-        cursor: pointer;
-        font-size: 15px;
-        font-weight: 600;
-    }
-
-    .swt-admin-main .admin-products .product-add:hover {
-        border: 1px dashed rgba(255, 0, 123, 0.403);
-        background: rgba(0, 0, 0, 0.096);
-        color: rgba(255, 0, 123, 0.403);
-        font-weight: 600;
-    }
-
-    .swt-admin-main .admin-products .page-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .admin-products .page-head .date-search-wrap {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .admin-products .page-status {
-        margin-bottom: 10px;
-    }
-
-    .admin-products .page-status .status-list {
-        display: flex;
-        gap: 10px;
-    }
-
-    .admin-products .page-status .status-item {
-        list-style: none;
-    }
-
-    .swt-admin-pages .products-element {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-    }
-
-    .products-element .head-item,
-    .products-element .body-item {
-        list-style: none;
-    }
-
-    .swt-admin-pages .products-element.products-table-head {
-        background: #5125d2;
-        padding: 10px;
-        color: #fff;
-    }
-
-    .products-element .head-item {
-        font-weight: 500;
-    }
-
-    /*================== LOGIN ==================*/
-    #swt-admin-login {
-        background: #ffa5a599;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        box-sizing: border-box;
-        padding: 30px;
-        box-shadow: 0px 0px 30px 5px #00000038;
-        width: 30%;
-        border-radius: 3px;
-    }
-
-    #swt-admin-login .title {
-        margin-bottom: 10px;
-        text-align: center;
-        font-family: system-ui;
-        font-weight: 700;
-    }
-
-    #swt-admin-login .form-field {
-        margin-bottom: 10px;
-        font-size: 16px;
-        font-family: system-ui;
-        font-weight: 500;
-    }
-
-    #swt-admin-login .form-field .label-error-wrap {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    #swt-admin-login .form-field .label-error-wrap .error-message {
-        margin-bottom: 3px;
-        color: red;
-    }
-
-    #swt-admin-login .form-field label {
-        margin-bottom: 3px;
-    }
-
-    #swt-admin-login .form-field input {
-        width: 100%;
-        padding: 10px 0;
-        margin-top: 8px;
-        margin-bottom: 6px;
-        border: 1px solid #00000057;
-        border-radius: 3px;
-    }
-
-    #swt-admin-login .form-field.form-button {
-        text-align: center;
-    }
-
-    #swt-admin-login .form-field.form-button input[type=submit] {
-        width: 100%;
-        padding: 10px 30px;
-        background: #008000b8;
-        border:none;
-        border-radius: 3px;
-        text-decoration: none;
-        color: white;
-        font-size: 15px;
-        letter-spacing: 2px;
-        font-weight: 600;
-        font-family: system-ui;
-        cursor: pointer;
-    }
-
-    #swt-admin-login .form-field.form-button input[type=submit]:hover {
-        background: #02be02b8;
-    }
-
-    #swt-admin-login .register-new-admin,
-    #swt-admin-login .forgot-password {
-        text-align: center
-    }
-
-    #swt-admin-login .register-new-admin a,
-    #swt-admin-login .forgot-password a {
-        text-decoration: none;
-    }
-
-    #swt-admin-login .register-new-admin a:hover,
-    #swt-admin-login .forgot-password a:hover {
-        color: green;
-    }
-
-/*================== REGISTRATION ==================*/
-    #swt-admin-registration {
-        background: #ffa5a599;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        box-sizing: border-box;
-        padding: 30px;
-        box-shadow: 0px 0px 30px 5px #00000038;
-        width: 30%;
-        border-radius: 3px;
-    }
-
-    #swt-admin-registration .title {
-        margin-bottom: 10px;
-        text-align: center;
-        font-family: system-ui;
-        font-weight: 700;
-    }
-
-    #swt-admin-registration .form-field {
-        margin-bottom: 10px;
-        font-size: 16px;
-        font-family: system-ui;
-        font-weight: 500;
-    }
-
-    #swt-admin-registration .form-field label {
-        margin-bottom: 3px;
-    }
-
-    #swt-admin-registration .form-field input {
-        width: 100%;
-        padding: 10px 0;
-        margin-top: 8px;
-        margin-bottom: 6px;
-        border: 1px solid #00000057;
-        border-radius: 3px;
-    }
-
-    #swt-admin-registration .form-field.form-button {
-        text-align: center;
-    }
-
-    #swt-admin-registration .form-field.form-button button {
-        width: 100%;
-        padding: 10px 30px;
-        background: #008000b8;
-        border:none;
-        border-radius: 3px;
-    }
-
-    #swt-admin-registration .form-field.form-button button:hover {
-        background: #02be02b8;
-    }
-
-    #swt-admin-registration .form-field.form-button button a {
-        text-decoration: none;
-        color: white;
-        font-size: 15px;
-        letter-spacing: 2px;
-        font-weight: 600;
-        font-family: system-ui;
-    }
-    
-/*================== FORGOT PASSWORD ==================*/
-    #swt-admin-forgot-password {
-        background: #ffa5a599;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        box-sizing: border-box;
-        padding: 30px;
-        box-shadow: 0px 0px 30px 5px #00000038;
-        width: 30%;
-        border-radius: 3px;
-    }
-
-    #swt-admin-forgot-password .title {
-        margin-bottom: 10px;
-        text-align: center;
-        font-family: system-ui;
-        font-weight: 700;
-    }
-
-    #swt-admin-forgot-password .form-field {
-        margin-bottom: 10px;
-        font-size: 16px;
-        font-family: system-ui;
-        font-weight: 500;
-    }
-
-    #swt-admin-forgot-password .form-field label {
-        margin-bottom: 3px;
-    }
-
-    #swt-admin-forgot-password .form-field input {
-        width: 100%;
-        padding: 10px 0;
-        margin-top: 8px;
-        margin-bottom: 6px;
-        border: 1px solid #00000057;
-        border-radius: 3px;
-    }
-
-    #swt-admin-forgot-password .form-field.form-button {
-        text-align: center;
-    }
-
-    #swt-admin-forgot-password .form-field.form-button button {
-        width: 100%;
-        padding: 10px 30px;
-        background: #008000b8;
-        border:none;
-        border-radius: 3px;
-    }
-
-    #swt-admin-forgot-password .form-field.form-button button:hover {
-        background: #02be02b8;
-    }
-
-    #swt-admin-forgot-password .form-field.form-button button a {
-        text-decoration: none;
-        color: white;
-        font-size: 15px;
-        letter-spacing: 2px;
-        font-weight: 600;
-        font-family: system-ui;
-    }
-
-/*================== EDITOR ========================*/
-    #swt-admin-editor {
-        position: absolute;
-        background: #5125d2;
-        width: 80%;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    #swt-admin-editor .editor-inner {
-        position: relative;
-    }
-
-    #swt-admin-editor .editor-inner .editor-close {
-        position: absolute;
-        right: 0;
-        top: -35px;
-        font-size: 20px;
-        color: white;
-        cursor: pointer;
-    }
-
-    #swt-admin-editor:before {
-        position: absolute;
-        content: '';
-    }
-
-    #swt-admin-editor .editor-area {
-        display: grid;
-        grid-template-columns: 80% 20%;
-    }
-
-    #swt-admin-editor .editor-area .editor-main {
-        display: flex;
-        flex-direction: column;
-        flex: 0 1 75%;
-        padding: 30px;
-    }
-
-    #swt-admin-editor .editor-main input,
-    #swt-admin-editor .editor-main textarea {
-        border: none;
-        padding: 10px;
-        width: 100%;
-        margin-bottom: 10px;
-        background: transparent;
-        font-size: 20px;
-    }
-
-    #swt-admin-editor .editor-main textarea {
-        resize: none;
-    }
-
-    #swt-admin-editor .editor-main input::placeholder {
-        color: white;
-    }
-
-    #swt-admin-editor .editor-sidebar {
-        text-align: center;
-        background: #5a2aeb;
-    }
-
-    #swt-admin-editor .editor-sidebar button.editor-submit {
-        width: 150px;
-        height: 40px;
-        margin-bottom: 20px;
-        margin-top: 15px;
-    }
-
-    #swt-admin-editor .sidebar-element {
-        background: #5125d2;
-        color: white;
-        padding: 10px;
-        cursor: pointer;
-    }
-
-    #swt-admin-editor .sidebar-element.isactive,
-    #swt-admin-editor .sidebar-element:hover {
-        background: #5b222238;
-    }
-
-/*=========== EDITOR SIDEBAR ==============*/
-    #swt-admin-editor .sidebar-element.category .element-body,
-    #swt-admin-editor .sidebar-element.tag .element-body {
-        font-size: 15px;
-    }
-
-    #swt-admin-editor .sidebar-element.category input[type="text"],
-    #swt-admin-editor .sidebar-element.tag input[type="text"] {
-        padding: 5px;
-        margin-bottom: 10px;
-        margin-top: 5px;
-        border: none;
-    }
-
-    #swt-admin-editor .sidebar-element.category .category-list,
-    #swt-admin-editor .sidebar-element.tag .tag-list {
-        margin-bottom: 10px;
-    }
-
-    #swt-admin-editor .sidebar-element.category .category-item,
-    #swt-admin-editor .sidebar-element.tag .tags-item {
-        display: flex;
-        align-items: end;
-        gap: 12px;
-        margin-left: 10px;
-        margin-bottom: 5px;
-    }
-
-    #swt-admin-editor .sidebar-element.category .add-new-category,
-    #swt-admin-editor .sidebar-element.tag .add-new-tags {
-        border: 1px solid #d8ff00;
-        background: none;
-        padding: 7px 10px;
-        color: #d8ff00;
-        cursor: pointer;
-        border-radius: 4px;
-    }
-
-    #swt-admin-editor .sidebar-element.category .add-new-category:hover,
-    #swt-admin-editor .sidebar-element.tag .add-new-tags:hover {
-        background: #ffff002b;
-    }
+    /*
+    ==========================
+    DASHBOARD
+    ==========================
+    */
+        * {
+            margin: 0;
+            padding: 0;
+            font-weight: 600;
+        }
+
+        #root #swt-dashboard {
+            display: flex;
+        }
+
+        #root .editor-overlay {
+            width: 100%;
+            position: absolute;
+            content: '';
+            background: #000000a6;
+            height: 100%;
+        }
+
+        /*========= SIDEBAR ===========*/
+        #swt-dashboard .swt-admin-sidebar {
+            flex: 0 1 20%;
+            background: #5125d2;
+            height: 100vh;
+        }
+
+        /*=========== SIDEBAR HEAD =============*/
+        .swt-admin-sidebar .sidebar-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin-bottom: 10px;
+        }
+
+        /*=========== SIDEBAR BODY =============*/
+        .swt-admin-sidebar .sidebar-body .sidebar-items a {
+            text-decoration: none;
+        }
+
+        .swt-admin-sidebar .sidebar-body .sidebar-item {
+            list-style: none;
+            padding: 15px;
+            font-size: 20px;
+            color: #fff;
+        }
+
+        .swt-admin-sidebar .sidebar-body .sidebar-item:not(:last-child) {
+            border-bottom: 1px solid #ffffff;
+        }
+
+        .swt-admin-sidebar .sidebar-body .sidebar-item:hover {
+            background: #ffa5a56b;
+            cursor: pointer;
+            color: #000000;
+        }
+
+        /*========= ADMIN MAIN ==========*/
+        #swt-dashboard .swt-admin-main {
+            flex: 0 1 80%;
+            padding: 15px;
+        }
+
+        /*========= PRODUCTS =============*/    
+        .swt-admin-main .admin-products .product-add {
+            border: 1px dashed blue;
+            background: transparent;
+            padding: 5px 10px;
+            color: blue;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .swt-admin-main .admin-products .product-add:hover {
+            border: 1px dashed rgba(255, 0, 123, 0.403);
+            color: rgba(255, 0, 123, 0.403);
+            box-shadow: 0 0 3px rgba(255, 0, 123, 0.403);
+        }
+
+        .admin-products .page-head .date-search-wrap {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /*================== LOGIN ==================*/
+        #swt-admin-login {
+            background: #ffa5a599;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-sizing: border-box;
+            padding: 30px;
+            box-shadow: 0px 0px 30px 5px #00000038;
+            width: 30%;
+            border-radius: 3px;
+        }
+
+        #swt-admin-login .title {
+            margin-bottom: 10px;
+            text-align: center;
+            font-family: system-ui;
+            font-weight: 700;
+        }
+
+        #swt-admin-login .form-field {
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-family: system-ui;
+            font-weight: 500;
+        }
+
+        #swt-admin-login .form-field .label-error-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #swt-admin-login .form-field .label-error-wrap .error-message {
+            margin-bottom: 3px;
+            color: red;
+        }
+
+        #swt-admin-login .form-field label {
+            margin-bottom: 3px;
+        }
+
+        #swt-admin-login .form-field input {
+            width: 100%;
+            padding: 10px 0;
+            margin-top: 8px;
+            margin-bottom: 6px;
+            border: 1px solid #00000057;
+            border-radius: 3px;
+        }
+
+        #swt-admin-login .form-field.form-button {
+            text-align: center;
+        }
+
+        #swt-admin-login .form-field.form-button input[type=submit] {
+            width: 100%;
+            padding: 10px 30px;
+            background: #008000b8;
+            border:none;
+            border-radius: 3px;
+            text-decoration: none;
+            color: white;
+            font-size: 15px;
+            letter-spacing: 2px;
+            font-family: system-ui;
+            cursor: pointer;
+        }
+
+        #swt-admin-login .form-field.form-button input[type=submit]:hover {
+            background: #02be02b8;
+        }
+
+        #swt-admin-login .register-new-admin,
+        #swt-admin-login .forgot-password {
+            text-align: center
+        }
+
+        #swt-admin-login .register-new-admin a,
+        #swt-admin-login .forgot-password a {
+            text-decoration: none;
+        }
+
+        #swt-admin-login .register-new-admin a:hover,
+        #swt-admin-login .forgot-password a:hover {
+            color: green;
+        }
+
+    /*================== REGISTRATION ==================*/
+        #swt-admin-registration {
+            background: #ffa5a599;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-sizing: border-box;
+            padding: 30px;
+            box-shadow: 0px 0px 30px 5px #00000038;
+            width: 30%;
+            border-radius: 3px;
+        }
+
+        #swt-admin-registration .title {
+            margin-bottom: 10px;
+            text-align: center;
+            font-family: system-ui;
+            font-weight: 700;
+        }
+
+        #swt-admin-registration .form-field {
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-family: system-ui;
+            font-weight: 500;
+        }
+
+        #swt-admin-registration .form-field label {
+            margin-bottom: 3px;
+        }
+
+        #swt-admin-registration .form-field input {
+            width: 100%;
+            padding: 10px 0;
+            margin-top: 8px;
+            margin-bottom: 6px;
+            border: 1px solid #00000057;
+            border-radius: 3px;
+        }
+
+        #swt-admin-registration .form-field.form-button {
+            text-align: center;
+        }
+
+        #swt-admin-registration .form-field.form-button button {
+            width: 100%;
+            padding: 10px 30px;
+            background: #008000b8;
+            border:none;
+            border-radius: 3px;
+        }
+
+        #swt-admin-registration .form-field.form-button button:hover {
+            background: #02be02b8;
+        }
+
+        #swt-admin-registration .form-field.form-button button a {
+            text-decoration: none;
+            color: white;
+            font-size: 15px;
+            letter-spacing: 2px;
+            font-family: system-ui;
+        }
+        
+    /*================== FORGOT PASSWORD ==================*/
+        #swt-admin-forgot-password {
+            background: #ffa5a599;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-sizing: border-box;
+            padding: 30px;
+            box-shadow: 0px 0px 30px 5px #00000038;
+            width: 30%;
+            border-radius: 3px;
+        }
+
+        #swt-admin-forgot-password .title {
+            margin-bottom: 10px;
+            text-align: center;
+            font-family: system-ui;
+            font-weight: 700;
+        }
+
+        #swt-admin-forgot-password .form-field {
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-family: system-ui;
+            font-weight: 500;
+        }
+
+        #swt-admin-forgot-password .form-field label {
+            margin-bottom: 3px;
+        }
+
+        #swt-admin-forgot-password .form-field input {
+            width: 100%;
+            padding: 10px 0;
+            margin-top: 8px;
+            margin-bottom: 6px;
+            border: 1px solid #00000057;
+            border-radius: 3px;
+        }
+
+        #swt-admin-forgot-password .form-field.form-button {
+            text-align: center;
+        }
+
+        #swt-admin-forgot-password .form-field.form-button button {
+            width: 100%;
+            padding: 10px 30px;
+            background: #008000b8;
+            border:none;
+            border-radius: 3px;
+        }
+
+        #swt-admin-forgot-password .form-field.form-button button:hover {
+            background: #02be02b8;
+        }
+
+        #swt-admin-forgot-password .form-field.form-button button a {
+            text-decoration: none;
+            color: white;
+            font-size: 15px;
+            letter-spacing: 2px;
+            font-family: system-ui;
+        }
+
+    /*================== EDITOR ========================*/
+        #swt-admin-editor {
+            position: absolute;
+            background: #5125d2;
+            width: 80%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #swt-admin-editor .editor-inner {
+            position: relative;
+        }
+
+        #swt-admin-editor .editor-inner .editor-close {
+            position: absolute;
+            right: 0;
+            top: -35px;
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+        }
+
+        #swt-admin-editor:before {
+            position: absolute;
+            content: '';
+        }
+
+        #swt-admin-editor .editor-area {
+            display: grid;
+            grid-template-columns: 80% 20%;
+        }
+
+        #swt-admin-editor .editor-area .editor-main {
+            display: flex;
+            flex-direction: column;
+            flex: 0 1 75%;
+            padding: 30px;
+        }
+
+        #swt-admin-editor .editor-main input,
+        #swt-admin-editor .editor-main textarea {
+            border: none;
+            padding: 10px;
+            width: 100%;
+            margin-bottom: 10px;
+            background: transparent;
+            font-size: 20px;
+        }
+
+        #swt-admin-editor .editor-main textarea {
+            resize: none;
+        }
+
+        #swt-admin-editor .editor-main input::placeholder {
+            color: white;
+        }
+
+        #swt-admin-editor .editor-sidebar {
+            text-align: center;
+            background: #5a2aeb;
+        }
+
+        #swt-admin-editor .editor-sidebar button.editor-submit {
+            width: 150px;
+            height: 40px;
+            margin-bottom: 20px;
+            margin-top: 15px;
+        }
+
+        #swt-admin-editor .sidebar-element {
+            background: #5125d2;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #swt-admin-editor .sidebar-element.isactive,
+        #swt-admin-editor .sidebar-element:hover {
+            background: #5b222238;
+        }
+
+    /*=========== EDITOR SIDEBAR ==============*/
+        #swt-admin-editor .sidebar-element.category .element-body,
+        #swt-admin-editor .sidebar-element.tag .element-body {
+            font-size: 15px;
+        }
+
+        #swt-admin-editor .sidebar-element.category input[type="text"],
+        #swt-admin-editor .sidebar-element.tag input[type="text"] {
+            padding: 5px;
+            margin-bottom: 10px;
+            margin-top: 5px;
+            border: none;
+        }
+
+        #swt-admin-editor .sidebar-element.category .category-list,
+        #swt-admin-editor .sidebar-element.tag .tag-list {
+            margin-bottom: 10px;
+        }
+
+        #swt-admin-editor .sidebar-element.category .category-item,
+        #swt-admin-editor .sidebar-element.tag .tags-item {
+            display: flex;
+            align-items: end;
+            gap: 12px;
+            margin-left: 10px;
+            margin-bottom: 5px;
+        }
+
+        #swt-admin-editor .sidebar-element.category .add-new-category,
+        #swt-admin-editor .sidebar-element.tag .add-new-tags {
+            border: 1px solid #d8ff00;
+            background: none;
+            padding: 7px 10px;
+            color: #d8ff00;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        #swt-admin-editor .sidebar-element.category .add-new-category:hover,
+        #swt-admin-editor .sidebar-element.tag .add-new-tags:hover {
+            background: #ffff002b;
+        }
+
+        .swt-admin-pages table.products-wrap {
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9em;
+            min-width: 400px;
+            width: 100%;
+            text-align: left;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .swt-admin-pages table.products-wrap .head-item,
+        .swt-admin-pages table.products-wrap .body-item {
+            padding: 12px 15px;
+        }
+
+        .swt-admin-pages table.products-wrap .no-products td {
+            text-align: center;
+
+        }
+
+        .swt-admin-pages table.products-wrap .head-item {
+            background: #5125d2;
+            font-weight: bold;
+            color: white;
+        }
+
+        .swt-admin-pages table.products-wrap .products-element {
+            border-bottom: 1px solid #dddddd;
+        }
+        
+        .swt-admin-pages table.products-wrap .products-element:nth-child(even) {
+            background: #f3f3f3;
+        }
+
+        .swt-admin-pages table.products-wrap .products-element:last-of-type {
+            border-bottom: 2px solid #5125d2;
+        }
+
+        .swt-admin-pages .status-time-wrap {
+            margin-top: 10px;
+        }
+
+        .swt-admin-pages .status-time-wrap .page-head,
+        .swt-admin-pages .status-time-wrap .date-search-wrap{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .swt-admin-pages .status-time-wrap .status-list {
+            display: inline-block;
+            text-align: center;
+            background: #5125d2;
+            color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+        
+        .swt-admin-pages .status-time-wrap .status-list .status-item {
+            width: 100px;
+            display: inline-block;
+            line-height: 35px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .swt-admin-pages .status-time-wrap .status-list .status-item.active,
+        .swt-admin-pages .status-time-wrap .status-list .status-item:hover {
+            background: rgb(2, 180, 2);
+        }
+
+        .swt-admin-pages .status-time-wrap input[type="search"]{
+            margin-top: 8px;
+        }
+        .swt-admin-pages .status-time-wrap input[type="search"]{
+            padding: 8px;
+            margin-right: 5px;
+            border: 1px solid #5125d2;
+            border-radius: 5px;
+        }
+
+        .swt-admin-pages .status-time-wrap input[type="submit"]{
+            padding: 7px;
+            background: #5125d2;
+            border: 1px solid #5125d2;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+        }

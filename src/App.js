@@ -11,15 +11,13 @@ import Settings from './components/admin/settings'
 import Users from './components/admin/users'
 import ErrorPage from './components/error-page'
 import DatabaseForm from './components/admin/inc/admin-forms/database-form'
+import Index from './components/content/index'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
   const [ overlay, setOverlay ] = useState( false )
   const [ databaseExists, setDatabaseExists ] = useState( false )
 
-  // useEffect(() => [
-  //   fetch('')
-  // ], [])
 
   // on Editor add new click 
   const onEditorAddNewClick = ( event ) => {
@@ -42,7 +40,7 @@ const AdminFormLinks = ( { forEditor } ) => {
     <Routes>
       <Route exact path='/swt-admin' Component={ Admin }>
         <Route exact path='/swt-admin' Component={ Dashboard }/>
-        <Route exact path='/swt-admin/pages' Component={ Pages }/>
+        <Route exact path='/swt-admin/pages' element={ <Pages editorAddNew={ forEditor } /> }/>
         <Route exact path='/swt-admin/media' Component={ Media }/>
         <Route exact path='/swt-admin/products' element={ <Products editorAddNew={ forEditor } /> }/>
         <Route exact path='/swt-admin/settings' Component={ Settings }/>
@@ -51,6 +49,7 @@ const AdminFormLinks = ( { forEditor } ) => {
       <Route exact path='/swt-admin/login' Component={ AdminLogin }/>
       <Route exact path='/swt-admin/swt-forgot-password' Component={ AdminForgotPassword }/>
       <Route exact path='/swt-admin/swt-registration' Component={ AdminRegistration }/>
+      <Route exact path='/' Component={ Index }/>
       <Route path='*' Component={ ErrorPage } />
     </Routes>
   );

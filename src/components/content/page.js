@@ -1,9 +1,8 @@
 import React from 'react'
 
-export default function Homepage () {
+export default Page = () => {
     return (
         <>
-            <h2>Homepage</h2>
         </>
     );
 }

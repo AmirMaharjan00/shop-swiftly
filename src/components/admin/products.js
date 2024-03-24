@@ -1,8 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Editor from './editor'
 
 export default function Products ( { editorAddNew } ) {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
+    const [ getProducts, setProducts ] = useState([]);
+
+    useEffect(() => {
+        if( getProducts.length <= 0 ) setProducts( '' )
+        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_posts=get_table_data' )
+        .then(( result ) => result.json())
+        .then( ( data ) => { setProducts( data ) } )
+    }, [])
+
     let statusItems = [
         {'label': 'all'},
         {'label': 'published'},
@@ -21,49 +30,62 @@ export default function Products ( { editorAddNew } ) {
         <>
             <div className='swt-admin-pages admin-products'>
                 <button className='product-add' onClick={ handleAddNewClick }>Add New</button>
-                <div className='page-head'>
-                    <h2 className='page-title'>Products Management</h2>
-                    <div className='date-search-wrap'>
+                <div className='status-time-wrap'>
+                    <div className='page-head'>
+                        <h2 className='page-title'>Products Management</h2>
                         <span>{ currentTime }</span>
+                    </div>
+                    <div className='date-search-wrap'>
+                        <nav className='status-list'>
+                            {
+                                statusItems.map(( element, index ) => { 
+                                    var _thisClass = 'status-item'
+                                    if( index == 0 ) _thisClass += ' active';
+                                    return <span key={ index } className={ _thisClass }>{ element.label.charAt(0).toUpperCase() + element.label.slice(1) }</span>
+                                })
+                            }  
+                        </nav>
                         <label>
-                            <input type='search'/>
+                            <input type='search' placeholder='Search . . .'/>
                             <input type='submit' value='Search'/>
                         </label>
                     </div>
                 </div>
-                <div className='page-status'>
-                    <ul className='status-list'>
+                <table className='products-wrap'>
+                    <thead>
+                        <tr className='products-element products-table-head'>
+                            <th className='head-item'>Sno</th>
+                            <th className='head-item'>Title</th>
+                            <th className='head-item'>Stock</th>
+                            <th className='head-item'>Price</th>
+                            <th className='head-item'>Category</th>
+                            <th className='head-item'>Tag</th>
+                            <th className='head-item'>Date</th>
+                            <th className='head-item'>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {
-                            statusItems.map(( element, index ) => { 
-                                return <li key={ index } className='status-item'>{ element.label.charAt(0).toUpperCase() + element.label.slice(1) }</li>
-                            })
-                        }  
-                    </ul>
-                </div>
-                <div className='products-wrap'>
-                    <ul className='products-element products-table-head'>
-                        <li className='head-item'>Sno</li>
-                        <li className='head-item'>Title</li>
-                        <li className='head-item'>Stock</li>
-                        <li className='head-item'>Price</li>
-                        <li className='head-item'>Category</li>
-                        <li className='head-item'>Tag</li>
-                        <li className='head-item'>Date</li>
-                        <li className='head-item'>Action</li>
-                    </ul>
-                    <ul className='products-element products-table-body'>
-                        <li className='body-item'>1</li>
-                        <li className='body-item'>Title 1</li>
-                        <li className='body-item'>100</li>
-                        <li className='body-item'>Rs 1000</li>
-                        <li className='body-item'>category 1</li>
-                        <li className='body-item'>Tag 1</li>
-                        <li className='body-item'>2023/10/10</li>
-                        <li className='body-item'>:</li>
-                    </ul>
-                </div>
+                            ( getProducts ) ? getProducts.map(( current, index ) => {
+                                    return(
+                                        <tr className='products-element products-table-body' key={ index }>
+                                            <td className='body-item'>{ index + 1 }</td>
+                                            <td className='body-item'>{ current['post_title'] }</td>
+                                            <td className='body-item'>{ current['post_stock'] }</td>
+                                            <td className='body-item'>{ 'Rs ' + current['post_price'] }</td>
+                                            <td className='body-item'>{ current['post_category'] }</td>
+                                            <td className='body-item'>{ current['post_tags'] }</td>
+                                            <td className='body-item'>{ current['post_date'] }</td>
+                                            <td className='body-item'>:</td>
+                                        </tr>
+                                    ); 
+                                })
+                            : <tr className='products-element products-table-body no-products'><td className='body-item' colspan={8}>No Products</td></tr> 
+                        }
+                    </tbody>
+                </table>
             </div>
-            { editorIsActive && <Editor editorClose={ handleAddNewClick } /> }
+            { editorIsActive && <Editor editorClose={ handleAddNewClick } taxonomy={ true }/> }
         </>
     );
 }

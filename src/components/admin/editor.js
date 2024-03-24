@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function Editor( { editorClose } ) {
+export default function Editor( { editorClose, taxonomy } ) {
     const [ formInfo, setFormInfo ] = useState({})
     const [ activeSidebarElement, setActiveSidebarElement ] = useState( 'category' )
     const [ categoryList, setCategoryList ] = useState([{ label: 'uncategorized', slug: 'uncategorized' }])
@@ -101,7 +101,7 @@ export default function Editor( { editorClose } ) {
                             <div className='editor-sidebar'>
                                 <button className='editor-submit'>Publish</button>
                                 <div className='sidebar-elements-wrap'>
-                                    <div className={'sidebar-element category' + ( activeSidebarElement === 'category' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'category' ) ) }>
+                                   { taxonomy &&  <div className={'sidebar-element category' + ( activeSidebarElement === 'category' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'category' ) ) }>
                                         <span className='element-head'>Category</span>
                                         { ( activeSidebarElement == 'category' ) && <EditorComponentTag 
                                             label = 'Category'
@@ -113,8 +113,8 @@ export default function Editor( { editorClose } ) {
                                             buttonEvent = { handleCategoryAddClick }
                                             buttonLabel = 'Add Category'
                                         /> }
-                                    </div>
-                                    <div className={'sidebar-element tag' + ( activeSidebarElement === 'tag' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'tag' ) ) }>
+                                    </div> }
+                                    { taxonomy && <div className={'sidebar-element tag' + ( activeSidebarElement === 'tag' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'tag' ) ) }>
                                         <span className='element-head'>Tags</span>
                                         { ( activeSidebarElement == 'tag' ) && <EditorComponentTag 
                                             label = 'Tags'
@@ -126,7 +126,7 @@ export default function Editor( { editorClose } ) {
                                             buttonEvent = { handleTagAddClick }
                                             buttonLabel = 'Add Tag'
                                         /> }
-                                    </div>
+                                    </div> }
                                     <div className={'sidebar-element featured-image' + ( activeSidebarElement === 'featured-image' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'featured-image' ) ) }>Featured Image</div>
                                 </div>
                             </div>
