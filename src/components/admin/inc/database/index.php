@@ -9,8 +9,7 @@
     if( $_SERVER['REQUEST_METHOD'] == 'POST' ) :
         $parameters = file_get_contents( 'php://input' );
         $insert_query = $database->insert_into_table( 'pages', json_decode( $parameters, true ) );
-        if( $insert_query ) echo json_encode( $database->get_table_data( 'swt_pages' ) );
-        echo json_encode( $parameters );
+        echo json_encode( $insert_query ? $database->get_table_data( 'swt_pages' ) : $parameters );
     else :
         if( ! empty( $_GET ) && is_array( $_GET ) ) :
             if( array_key_exists( 'swt_posts', $_GET ) ) :

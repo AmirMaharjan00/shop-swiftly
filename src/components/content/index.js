@@ -12,11 +12,3 @@ export default function Index () {
         </>
     );
 }
-
-const Main = () => {
-    return (
-        <main >
-
-        </main>
-    );
-}
