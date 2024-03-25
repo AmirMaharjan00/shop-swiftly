@@ -70,10 +70,10 @@
             //     'post_date' =>  100
             // ];
             // $insert_args = [
-            //     'page_title'    =>  'Amir Maharjan',
-            //     'page_excerpt'  =>  'Lorem Ipsum is a dummy text.',
-            //     'page_image'    =>  'no image',
-            //     'page_date' =>  100
+                // 'page_title'    =>  'Amir Maharjan',
+                // 'page_excerpt'  =>  'Lorem Ipsum is a dummy text.',
+                // 'page_image'    =>  'no image',
+                // 'page_date' =>  100
             // ];
             // $insert_args = [
             //     'media_path'    =>  'Amir Maharjan',
@@ -86,7 +86,7 @@
             //     'taxonomy_image' =>  '100',
             //     'taxonomy_date' =>  100
             // ];
-            // $this->insert_into_table( 'pages', $insert_args );
+            // echo json_encode( $this->insert_into_table( 'pages', $insert_args ) );
         }
 
         /**
@@ -112,7 +112,7 @@
                     page_title VARCHAR(255) NOT NULL,
                     page_excerpt LONGTEXT NOT NULL,
                     page_image VARCHAR(255) NOT NULL,
-                    page_date INT(11) NOT NULL
+                    page_date BIGINT(18) NOT NULL
                 )",
                 "CREATE TABLE swt_taxonomy (
                     taxonomy_id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -168,6 +168,7 @@
                 if( $insert_query ) :
                     $insert_result = mysqli_query( $this->connection, $insert_query );
                     if( ! $insert_result ) return;
+                    return $insert_result;
                 endif;
             endif;
         }

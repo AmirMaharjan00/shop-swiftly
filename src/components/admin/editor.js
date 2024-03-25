@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import { json } from 'react-router-dom'
 
-export default function Editor( { editorClose, taxonomy } ) {
+export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
     const [ formInfo, setFormInfo ] = useState({})
     const [ activeSidebarElement, setActiveSidebarElement ] = useState( 'category' )
     const [ categoryList, setCategoryList ] = useState([{ label: 'uncategorized', slug: 'uncategorized' }])
@@ -13,11 +14,31 @@ export default function Editor( { editorClose, taxonomy } ) {
     // handle form submit
     const handleFormSubmit = ( event ) => {
         event.preventDefault()
+
+        var apiParameters = {
+            method: 'POST',
+            body: JSON.stringify({
+                'page_title': '',
+                'page_excerpt': '',
+                'page_image': '',
+                'page_date': Date.now(),
+                ...formInfo,
+            })
+        }
+        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', apiParameters )
+        .then(( result ) => result.json())
+        .then( ( data ) => { updateRespectiveStates( data ) } )
         setFormInfo({
             ...formInfo,
             'category': checkedCategory,
             'tag': checkedTag
         })
+    }
+
+    const updateRespectiveStates = ( data ) => {
+        console.log( data )
+        newData( data )
+        setFormInfo( data )
     }
 
     // handle title and excerpt change
@@ -95,8 +116,8 @@ export default function Editor( { editorClose, taxonomy } ) {
                     <form onSubmit={ handleFormSubmit } >
                         <div className='editor-area'>
                             <div className='editor-main'>
-                                <input type='text' placeholder='Title' name='product_name' id='product_name' onChange={ handleTitleExcerptChange } />
-                                <textarea placeholder='Description' name='product_except' id='product_except' rows='15' onChange={ handleTitleExcerptChange }></textarea>
+                                <input type='text' placeholder='Title' name={ prefix + '_title' } id={ prefix + '_title' } onChange={ handleTitleExcerptChange } />
+                                <textarea placeholder='Description' name={ prefix + '_excerpt' } id={ prefix + '_excerpt' } rows='15' onChange={ handleTitleExcerptChange }></textarea>
                             </div>
                             <div className='editor-sidebar'>
                                 <button className='editor-submit'>Publish</button>

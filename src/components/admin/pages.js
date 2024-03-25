@@ -3,13 +3,13 @@ import Editor from './editor'
 
 export default function Pages ( { editorAddNew } ) {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
-    const [ getProducts, setProducts ] = useState([]);
+    const [ getPages, setPages ] = useState([]);
 
     useEffect(() => {
-        if( getProducts.length <= 0 ) setProducts( '' )
+        if( getPages.length <= 0 ) setPages( '' )
         fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_pages=get_table_data' )
         .then(( result ) => result.json())
-        .then( ( data ) => { setProducts( data ) } )
+        .then( ( data ) => { setPages( data ) } )
     }, [])
 
     let statusItems = [
@@ -18,6 +18,10 @@ export default function Pages ( { editorAddNew } ) {
         {'label': 'draft'},
         {'label': 'trash'}
     ]
+
+    const editorSetState = ( newData ) => {
+        setPages( newData )
+    }
     
     // handle add new button click
     const handleAddNewClick = ( event ) => {
@@ -62,7 +66,7 @@ export default function Pages ( { editorAddNew } ) {
                     </thead>
                     <tbody>
                         {
-                            ( getProducts ) ? getProducts.map(( current, index ) => {
+                            ( getPages ) ? getPages.map(( current, index ) => {
                                     return(
                                         <tr className='products-element products-table-body' key={ index }>
                                             <td className='body-item'>{ index + 1 }</td>
@@ -72,12 +76,17 @@ export default function Pages ( { editorAddNew } ) {
                                         </tr>
                                     ); 
                                 })
-                            : <tr className='products-element products-table-body no-products'><td className='body-item' colspan={8}>No Products</td></tr> 
+                            : <tr className='products-element products-table-body no-products'><td className='body-item' colSpan={8}>No Pages</td></tr> 
                         }
                     </tbody>
                 </table>
             </div>
-            { editorIsActive && <Editor editorClose={ handleAddNewClick } taxonomy={ false }/> }
+            { editorIsActive && <Editor 
+                prefix = 'page'
+                editorClose = { handleAddNewClick }
+                taxonomy = { false }
+                newData = { editorSetState }
+            /> }
         </>
     );
 }

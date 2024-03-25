@@ -25,6 +25,10 @@ export default function Products ( { editorAddNew } ) {
         editorAddNew()
     }
 
+    const editorSetState = ( newData ) => {
+        setProducts( newData )
+    }
+
     let currentTime = new Date().toLocaleString()
     return (
         <>
@@ -80,12 +84,17 @@ export default function Products ( { editorAddNew } ) {
                                         </tr>
                                     ); 
                                 })
-                            : <tr className='products-element products-table-body no-products'><td className='body-item' colspan={8}>No Products</td></tr> 
+                            : <tr className='products-element products-table-body no-products'><td className='body-item' colSpan={8}>No Products</td></tr> 
                         }
                     </tbody>
                 </table>
             </div>
-            { editorIsActive && <Editor editorClose={ handleAddNewClick } taxonomy={ true }/> }
+            { editorIsActive && <Editor 
+                prefix = 'post'
+                editorClose = { handleAddNewClick }
+                taxonomy = { true }
+                newData = { editorSetState }
+            /> }
         </>
     );
 }
