@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import './assets/css/main.css'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
 export default function Header() {
@@ -12,13 +13,25 @@ export default function Header() {
 
     return (
         <header className='site-header'>
-            <nav className='site-menu'>
-                {
-                    getPages && getPages.map(( current, index ) => {
-                        return( <span className='nav-item' key={ index }><Link>{ current['page_title'] }</Link></span> );
-                    })
-                }
-            </nav>
+            <div className='container'>
+                <div className='row'>
+                    <div className='site-logo'>
+                        <h2 className='site-branding'>Shop swiftly</h2>
+                    </div>
+                    <nav className='site-menu'>
+                        {
+                            getPages && getPages.map(( current, index ) => {
+                                return( <span className='nav-item' key={ index }><Link>{ current['page_title'] }</Link></span> );
+                            })
+                        }
+                    </nav>
+                    <div className='site-actions'>
+                        <button className='action-item'>Search</button>
+                        <button className='action-item'>Dark Mode</button>
+                        <button className='action-item'>login</button>
+                    </div>
+                </div>
+            </div>
         </header>
     )
 }
