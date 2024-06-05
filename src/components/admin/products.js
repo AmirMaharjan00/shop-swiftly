@@ -6,10 +6,10 @@ export default function Products ( { editorAddNew } ) {
     const [ getProducts, setProducts ] = useState([]);
 
     useEffect(() => {
-        if( getProducts.length <= 0 ) setProducts( '' )
+        if( getProducts.length <= 0 ) setProducts([])
         fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_posts=get_table_data' )
         .then(( result ) => result.json())
-        .then( ( data ) => { setProducts( data ) } )
+        .then( ( data ) => { setProducts( (data == null) ? [] : data ) } )
     }, [])
 
     let statusItems = [

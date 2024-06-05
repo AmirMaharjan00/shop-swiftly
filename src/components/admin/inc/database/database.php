@@ -182,7 +182,7 @@
         public function get_table_data( $table_name ) {
             $select_query = "SELECT * FROM $table_name";
             $select_result = mysqli_query( $this->connection, $select_query );
-            if( ! $select_result ) return;
+            if( ! $select_result ) return [];
             if( $select_result->num_rows > 0 ) :
                 while( $row = mysqli_fetch_assoc( $select_result ) ) :
                     $data[] = $row;

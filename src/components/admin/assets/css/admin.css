@@ -23,7 +23,7 @@
 
         /*========= SIDEBAR ===========*/
         #swt-dashboard .swt-admin-sidebar {
-            flex: 0 1 20%;
+            flex: 0 1 10%;
             background: #5125d2;
             height: 100vh;
         }
