@@ -26,7 +26,7 @@ export default function Products ( { editorAddNew } ) {
     }
 
     const editorSetState = ( newData ) => {
-        setProducts( newData )
+        setProducts( ( Object.entries( newData ) ) )
     }
 
     let currentTime = new Date().toLocaleString()

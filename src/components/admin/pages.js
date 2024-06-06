@@ -9,7 +9,8 @@ export default function Pages ( { editorAddNew } ) {
         if( getPages.length <= 0 ) setPages( '' )
         fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_pages=get_table_data' )
         .then(( result ) => result.json())
-        .then( ( data ) => { setPages( data ) } )
+        // .then( ( data ) => { setPages( data ) } )
+        .then( ( data ) => { console.log( data ) } )
     }, [])
 
     let statusItems = [

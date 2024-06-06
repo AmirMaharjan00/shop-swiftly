@@ -100,12 +100,12 @@
                     post_id INT(11) AUTO_INCREMENT PRIMARY KEY,
                     post_title VARCHAR(255) NOT NULL,
                     post_excerpt LONGTEXT NOT NULL,
-                    post_category VARCHAR(255) NOT NULL,
-                    post_tags VARCHAR(255) NOT NULL,
+                    post_category VARCHAR(255) NOT NULL DEFAULT 'uncategorized',
+                    post_tags VARCHAR(255) NOT NULL DEFAULT 'null',
                     post_image VARCHAR(255) NOT NULL,
                     post_stock INT(11) NOT NULL,
                     post_price INT(11) NOT NULL,
-                    post_date INT(11) NOT NULL
+                    post_date BIGINT(20) NOT NULL
                 )",
                 "CREATE TABLE swt_pages (
                     page_id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -150,7 +150,7 @@
             if( $type && ! empty( $args ) && is_array( $args ) ) :
                 $insert_query = $insert_result = '';
                 switch( $type ) :
-                    case 'pages':
+                    case 'page':
                         $insert_query = "INSERT INTO swt_pages ( page_title, page_excerpt, page_image, page_date ) VALUES ( '$args[page_title]', '$args[page_excerpt]', '$args[page_image]', $args[page_date] )";
                         break;
                     case 'media':

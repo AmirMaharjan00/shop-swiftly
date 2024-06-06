@@ -14,15 +14,26 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
     // handle form submit
     const handleFormSubmit = ( event ) => {
         event.preventDefault()
-
+        var postsParams = {
+            'post_category' : '',
+            'post_tags' : '',
+            'post_stock' : 0,
+            'post_price' : 0
+        }
+        var bodyParams = {}
+        bodyParams = { 
+            [ prefix + '_title' ]: '',
+            [ prefix + '_excerpt' ]: '',
+            [ prefix + '_image' ]: '',
+            [ prefix + '_date' ]: Date.now(),
+            ...formInfo
+        }
+        if( prefix == 'post' ) bodyParams = { ...postsParams, ...bodyParams }
         var apiParameters = {
             method: 'POST',
             body: JSON.stringify({
-                'page_title': '',
-                'page_excerpt': '',
-                'page_image': '',
-                'page_date': Date.now(),
-                ...formInfo,
+                'params' : bodyParams,
+                'post_type' : prefix
             })
         }
         fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', apiParameters )
@@ -36,8 +47,9 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
     }
 
     const updateRespectiveStates = ( data ) => {
-        console.log( data )
-        newData( data )
+        let parsedData = JSON.parse( data )
+        // console.log( Object.entries( parsedData ) )
+        newData( parsedData )
         setFormInfo( data )
     }
 
