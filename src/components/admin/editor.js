@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { json } from 'react-router-dom'
+import Taxonomy from './taxonomy'
 
 export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
     const [ formInfo, setFormInfo ] = useState({})
@@ -44,12 +45,11 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
             'category': checkedCategory,
             'tag': checkedTag
         })
+        // editorClose()
     }
 
     const updateRespectiveStates = ( data ) => {
-        let parsedData = JSON.parse( data )
-        // console.log( Object.entries( parsedData ) )
-        newData( parsedData )
+        newData( data )
         setFormInfo( data )
     }
 
@@ -69,10 +69,9 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
     }
 
     // handle add new category click
-    const handleCategoryAddClick = ( event ) => {
-        setCategoryList([...categoryList, categoryItem ])
-        setCategoryItem({ label: '', slug: '' })
-        event.preventDefault()
+    const handleCategoryAddClick = ( list ) => {
+        setCategoryList( list )
+        // event.preventDefault()
     }
 
     // handle add new tag click
@@ -86,7 +85,7 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
     const handleAddNewCategoryChange = ( event ) => {
         let value = event.target.value
         setCategoryItem({
-            label: value, slug: value
+            label: value, slug: value.toLowerCase()
         })
     }
 
@@ -94,7 +93,7 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
     const handleAddNewTagChange = ( event ) => {
         let value = event.target.value
         setTagItem({
-            label: value, slug: value
+            label: value, slug: value.toLowerCase()
         })
     }
 
@@ -104,7 +103,7 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
         if( event.target.checked ) {
             setCheckedCategory([
                 ...checkedCategory,
-                { label: value, slug: value }
+                { label: value, slug: value.toLowerCase() }
             ])
         }
     }
@@ -115,7 +114,7 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
         if( event.target.checked ) {
             setCheckedTag([
                 ...checkedTag,
-                { label: value, slug: value }
+                { label: value, slug: value.toLowerCase() }
             ])
         }
     }
@@ -134,7 +133,15 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
                             <div className='editor-sidebar'>
                                 <button className='editor-submit'>Publish</button>
                                 <div className='sidebar-elements-wrap'>
-                                   { taxonomy &&  <div className={'sidebar-element category' + ( activeSidebarElement === 'category' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'category' ) ) }>
+                                <Taxonomy
+                                    handleSearchField = { handleAddNewCategoryChange }
+                                    handleCheckbox = { handleCategoryCheckboxChange }
+                                    handleNewTaxonomy = { handleCategoryAddClick }
+                                    taxonomyList = { categoryList }
+                                    placeholder = 'Add New Category'
+                                    buttonLabel = 'Add Category'
+                                />
+                                   {/* { taxonomy &&  <div className={'sidebar-element category' + ( activeSidebarElement === 'category' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'category' ) ) }>
                                         <span className='element-head'>Category</span>
                                         { ( activeSidebarElement == 'category' ) && <EditorComponentTag 
                                             label = 'Category'
@@ -146,7 +153,7 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
                                             buttonEvent = { handleCategoryAddClick }
                                             buttonLabel = 'Add Category'
                                         /> }
-                                    </div> }
+                                    </div> } */}
                                     { taxonomy && <div className={'sidebar-element tag' + ( activeSidebarElement === 'tag' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'tag' ) ) }>
                                         <span className='element-head'>Tags</span>
                                         { ( activeSidebarElement == 'tag' ) && <EditorComponentTag 

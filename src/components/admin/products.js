@@ -4,13 +4,19 @@ import Editor from './editor'
 export default function Products ( { editorAddNew } ) {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
     const [ getProducts, setProducts ] = useState([]);
+    const [ tempProducts, setTempProducts ] = useState([]);
+    const [ activeStatus, setActiveStatus ] = useState( 'all' )
 
     useEffect(() => {
         if( getProducts.length <= 0 ) setProducts([])
         fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_posts=get_table_data' )
-        .then(( result ) => result.json())
-        .then( ( data ) => { setProducts( (data == null) ? [] : data ) } )
+        .then(( result ) => result.json() )
+        .then( ( data ) => setProducts( (data == null) ? [] : data ))
     }, [])
+
+    useEffect(() => {
+        setTempProducts( getProducts )
+    }, [ getProducts ])
 
     let statusItems = [
         {'label': 'all'},
@@ -26,7 +32,22 @@ export default function Products ( { editorAddNew } ) {
     }
 
     const editorSetState = ( newData ) => {
-        setProducts( ( Object.entries( newData ) ) )
+        setProducts( newData )
+    }
+
+    /**
+     * Filter the searched products and set the products to state
+     * 
+     * @since 1.0.0
+     * @package Shop Swiftly
+     */
+    const updateProductsWithSearch = ( searchKey ) => {
+        if( searchKey == '' ) {
+            setTempProducts( getProducts )
+            return
+        }
+        let productTitles = tempProducts.filter( current => { return current.post_title.toLowerCase().includes( searchKey ) } )
+        setTempProducts( productTitles )
     }
 
     let currentTime = new Date().toLocaleString()
@@ -44,13 +65,20 @@ export default function Products ( { editorAddNew } ) {
                             {
                                 statusItems.map(( element, index ) => { 
                                     var _thisClass = 'status-item'
-                                    if( index == 0 ) _thisClass += ' active';
-                                    return <span key={ index } className={ _thisClass }>{ element.label.charAt(0).toUpperCase() + element.label.slice(1) }</span>
+                                    if( element.label == activeStatus ) _thisClass += ' active'
+                                    return <span 
+                                        key={ index }
+                                        className={ _thisClass }
+                                        onClick={() => setActiveStatus( element.label ) }
+                                        onKeyUp={() => setActiveStatus( element.label ) }
+                                    >
+                                        { element.label.charAt(0).toUpperCase() + element.label.slice(1) }
+                                    </span>
                                 })
                             }  
                         </nav>
                         <label>
-                            <input type='search' placeholder='Search . . .'/>
+                            <input type='search' placeholder='Search . . .' onChange={( event ) => updateProductsWithSearch( event.target.value )} />
                             <input type='submit' value='Search'/>
                         </label>
                     </div>
@@ -70,7 +98,7 @@ export default function Products ( { editorAddNew } ) {
                     </thead>
                     <tbody>
                         {
-                            ( getProducts ) ? getProducts.map(( current, index ) => {
+                            ( tempProducts.length > 0 ) ? tempProducts.map(( current, index ) => {
                                     return(
                                         <tr className='products-element products-table-body' key={ index }>
                                             <td className='body-item'>{ index + 1 }</td>

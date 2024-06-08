@@ -44,7 +44,7 @@
         .swt-admin-sidebar .sidebar-body .sidebar-item {
             list-style: none;
             padding: 15px;
-            font-size: 20px;
+            font-size: 15px;
             color: #fff;
         }
 
@@ -387,12 +387,12 @@
         }
 
     /*=========== EDITOR SIDEBAR ==============*/
-        #swt-admin-editor .sidebar-element.category .element-body,
+        #swt-admin-editor .sidebar-element.taxonomy .element-body,
         #swt-admin-editor .sidebar-element.tag .element-body {
             font-size: 15px;
         }
 
-        #swt-admin-editor .sidebar-element.category input[type="text"],
+        #swt-admin-editor .sidebar-element.taxonomy input[type="text"],
         #swt-admin-editor .sidebar-element.tag input[type="text"] {
             padding: 5px;
             margin-bottom: 10px;
@@ -400,12 +400,12 @@
             border: none;
         }
 
-        #swt-admin-editor .sidebar-element.category .category-list,
+        #swt-admin-editor .sidebar-element.taxonomy .taxonomy-list,
         #swt-admin-editor .sidebar-element.tag .tag-list {
             margin-bottom: 10px;
         }
 
-        #swt-admin-editor .sidebar-element.category .category-item,
+        #swt-admin-editor .sidebar-element.taxonomy .taxonomy-item,
         #swt-admin-editor .sidebar-element.tag .tags-item {
             display: flex;
             align-items: end;
@@ -414,7 +414,7 @@
             margin-bottom: 5px;
         }
 
-        #swt-admin-editor .sidebar-element.category .add-new-category,
+        #swt-admin-editor .sidebar-element.taxonomy .add-new-taxonomy,
         #swt-admin-editor .sidebar-element.tag .add-new-tags {
             border: 1px solid #d8ff00;
             background: none;
@@ -424,7 +424,7 @@
             border-radius: 4px;
         }
 
-        #swt-admin-editor .sidebar-element.category .add-new-category:hover,
+        #swt-admin-editor .sidebar-element.taxonomy .add-new-taxonomy:hover,
         #swt-admin-editor .sidebar-element.tag .add-new-tags:hover {
             background: #ffff002b;
         }
