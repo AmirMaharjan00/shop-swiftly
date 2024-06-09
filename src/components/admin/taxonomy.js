@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react'
 
 export default function Taxonomy( props ) {
-    // props.taxonomyList
     const [ list, setList ] = useState([])
-    const [ newTaxonomy, setNewTaxonomy ] = useState({})
     const [ searched, setSearched ] = useState( '' )
+    const [ checkedTaxonomy, setCheckecTaxonomuy ] = useState([])
     const PLACEHOLDER = props.placeholder
     const LABEL = props.label
     const BUTTONLABEL = props.buttonLabel
     const TYPE = props.type
     const DEFAULT = [{ 'category_title': 'Uncategorized', 'category_slug': 'uncategorized' }]
+    const API = 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_'+ TYPE +'=get_table_data'
+    const ACTIVECLASS = props.activeClass
 
     useEffect(() => {
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_category=get_table_data' )
+        fetch( API )
         .then(( result ) => result.json())
-        .then( ( data ) => { setList([ ...DEFAULT, ...data ]) } )
+        .then( ( data ) => { setList( TYPE == 'tag' ? [ ...data ] : [ ...DEFAULT, ...data ] ) } )
     }, [])
+
+    useEffect(() => {
+        props.handleCheckbox( checkedTaxonomy )
+    }, [ checkedTaxonomy ])
 
     /**
      * Handle Search field change
@@ -26,7 +31,21 @@ export default function Taxonomy( props ) {
     const handleSearchFieldChange = ( event ) => {
         let search = event.target.value
         setSearched( search )
-        props.handleSearchField( event )
+    }
+
+    /**
+     * Handle checkbox field change
+     * 
+     * @since 1.0.0
+     */
+    const handleCheckboxFieldChange = ( event ) => {
+        let value = event.target.value
+        let checked = event.target.checked
+        if( checked ) {
+            setCheckecTaxonomuy([ ...checkedTaxonomy, value ])
+        } else {
+            setCheckecTaxonomuy( checkedTaxonomy.filter( current => current != value ) )
+        }
     }
 
     /**
@@ -36,11 +55,10 @@ export default function Taxonomy( props ) {
      * @package Shop Swiftly
      */
     const handleAddingNewTaxonomy = ( event ) => {
-        // event.preventDefault()
-        // event.stopPropagation()
+        event.preventDefault()
+        event.stopPropagation()
         if( searched == '' ) return
         let newItem = { 'label': searched, 'slug': searched.toLowerCase(), 'date': Date.now() }
-        setNewTaxonomy( newItem )
         handleInsertingIntoDatabase( newItem )
     }
 
@@ -64,23 +82,23 @@ export default function Taxonomy( props ) {
                 'post_type' : TYPE
             })
         }
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_category=get_table_data', apiParameters )
+        fetch( API, apiParameters )
         .then(( result ) => result.json())
-        .then( ( data ) => { setList([ ...DEFAULT, ...data ]) } )
+        .then( ( data ) => { setList( TYPE == 'tag' ? [ ...data ] : [ ...DEFAULT, ...data ] ) } )
     }
 
     return (
-        <div className='sidebar-element taxonomy'>
-            <h2 className='element-head'>{ LABEL }</h2>
+        <div className={ 'sidebar-element taxonomy' + ( ACTIVECLASS ? ' isactive' : '' ) } onClick={() => props.updateActiveClass( TYPE ) }>
+            <span className='element-head'>{ LABEL }</span>
             <div className='element-body'>
                 <input type='search' placeholder={ PLACEHOLDER } onChange={( event ) => handleSearchFieldChange( event )}/>
                 <div className='taxonomy-list'>
                     {
                         list.map( ( current, index ) => {
-                            const SLUG = current.category_slug
+                            const ID = current[ TYPE + '_id' ]
                             return <p key={ index } className={ 'taxonomy-item' }>
-                                <input type='checkbox' value={ SLUG } onChange={( event ) => props.handleCheckbox( event ) }/>
-                                <label htmlFor={ SLUG }>{ current.category_title }</label>
+                                <input type='checkbox' id={ ID } value={ ID } onChange={( event ) => handleCheckboxFieldChange( event ) }/>
+                                <label htmlFor={ ID }>{ current[ TYPE + '_title' ] }</label>
                             </p>
                         } )
                     }

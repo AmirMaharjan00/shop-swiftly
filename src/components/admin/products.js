@@ -46,7 +46,7 @@ export default function Products ( { editorAddNew } ) {
             setTempProducts( getProducts )
             return
         }
-        let productTitles = tempProducts.filter( current => { return current.post_title.toLowerCase().includes( searchKey ) } )
+        let productTitles = tempProducts.filter( current => { return current.post_title.toLowerCase().includes( searchKey.toLowerCase() ) } )
         setTempProducts( productTitles )
     }
 
@@ -120,7 +120,6 @@ export default function Products ( { editorAddNew } ) {
             { editorIsActive && <Editor 
                 prefix = 'post'
                 editorClose = { handleAddNewClick }
-                taxonomy = { true }
                 newData = { editorSetState }
             /> }
         </>

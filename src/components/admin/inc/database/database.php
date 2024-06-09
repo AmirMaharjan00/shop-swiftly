@@ -86,8 +86,8 @@
                     post_id INT(11) AUTO_INCREMENT PRIMARY KEY,
                     post_title VARCHAR(255) NOT NULL,
                     post_excerpt LONGTEXT NOT NULL,
-                    post_category INT(11) NOT NULL,
-                    post_tags INT(11) NOT NULL,
+                    post_category VARCHAR(255) NOT NULL,
+                    post_tags VARCHAR(255) NOT NULL,
                     post_image VARCHAR(255) NOT NULL,
                     post_stock INT(11) NOT NULL,
                     post_price INT(11) NOT NULL,
@@ -139,7 +139,7 @@
                     case 'category':
                         $insert_query = "INSERT INTO swt_category ( category_title, category_slug, category_date, category_excerpt ) VALUES ( '$args[category_title]', '$args[category_slug]', '$args[category_date]', '$args[category_excerpt]' )";
                         break;
-                    case 'product_tag':
+                    case 'tag':
                         $insert_query = "INSERT INTO swt_tag ( tag_title, tag_slug, tag_date, tag_excerpt ) VALUES ( '$args[tag_title]', '$args[tag_slug]', '$args[tag_date]', '$args[tag_excerpt]' )";
                         break;
                     default:

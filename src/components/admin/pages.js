@@ -4,6 +4,7 @@ import Editor from './editor'
 export default function Pages ( { editorAddNew } ) {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
     const [ getPages, setPages ] = useState([]);
+    const [ tempPages, setTempPages ] = useState([]);
 
     useEffect(() => {
         if( getPages.length <= 0 ) setPages( '' )
@@ -11,6 +12,10 @@ export default function Pages ( { editorAddNew } ) {
         .then(( result ) => result.json())
         .then( ( data ) => { setPages( data ) } )
     }, [])
+
+    useEffect(() => {
+        setTempPages( getPages )
+    }, [ getPages ])
 
     let statusItems = [
         {'label': 'all'},
@@ -27,6 +32,21 @@ export default function Pages ( { editorAddNew } ) {
     const handleAddNewClick = ( event ) => {
         setEditorIsActive( editorIsActive ? false : true )
         editorAddNew()
+    }
+
+    /**
+     * Filter the searched products and set the products to state
+     * 
+     * @since 1.0.0
+     * @package Shop Swiftly
+     */
+    const updateProductsWithSearch = ( searchKey ) => {
+        if( searchKey == '' ) {
+            setTempPages( getPages )
+            return
+        }
+        let productTitles = tempPages.filter( current => { return current.page_title.toLowerCase().includes( searchKey.toLowerCase() ) } )
+        setTempPages( productTitles )
     }
 
     let currentTime = new Date().toLocaleString()
@@ -50,7 +70,7 @@ export default function Pages ( { editorAddNew } ) {
                             }  
                         </nav>
                         <label>
-                            <input type='search' placeholder='Search . . .'/>
+                            <input type='search' placeholder='Search . . .' onChange={( event ) => updateProductsWithSearch( event.target.value )}/>
                             <input type='submit' value='Search'/>
                         </label>
                     </div>
@@ -66,7 +86,7 @@ export default function Pages ( { editorAddNew } ) {
                     </thead>
                     <tbody>
                         {
-                            ( getPages ) ? getPages.map(( current, index ) => {
+                            ( tempPages.length > 0 ) ? tempPages.map(( current, index ) => {
                                     return(
                                         <tr className='products-element products-table-body' key={ index }>
                                             <td className='body-item'>{ index + 1 }</td>
@@ -84,7 +104,6 @@ export default function Pages ( { editorAddNew } ) {
             { editorIsActive && <Editor 
                 prefix = 'page'
                 editorClose = { handleAddNewClick }
-                taxonomy = { false }
                 newData = { editorSetState }
             /> }
         </>

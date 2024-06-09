@@ -21,7 +21,7 @@
             case 'category':
                 $table = 'swt_category';
                 break;
-            case 'product_tag':
+            case 'tag':
                 $table = 'swt_tag';
                 break;
         endswitch;

@@ -2,29 +2,27 @@ import React, { useState } from 'react'
 import { json } from 'react-router-dom'
 import Taxonomy from './taxonomy'
 
-export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
+export default function Editor( { prefix, editorClose, newData } ) {
     const [ formInfo, setFormInfo ] = useState({})
     const [ activeSidebarElement, setActiveSidebarElement ] = useState( 'category' )
-    const [ categoryList, setCategoryList ] = useState([{ label: 'uncategorized', slug: 'uncategorized' }])
-    const [ categoryItem, setCategoryItem ] = useState({ label: '', slug: '' })
     const [ checkedCategory, setCheckedCategory ] = useState([])
-    const [ tagList, setTagList ] = useState([])
-    const [ tagItem, setTagItem ] = useState({ label: '', slug: '' })
     const [ checkedTag, setCheckedTag ] = useState([])
+    const [ title, setTitle ] = useState( '' )
+    const [ excerpt, setExcerpt ] = useState( '' )
 
     // handle form submit
     const handleFormSubmit = ( event ) => {
         event.preventDefault()
         var postsParams = {
-            'post_category' : '',
-            'post_tags' : '',
+            'post_category' : checkedCategory.join(','),
+            'post_tags' : checkedTag.join(','),
             'post_stock' : 0,
             'post_price' : 0
         }
         var bodyParams = {}
         bodyParams = { 
-            [ prefix + '_title' ]: '',
-            [ prefix + '_excerpt' ]: '',
+            [ prefix + '_title' ]: title,
+            [ prefix + '_excerpt' ]: excerpt,
             [ prefix + '_image' ]: '',
             [ prefix + '_date' ]: Date.now(),
             ...formInfo
@@ -40,27 +38,19 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
         fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', apiParameters )
         .then(( result ) => result.json())
         .then( ( data ) => { updateRespectiveStates( data ) } )
-        setFormInfo({
-            ...formInfo,
-            'category': checkedCategory,
-            'tag': checkedTag
-        })
-        // editorClose()
+        let formValues = {
+            'post_title' : title,
+            'post_excerpt' : excerpt,
+            'category' : checkedCategory,
+            'tag' : checkedTag,
+        }
+        setFormInfo( formValues )
+        editorClose()
     }
 
     const updateRespectiveStates = ( data ) => {
         newData( data )
         setFormInfo( data )
-    }
-
-    // handle title and excerpt change
-    const handleTitleExcerptChange = ( event ) => {
-        let elementName = event.target.name
-        let elementValue = event.target.value
-        setFormInfo({
-            ...formInfo,
-            [elementName]: elementValue
-        })
     }
     
     // handle sidebar element click
@@ -68,55 +58,14 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
         setActiveSidebarElement( element )
     }
 
-    // handle add new category click
-    const handleCategoryAddClick = ( list ) => {
-        setCategoryList( list )
-        // event.preventDefault()
-    }
-
-    // handle add new tag click
-    const handleTagAddClick = ( event ) => {
-        setTagList([ ...tagList, tagItem ])
-        setTagItem({ label: '', slug: '' })
-        event.preventDefault()
-    }
-
-    // handle add new category change
-    const handleAddNewCategoryChange = ( event ) => {
-        let value = event.target.value
-        setCategoryItem({
-            label: value, slug: value.toLowerCase()
-        })
-    }
-
-    // handle add new category change
-    const handleAddNewTagChange = ( event ) => {
-        let value = event.target.value
-        setTagItem({
-            label: value, slug: value.toLowerCase()
-        })
-    }
-
     // handle category checkbox change
-    const handleCategoryCheckboxChange = ( event ) => {
-        let value = event.target.value
-        if( event.target.checked ) {
-            setCheckedCategory([
-                ...checkedCategory,
-                { label: value, slug: value.toLowerCase() }
-            ])
-        }
+    const handleCategoryCheckboxChange = ( checked ) => {
+        setCheckedCategory( checked )
     }
 
     // handle tags checkbox change
-    const handleTagCheckboxChange = ( event ) => {
-        let value = event.target.value
-        if( event.target.checked ) {
-            setCheckedTag([
-                ...checkedTag,
-                { label: value, slug: value.toLowerCase() }
-            ])
-        }
+    const handleTagCheckboxChange = ( checked ) => {
+        setCheckedTag( checked )
     }
 
     return (
@@ -127,46 +76,28 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
                     <form onSubmit={ handleFormSubmit } >
                         <div className='editor-area'>
                             <div className='editor-main'>
-                                <input type='text' placeholder='Title' name={ prefix + '_title' } id={ prefix + '_title' } onChange={ handleTitleExcerptChange } />
-                                <textarea placeholder='Description' name={ prefix + '_excerpt' } id={ prefix + '_excerpt' } rows='15' onChange={ handleTitleExcerptChange }></textarea>
+                                <input type='text' placeholder='Title' name={ prefix + '_title' } id={ prefix + '_title' } onChange={( event ) => setTitle( event.target.value ) } />
+                                <textarea placeholder='Description' name={ prefix + '_excerpt' } id={ prefix + '_excerpt' } rows='15' onChange={( event ) => setExcerpt( event.target.value ) }></textarea>
                             </div>
                             <div className='editor-sidebar'>
                                 <button className='editor-submit'>Publish</button>
                                 <div className='sidebar-elements-wrap'>
-                                <Taxonomy
-                                    handleSearchField = { handleAddNewCategoryChange }
-                                    handleCheckbox = { handleCategoryCheckboxChange }
-                                    handleNewTaxonomy = { handleCategoryAddClick }
-                                    taxonomyList = { categoryList }
-                                    placeholder = 'Add New Category'
-                                    buttonLabel = 'Add Category'
-                                />
-                                   {/* { taxonomy &&  <div className={'sidebar-element category' + ( activeSidebarElement === 'category' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'category' ) ) }>
-                                        <span className='element-head'>Category</span>
-                                        { ( activeSidebarElement == 'category' ) && <EditorComponentTag 
-                                            label = 'Category'
-                                            attribute = 'category'
-                                            changeEvent = { handleAddNewCategoryChange }
-                                            currentItem = { categoryItem }
-                                            currentList = { categoryList }
-                                            checkboxChange = { handleCategoryCheckboxChange }
-                                            buttonEvent = { handleCategoryAddClick }
-                                            buttonLabel = 'Add Category'
-                                        /> }
-                                    </div> } */}
-                                    { taxonomy && <div className={'sidebar-element tag' + ( activeSidebarElement === 'tag' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'tag' ) ) }>
-                                        <span className='element-head'>Tags</span>
-                                        { ( activeSidebarElement == 'tag' ) && <EditorComponentTag 
-                                            label = 'Tags'
-                                            attribute = 'tags'
-                                            changeEvent = { handleAddNewTagChange }
-                                            currentItem = { tagItem }
-                                            currentList = { tagList }
-                                            checkboxChange = { handleTagCheckboxChange }
-                                            buttonEvent = { handleTagAddClick }
-                                            buttonLabel = 'Add Tag'
-                                        /> }
-                                    </div> }
+                                    { prefix == 'post' && <Taxonomy
+                                        handleCheckbox = { handleCategoryCheckboxChange }
+                                        placeholder = 'Add New Category'
+                                        buttonLabel = 'Add Category'
+                                        activeClass = { activeSidebarElement === 'category' }
+                                        updateActiveClass = { handleSidebarElementClick }
+                                    /> }
+                                    { prefix == 'post' && <Taxonomy
+                                        handleCheckbox = { handleTagCheckboxChange }
+                                        placeholder = 'Add New Tag'
+                                        buttonLabel = 'Add Tag'
+                                        label = 'Tag'
+                                        type = 'tag'
+                                        activeClass = { activeSidebarElement === 'tag' }
+                                        updateActiveClass = { handleSidebarElementClick }
+                                    /> }
                                     <div className={'sidebar-element featured-image' + ( activeSidebarElement === 'featured-image' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'featured-image' ) ) }>Featured Image</div>
                                 </div>
                             </div>
@@ -175,24 +106,5 @@ export default function Editor( { prefix, editorClose, taxonomy, newData } ) {
                 </div>
             </div>
         </>
-    );
-}
-
-const EditorComponentTag = ({ attribute, changeEvent, currentItem, currentList, checkboxChange, buttonEvent, buttonLabel  }) => {
-    return (
-        <div className='element-body'>
-            <input type='text' placeholder={ 'Add new ' + attribute } name={ attribute } id={ attribute } onChange={ changeEvent } value={ currentItem.label }/>
-            <div className={ attribute + '-list' }>
-                { currentList.map(( element, index ) => { 
-                    return (
-                        <p key={ index } className={ attribute + '-item' }>
-                            <input type='checkbox' value={ element.slug } id={ element.slug } onChange={ checkboxChange }/>
-                            <label htmlFor={ element.slug }>{ element.label }</label>
-                        </p>
-                    )
-                })}
-            </div>
-            <button className={ 'add-new-' + attribute } onClick={ buttonEvent }>{ buttonLabel }</button>
-        </div>
     );
 }
