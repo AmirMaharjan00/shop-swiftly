@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Editor from './editor'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 
 export default function Pages ( { editorAddNew } ) {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
@@ -92,7 +94,7 @@ export default function Pages ( { editorAddNew } ) {
                                             <td className='body-item'>{ index + 1 }</td>
                                             <td className='body-item'>{ current['page_title'] }</td>
                                             <td className='body-item'>{ current['page_date'] }</td>
-                                            <td className='body-item'>:</td>
+                                            <td className='body-item'><FontAwesomeIcon icon={ faEllipsisVertical } /></td>
                                         </tr>
                                     ); 
                                 })

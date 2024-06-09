@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Editor from './editor'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 
 export default function Products ( { editorAddNew } ) {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
@@ -108,7 +110,7 @@ export default function Products ( { editorAddNew } ) {
                                             <td className='body-item'>{ current['post_category'] }</td>
                                             <td className='body-item'>{ current['post_tags'] }</td>
                                             <td className='body-item'>{ current['post_date'] }</td>
-                                            <td className='body-item'>:</td>
+                                            <td className='body-item'><FontAwesomeIcon icon={ faEllipsisVertical } /></td>
                                         </tr>
                                     ); 
                                 })

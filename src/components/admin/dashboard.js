@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link, Outlet } from 'react-router-dom';
 import './assets/css/admin.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBars } from '@fortawesome/free-solid-svg-icons'
 
 export default function Admin() {
     return (
@@ -29,7 +31,7 @@ const Sidebar = () => {
             <div className='swt-admin-sidebar'>
                 <div className='sidebar-head'>
                     <h2 className='title'>Shop Swiftly</h2>
-                    <span>Burger Icon</span>
+                    <FontAwesomeIcon icon={ faBars } />
                 </div>
                 <div className='sidebar-body'>
                     <ul className='sidebar-items'>
