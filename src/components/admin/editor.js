@@ -78,6 +78,7 @@ export default function Editor( { prefix, editorClose, newData } ) {
                             <div className='editor-main'>
                                 <input type='text' placeholder='Title' name={ prefix + '_title' } id={ prefix + '_title' } onChange={( event ) => setTitle( event.target.value ) } />
                                 <textarea placeholder='Description' name={ prefix + '_excerpt' } id={ prefix + '_excerpt' } rows='15' onChange={( event ) => setExcerpt( event.target.value ) }></textarea>
+                                
                             </div>
                             <div className='editor-sidebar'>
                                 <button className='editor-submit'>Publish</button>

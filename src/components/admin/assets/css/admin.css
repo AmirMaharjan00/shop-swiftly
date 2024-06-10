@@ -23,7 +23,7 @@
 
         /*========= SIDEBAR ===========*/
         #swt-dashboard .swt-admin-sidebar {
-            flex: 0 1 10%;
+            flex: 0 1 13%;
             background: #5125d2;
             height: 100vh;
         }
@@ -32,8 +32,14 @@
         .swt-admin-sidebar .sidebar-head {
             display: flex;
             align-items: center;
-            justify-content: space-around;
+            justify-content: space-between;
             margin-bottom: 10px;
+            padding: 0 15px;
+        }
+
+        .swt-admin-sidebar .sidebar-head svg.off-canvas:hover {
+            color: #fff;
+            cursor: pointer;
         }
 
         /*=========== SIDEBAR BODY =============*/
@@ -237,6 +243,7 @@
             font-size: 15px;
             letter-spacing: 2px;
             font-family: system-ui;
+            padding: inherit;
         }
         
     /*================== FORGOT PASSWORD ==================*/
@@ -428,7 +435,8 @@
             background: #ffff002b;
         }
 
-        .swt-admin-pages table.products-wrap {
+        .swt-admin-main table.products-wrap,
+        .swt-admin-main table.users-wrap {
             border-collapse: collapse;
             margin: 15px 0;
             font-size: 0.9em;
@@ -440,46 +448,53 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
         }
 
-        .swt-admin-pages table.products-wrap .head-item,
-        .swt-admin-pages table.products-wrap .body-item {
+        .swt-admin-main table.users-wrap .head-item,
+        .swt-admin-main table.users-wrap .body-item,
+        .swt-admin-main table.products-wrap .head-item,
+        .swt-admin-main table.products-wrap .body-item {
             padding: 12px 15px;
         }
 
-        .swt-admin-pages table.products-wrap .no-products td {
+        .swt-admin-main table.users-wrap .no-users td,
+        .swt-admin-main table.products-wrap .no-products td {
             text-align: center;
 
         }
 
-        .swt-admin-pages table.products-wrap .head-item {
+        .swt-admin-main table.users-wrap .head-item,
+        .swt-admin-main table.products-wrap .head-item {
             background: #5125d2;
             font-weight: bold;
             color: white;
         }
 
-        .swt-admin-pages table.products-wrap .products-element {
+        .swt-admin-main table.users-wrap .users-element,
+        .swt-admin-main table.products-wrap .products-element {
             border-bottom: 1px solid #dddddd;
         }
         
-        .swt-admin-pages table.products-wrap .products-element:nth-child(even) {
+        .swt-admin-main table.users-wrap .users-element:nth-child(even),
+        .swt-admin-main table.products-wrap .products-element:nth-child(even) {
             background: #f3f3f3;
         }
 
-        .swt-admin-pages table.products-wrap .products-element:last-of-type {
+        .swt-admin-main table.users-wrap .users-element:last-of-type,
+        .swt-admin-main table.products-wrap .products-element:last-of-type {
             border-bottom: 2px solid #5125d2;
         }
 
-        .swt-admin-pages .status-time-wrap {
+        .swt-admin-main .status-time-wrap {
             margin-top: 10px;
         }
 
-        .swt-admin-pages .status-time-wrap .page-head,
-        .swt-admin-pages .status-time-wrap .date-search-wrap{
+        .swt-admin-main .status-time-wrap .page-head,
+        .swt-admin-main .status-time-wrap .date-search-wrap{
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .swt-admin-pages .status-time-wrap .status-list {
+        .swt-admin-main .status-time-wrap .status-list {
             display: inline-block;
             text-align: center;
             background: #5125d2;
@@ -489,7 +504,7 @@
             margin-top: 8px;
         }
         
-        .swt-admin-pages .status-time-wrap .status-list .status-item {
+        .swt-admin-main .status-time-wrap .status-list .status-item {
             width: 100px;
             display: inline-block;
             line-height: 35px;
@@ -497,22 +512,22 @@
             font-size: 0.9em;
         }
 
-        .swt-admin-pages .status-time-wrap .status-list .status-item.active,
-        .swt-admin-pages .status-time-wrap .status-list .status-item:hover {
+        .swt-admin-main .status-time-wrap .status-list .status-item.active,
+        .swt-admin-main .status-time-wrap .status-list .status-item:hover {
             background: rgb(2, 180, 2);
         }
 
-        .swt-admin-pages .status-time-wrap input[type="search"]{
+        .swt-admin-main .status-time-wrap input[type="search"]{
             margin-top: 8px;
         }
-        .swt-admin-pages .status-time-wrap input[type="search"]{
+        .swt-admin-main .status-time-wrap input[type="search"]{
             padding: 8px;
             margin-right: 5px;
             border: 1px solid #5125d2;
             border-radius: 5px;
         }
 
-        .swt-admin-pages .status-time-wrap input[type="submit"]{
+        .swt-admin-main .status-time-wrap input[type="submit"]{
             padding: 7px;
             background: #5125d2;
             border: 1px solid #5125d2;

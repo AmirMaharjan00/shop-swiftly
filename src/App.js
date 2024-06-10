@@ -36,6 +36,7 @@ function App() {
 }
 
 const AdminFormLinks = ( { forEditor } ) => {
+  const [ allUsers, setAllUsers ] = useState([])
   return (
     <Routes>
       <Route exact path='/swt-admin' Component={ Admin }>
@@ -44,7 +45,7 @@ const AdminFormLinks = ( { forEditor } ) => {
         <Route exact path='/swt-admin/media' Component={ Media }/>
         <Route exact path='/swt-admin/products' element={ <Products editorAddNew={ forEditor } /> }/>
         <Route exact path='/swt-admin/settings' Component={ Settings }/>
-        <Route exact path='/swt-admin/users' Component={ Users }/>
+        <Route exact path='/swt-admin/users' element={ <Users registeredUsers={ allUsers }/> }/>
       </Route>
       <Route exact path='/swt-admin/login' Component={ AdminLogin }/>
       <Route exact path='/swt-admin/swt-forgot-password' Component={ AdminForgotPassword }/>

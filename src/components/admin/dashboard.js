@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom';
 import './assets/css/admin.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,6 +18,7 @@ export default function Admin() {
 }
 
 const Sidebar = () => {
+    const [ canvasActive, setCanvasActive ] = useState( false )
     let sidebarItemsArray = [ 
         { 'label': 'dashboard', 'link': '/swt-admin' },
         { 'label': 'products', 'link': '/swt-admin/products' },
@@ -31,7 +32,11 @@ const Sidebar = () => {
             <div className='swt-admin-sidebar'>
                 <div className='sidebar-head'>
                     <h2 className='title'>Shop Swiftly</h2>
-                    <FontAwesomeIcon icon={ faBars } />
+                    <FontAwesomeIcon
+                        icon = { faBars } 
+                        className = { 'off-canvas' + ( canvasActive ? ' active' : '' ) }
+                        onClick = {() => setCanvasActive( ! canvasActive ) }
+                    />
                 </div>
                 <div className='sidebar-body'>
                     <ul className='sidebar-items'>

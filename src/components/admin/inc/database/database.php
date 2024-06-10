@@ -111,6 +111,14 @@
                     option_id INT(11) AUTO_INCREMENT PRIMARY KEY,
                     option_key LONGTEXT NOT NULL,
                     option_value LONGTEXT NOT NULL
+                )",
+                "CREATE TABLE IF NOT EXISTS swt_users (
+                    user_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+                    user_name LONGTEXT NOT NULL,
+                    user_password LONGTEXT NOT NULL,
+                    user_email LONGTEXT NOT NULL,
+                    user_role LONGTEXT NOT NULL,
+                    registered_date LONGTEXT NOT NULL
                 )"
             ];
             if( ! empty( $table_queries ) && is_array( $table_queries ) ):
@@ -141,6 +149,9 @@
                         break;
                     case 'tag':
                         $insert_query = "INSERT INTO swt_tag ( tag_title, tag_slug, tag_date, tag_excerpt ) VALUES ( '$args[tag_title]', '$args[tag_slug]', '$args[tag_date]', '$args[tag_excerpt]' )";
+                        break;
+                    case 'user':
+                        $insert_query = "INSERT INTO swt_users ( user_name, user_password, user_email, user_role, registered_date ) VALUES ( '$args[user_name]', '$args[user_password]', '$args[user_email]', '$args[user_role]', '$args[registered_date]' )";
                         break;
                     default:
                         $insert_query = "INSERT INTO swt_posts ( post_title, post_excerpt, post_category, post_tags, post_image, post_stock, post_price, post_date ) VALUES ( '$args[post_title]', '$args[post_excerpt]', '$args[post_category]', '$args[post_tags]', '$args[post_image]', $args[post_stock], $args[post_price], $args[post_date] )";
