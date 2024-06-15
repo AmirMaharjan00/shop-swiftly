@@ -8,6 +8,7 @@ export default function Products ( { editorAddNew } ) {
     const [ getProducts, setProducts ] = useState([]);
     const [ tempProducts, setTempProducts ] = useState([]);
     const [ activeStatus, setActiveStatus ] = useState( 'all' )
+    const [ action, setAction ] = useState( null )
 
     useEffect(() => {
         if( getProducts.length <= 0 ) setProducts([])
@@ -50,6 +51,16 @@ export default function Products ( { editorAddNew } ) {
         }
         let productTitles = tempProducts.filter( current => { return current.post_title.toLowerCase().includes( searchKey.toLowerCase() ) } )
         setTempProducts( productTitles )
+    }
+
+    /**
+     * Handler action button click
+     * 
+     * @since 1.0.0
+     */
+    const handlerActionClick = ( index ) => {
+        let state = ( index == action ) ? null : index
+        setAction( state )
     }
 
     let currentTime = new Date().toLocaleString()
@@ -110,7 +121,10 @@ export default function Products ( { editorAddNew } ) {
                                             <td className='body-item'>{ current['post_category'] }</td>
                                             <td className='body-item'>{ current['post_tags'] }</td>
                                             <td className='body-item'>{ current['post_date'] }</td>
-                                            <td className='body-item'><FontAwesomeIcon icon={ faEllipsisVertical } /></td>
+                                            <td className='body-item action-item'>
+                                                <span className="action-icon" onClick={() => handlerActionClick( index ) }><FontAwesomeIcon icon={ faEllipsisVertical } /></span>
+                                                { (index == action) && <Actions/> }
+                                            </td>
                                         </tr>
                                     ); 
                                 })
@@ -126,4 +140,17 @@ export default function Products ( { editorAddNew } ) {
             /> }
         </>
     );
+}
+
+export const Actions = () => {
+    const ACTIONS = [ 'edit', 'trash' ]
+    return(
+        <ul className='actions-wrapper'>
+            {
+                ACTIONS.map( ( current, index ) => {
+                    return <li key={ index } className='action'>{ current.charAt(0).toUpperCase() + current.slice(1) }</li>
+                })
+            }
+        </ul>
+    )
 }
