@@ -153,6 +153,9 @@
                     case 'user':
                         $insert_query = "INSERT INTO swt_users ( user_name, user_password, user_email, user_role, registered_date ) VALUES ( '$args[user_name]', '$args[user_password]', '$args[user_email]', '$args[user_role]', '$args[registered_date]' )";
                         break;
+                    case 'options':
+                        $insert_query = "INSERT INTO swt_options ( option_key, option_value ) VALUES ( '$args[option_key]', '$args[option_value]' )";
+                        break;
                     default:
                         $insert_query = "INSERT INTO swt_posts ( post_title, post_excerpt, post_category, post_tags, post_image, post_stock, post_price, post_date ) VALUES ( '$args[post_title]', '$args[post_excerpt]', '$args[post_category]', '$args[post_tags]', '$args[post_image]', $args[post_stock], $args[post_price], $args[post_date] )";
                         break;

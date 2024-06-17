@@ -9,6 +9,8 @@ export default function Editor( { prefix, editorClose, newData } ) {
     const [ checkedTag, setCheckedTag ] = useState([])
     const [ title, setTitle ] = useState( '' )
     const [ excerpt, setExcerpt ] = useState( '' )
+    const [ price, setPrice ] = useState( 0 )
+    const [ stock, setStock ] = useState( 0 )
 
     // handle form submit
     const handleFormSubmit = ( event ) => {
@@ -16,8 +18,8 @@ export default function Editor( { prefix, editorClose, newData } ) {
         var postsParams = {
             'post_category' : checkedCategory.join(','),
             'post_tags' : checkedTag.join(','),
-            'post_stock' : 0,
-            'post_price' : 0
+            'post_stock' : stock,
+            'post_price' : price
         }
         var bodyParams = {}
         bodyParams = { 
@@ -78,7 +80,16 @@ export default function Editor( { prefix, editorClose, newData } ) {
                             <div className='editor-main'>
                                 <input type='text' placeholder='Title' name={ prefix + '_title' } id={ prefix + '_title' } onChange={( event ) => setTitle( event.target.value ) } />
                                 <textarea placeholder='Description' name={ prefix + '_excerpt' } id={ prefix + '_excerpt' } rows='15' onChange={( event ) => setExcerpt( event.target.value ) }></textarea>
-                                
+                                <div className='meta-wrapper'>
+                                    { ( prefix == 'post' ) && <p className='meta price-wrapper'>
+                                        <label htmlFor="price">{ 'Price :' }</label>
+                                        <input type="number" id="price" value={ price } onChange={( event ) => setPrice( event.target.value )}/>
+                                    </p> }
+                                    { ( prefix == 'post' ) && <p className='meta stock-wrapper'>
+                                        <label htmlFor='stock'>{ 'Stock :' }</label>
+                                        <input type="number" id="stock" value={ stock } onChange={( event ) => setStock( event.target.value )}/>
+                                    </p> }
+                                </div>
                             </div>
                             <div className='editor-sidebar'>
                                 <button className='editor-submit'>Publish</button>

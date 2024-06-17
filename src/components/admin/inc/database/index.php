@@ -27,6 +27,9 @@
             case 'user':
                 $table = 'swt_users';
                 break;
+            case 'options':
+                $table = 'swt_options';
+                break;
         endswitch;
         echo json_encode( $insert_query ? $database->get_table_data( $table ) : $arguments );
     else :
@@ -54,6 +57,11 @@
             if( array_key_exists( 'swt_users', $_GET ) ) :
                 $function_to_call = $_GET['swt_users'];
                 echo json_encode( $database->$function_to_call( 'swt_users' ) );
+            endif;
+
+            if( array_key_exists( 'swt_options', $_GET ) ) :
+                $function_to_call = $_GET['swt_options'];
+                echo json_encode( $database->$function_to_call( 'swt_options' ) );
             endif;
         endif;
     endif;

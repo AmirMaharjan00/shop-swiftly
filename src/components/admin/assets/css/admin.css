@@ -379,6 +379,13 @@
             height: 40px;
             margin-bottom: 20px;
             margin-top: 15px;
+            background-color: rgb(11, 189, 11);
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);
+            cursor: pointer;
         }
 
         #swt-admin-editor .sidebar-element {
@@ -565,4 +572,59 @@
             border-bottom: 1px solid black;
             text-align: center;
             padding: 5px 15px;
+        }
+
+        /*
+        ========================
+        META
+        ========================
+        */
+        #root .meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #root .meta input {
+            width: 3%;
+            border-color: #fff;
+            border-style: solid;
+            border-width: 0px 0px 1px 0px;
+            color: #fff
+        }
+
+        #root .meta label {
+            flex: 0 1 5%;
+            color: #fff;
+        }
+
+        /*
+        ===========================
+        SETTINGS PAGE
+        ===========================
+        */
+        #root .swt-admin-main .save-settings {
+            background-color: rgb(11, 189, 11);
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);
+            cursor: pointer;
+        }
+
+        #root .swt-admin-main .api-wrapper {
+            margin-bottom: 20px;
+            /* background: #5125d2; */
+            padding: 10px 0px;
+        }
+
+        #root .swt-admin-main .api-wrapper input {
+            padding: 10px;
+            width: 30%;
+            margin-top: 10px;
+            border-radius: 3px;
+            /* background: transparent; */
+            border: 1px solid black;
+            /* border-bottom: 1px solid white; */
         }
