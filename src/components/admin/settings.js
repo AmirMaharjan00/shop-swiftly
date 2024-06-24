@@ -80,7 +80,6 @@ const ApiDivStructure = ({ label, description, placeholder, value, setKey, setVa
             let filteredOptions = getOptions.filter( current => {
                 return current.option_key == KEYID
             } )
-            // console.log( filteredOptions[ filteredOptions.length - 1 ] )
             if( filteredOptions.length > 0 ) setApi( filteredOptions[ filteredOptions.length - 1 ].option_value )
         }
     }, [ getOptions ])

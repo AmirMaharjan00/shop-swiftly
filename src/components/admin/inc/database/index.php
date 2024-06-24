@@ -30,6 +30,9 @@
             case 'options':
                 $table = 'swt_options';
                 break;
+            case 'media':
+                $table = 'swt_media';
+                break;
         endswitch;
         echo json_encode( $insert_query ? $database->get_table_data( $table ) : $arguments );
     else :
@@ -62,6 +65,11 @@
             if( array_key_exists( 'swt_options', $_GET ) ) :
                 $function_to_call = $_GET['swt_options'];
                 echo json_encode( $database->$function_to_call( 'swt_options' ) );
+            endif;
+
+            if( array_key_exists( 'swt_media', $_GET ) ) :
+                $function_to_call = $_GET['swt_media'];
+                echo json_encode( $database->$function_to_call( 'swt_media' ) );
             endif;
         endif;
     endif;

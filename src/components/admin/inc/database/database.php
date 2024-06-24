@@ -105,7 +105,9 @@
                 "CREATE TABLE IF NOT EXISTS swt_media (
                     media_id INT(11) AUTO_INCREMENT PRIMARY KEY,
                     media_path LONGTEXT NOT NULL,
-                    media_date INT(11) NOT NULL
+                    media_name LONGTEXT NOT NULL,
+                    media_size int(11) NOT NULL,
+                    media_type VARCHAR(255) NOT NULL
                 )",
                 "CREATE TABLE IF NOT EXISTS swt_options (
                     option_id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -141,9 +143,6 @@
                     case 'page':
                         $insert_query = "INSERT INTO swt_pages ( page_title, page_excerpt, page_image, page_date ) VALUES ( '$args[page_title]', '$args[page_excerpt]', '$args[page_image]', $args[page_date] )";
                         break;
-                    case 'media':
-                        $insert_query = "INSERT INTO swt_media ( media_path, media_date ) VALUES ( '$args[media_path]', $args[media_date] )";
-                        break;
                     case 'category':
                         $insert_query = "INSERT INTO swt_category ( category_title, category_slug, category_date, category_excerpt ) VALUES ( '$args[category_title]', '$args[category_slug]', '$args[category_date]', '$args[category_excerpt]' )";
                         break;
@@ -155,6 +154,9 @@
                         break;
                     case 'options':
                         $insert_query = "INSERT INTO swt_options ( option_key, option_value ) VALUES ( '$args[option_key]', '$args[option_value]' )";
+                        break;
+                    case 'media':
+                        $insert_query = "INSERT INTO swt_media ( media_path, media_name, media_size, media_type ) VALUES ( '$args[media_path]', '$args[media_name]', '$args[media_size]', '$args[media_type]' )";
                         break;
                     default:
                         $insert_query = "INSERT INTO swt_posts ( post_title, post_excerpt, post_category, post_tags, post_image, post_stock, post_price, post_date ) VALUES ( '$args[post_title]', '$args[post_excerpt]', '$args[post_category]', '$args[post_tags]', '$args[post_image]', $args[post_stock], $args[post_price], $args[post_date] )";
