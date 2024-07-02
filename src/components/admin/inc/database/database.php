@@ -91,9 +91,9 @@
                     post_image VARCHAR(255) NOT NULL,
                     post_stock INT(11) NOT NULL,
                     post_price INT(11) NOT NULL,
-                    post_date BIGINT(20) NOT NULL,
-                    FOREIGN KEY (post_category) REFERENCES swt_category(category_id),
-                    FOREIGN KEY (post_tags) REFERENCES swt_tag(tag_id)
+                    post_date BIGINT(20) NOT NULL
+                    -- FOREIGN KEY (post_category) REFERENCES swt_category(category_id),
+                    -- FOREIGN KEY (post_tags) REFERENCES swt_tag(tag_id)
                 )",
                 "CREATE TABLE IF NOT EXISTS swt_pages (
                     page_id INT(11) AUTO_INCREMENT PRIMARY KEY,
