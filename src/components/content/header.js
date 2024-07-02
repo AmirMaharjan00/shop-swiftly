@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import './assets/css/main.css'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMagnifyingGlass, faSun, faMoon, faUserTie } from '@fortawesome/free-solid-svg-icons'
 
 export default function Header() {
     const [ getPages, setPages ] = useState([]);
+    const [ isSearchActive, setIsSearchActive ] = useState( false )
+    const [ isLightMode, setIsLightMode ] = useState( true )
+    const [ isLoginPopupActive, setIsLoginPopupActive ] = useState( false )
 
     useEffect(() => {
         fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_pages=get_table_data' )
@@ -27,9 +32,12 @@ export default function Header() {
                         }
                     </nav>
                     <div className='site-actions'>
-                        <button className='action-item'>Search</button>
-                        <button className='action-item'>Dark Mode</button>
-                        <button className='action-item'>login</button>
+                        <FontAwesomeIcon icon={ faMagnifyingGlass } className='site-action site-search' onClick={() => setIsSearchActive( ! isSearchActive ) }/>
+                        { isSearchActive && <form onSubmit="" className='header-search-form'>
+                            <input type="search" placeholder="Search..." />
+                        </form> }
+                        <FontAwesomeIcon icon={ isLightMode ? faSun : faMoon } className='site-action site-theme-mode' onClick={() => setIsLightMode( ! isLightMode ) }/>
+                        <FontAwesomeIcon icon={ faUserTie } className='site-action site-user' onClick={() => setIsLoginPopupActive( ! isLoginPopupActive ) }/>
                     </div>
                 </div>
             </div>
