@@ -7,6 +7,10 @@ export default function AdminLogin() {
     const [ formErrors, setFormErrors ] = useState({})
     const [ isSubmit, setIsSubmit ] = useState( false )
 
+    useEffect(() => {
+        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php' )
+    }, [])
+
     // on input field change
     const handleOnChange = ( event ) => {
         let name = event.target.name

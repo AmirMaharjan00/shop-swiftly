@@ -9,7 +9,7 @@
 */
     .container {
         --tms-gutter-x: 50px;
-        width: 100%;
+        width: 90%;
         padding-right: var(--tms-gutter-x, 25px);
         padding-left: var(--tms-gutter-x, 25px);
         margin-right: auto;
@@ -29,6 +29,27 @@
     #root .site-header .row {
         display: flex;
         justify-content: space-between;
+    }
+
+    #root .site-header .site-menu {
+        margin: 0;
+        padding: 0;
+        background: #000000;
+    }
+
+    #root .site-header .site-menu .nav-item a {
+        text-decoration: none;
+        color: #fff;
+        padding: 14px 16px;
+    }
+
+    #root .site-header .site-menu .nav-item.active a {
+        background: rgb(3, 172, 3);
+    }
+
+    #root .site-header .site-menu .nav-item a:hover {
+        background: rgb(3, 172, 3);
+        box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);
     }
 
     

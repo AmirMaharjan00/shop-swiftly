@@ -21,7 +21,8 @@ export default function Header() {
                     <nav className='site-menu'>
                         {
                             getPages && getPages.map(( current, index ) => {
-                                return( <span className='nav-item' key={ index }><Link>{ current['page_title'] }</Link></span> );
+                                let _thisClass = 'nav-item' + ( index === 0 ? ' active' : '' )
+                                return( <span className={ _thisClass } key={ index }><Link>{ current['page_title'] }</Link></span> );
                             })
                         }
                     </nav>
