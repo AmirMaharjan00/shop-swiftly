@@ -1,33 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import MediaUpload from './media-upload';
+import { json } from 'react-router-dom';
 const images = require.context('./assets/images', true);
 const IMAGELIST = images.keys().map(image => images(image));
 
 export default function Media () {
-    const [ files, setFiles ] = useState()
+    const [ files, setFiles ] = useState([])
+    const [ uploads, setUploads ] = useState([])
 
     useEffect(() => {
-        if( files === undefined ) return;
-        Object.entries( files ).map(([ index, media ]) => {
-            let  bodyParams = {
-                'media_path': '',
-                'media_name': media.name,
-                'media_size': media.size,
-                'media_type': media.type
-            }
-            var apiParameters = {
-                method: 'POST',
-                body: JSON.stringify({
-                    'params' : bodyParams,
-                    'post_type' : 'media'
-                })
-            }
-            fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', apiParameters )
-            .then(( result ) => result.json())
-            .then( ( data ) => { console.log( data ) } )
-        })
-        // console.log( files )
-    }, [ files ])
+        
+    }, [ uploads ])
     
     /**
      * Set the uplooaded files
@@ -35,7 +18,30 @@ export default function Media () {
      * @since 1.0.0
      */
     const handleFilesUpload = ( uploads ) => {
-        setFiles( uploads )
+        setUploads( uploads )
+    }
+
+    /**
+     * Form data
+     * 
+     * @since 1.0.0
+     */
+    const handleFormData = async ( event ) => {
+        event.preventDefault()
+        // "use server";
+        console.log( event )
+
+        // var apiParameters = {
+        //     method: 'POST',
+        //     body: JSON.stringify({
+        //         'params' : test,
+        //         'post_type' : 'upload'
+        //     }),
+        //     headers: { 'content-type': 'multipart/form-data' }
+        // }
+        // fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', apiParameters )
+        // .then(( result ) => result.json())
+        // .then( ( data ) => { console.log( data ) } )
     }
 
     return (
@@ -45,6 +51,7 @@ export default function Media () {
             </div>
             <MediaUpload 
                 onFilesSelect = { handleFilesUpload }
+                setFormData = { handleFormData }
             />
             <div className='media-collection-wrapper'>
                 {

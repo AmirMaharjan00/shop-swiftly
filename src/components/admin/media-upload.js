@@ -2,10 +2,10 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons'
 
-export default function MediaUpload ({ onFilesSelect }) {
+export default function MediaUpload ({ onFilesSelect, setFormData }) {
     return (
-        <form>
-            <input type="file" id="file-upload-handle" onChange={( event ) => onFilesSelect( event.target.files )} hidden multiple/>
+        <form encType='multipart/form-data' id="media-form" name='media-form' action={ setFormData }>
+            <input type="file" id="file-upload-handle" name="file-upload-handle" onChange={( event ) => onFilesSelect( event.target.files )} hidden multiple/>
             <label htmlFor="file-upload-handle">
                 <div className='upload-wrapper'>
                     <div className='overlay-wrapper'></div>
@@ -16,7 +16,9 @@ export default function MediaUpload ({ onFilesSelect }) {
                     <span className='description'>{ 'or Drag and Drop, Copy and Paste Files' }</span>
                 </div>
             </label>
-            <input type='submit'/>
+            {/* <input type='submit'/> */}
+            <button type='submit'>{ 'Submit' }</button>
         </form>
     );
 }
+ 
