@@ -189,24 +189,5 @@
                 return [];
             endif;
         }
-
-        /**
-         * upload all images in uploads folder
-         * 
-         * @since 1.0.0
-         */
-        public function upload( $image_name ) {
-            // return ;
-            return $_FILES['file-upload-handle'];
-            $target_path = dirname( dirname( __DIR__ ) ) . '/uploads/';
-            $image_path = $target_path . $image_name;
-            if( move_uploaded_file( $image_name, $image_path ) ) {
-                echo "File uploaded successfully!";  
-            } else{  
-                echo "Sorry, file not uploaded, please try again!";  
-            }
-        }
     }
-    // $test = new Database();
-    // $test->upload( 'hi' );
  endif;

@@ -553,6 +553,11 @@
             font-weight: bold;
         }
 
+        .swt-admin-main .sidebar-element.featured-image.isactive .element-body {
+            height: 140px;
+            border: 2px dashed #9d9d9d;
+            margin: 10px;
+        }
 
         /*
         =============================

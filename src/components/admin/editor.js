@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { json } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
 import Taxonomy from './taxonomy'
+import { MediaCollection } from './media'
 
 export default function Editor( { prefix, editorClose, newData } ) {
     const [ formInfo, setFormInfo ] = useState({})
@@ -11,6 +11,14 @@ export default function Editor( { prefix, editorClose, newData } ) {
     const [ excerpt, setExcerpt ] = useState( '' )
     const [ price, setPrice ] = useState( 0 )
     const [ stock, setStock ] = useState( 0 )
+    const [ files, setFiles ] = useState([])
+    const [ isMediaLibraryOpen, setIsMediaLibraryOpen ] = useState( false )
+
+    useEffect(() => {
+        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_media=get_table_data' )
+        .then(( result ) => result.json())
+        .then( ( data ) => { setFiles( data ) } )
+    }, [])
 
     // handle form submit
     const handleFormSubmit = ( event ) => {
@@ -110,7 +118,12 @@ export default function Editor( { prefix, editorClose, newData } ) {
                                         activeClass = { activeSidebarElement === 'tag' }
                                         updateActiveClass = { handleSidebarElementClick }
                                     /> }
-                                    <div className={'sidebar-element featured-image' + ( activeSidebarElement === 'featured-image' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'featured-image' ) ) }>Featured Image</div>
+                                    <div className={'sidebar-element featured-image' + ( activeSidebarElement === 'featured-image' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'featured-image' ) ) }>
+                                        <span className='element-head'>{ 'Featured Image' }</span>
+                                        <div className='element-body' onClick={() => setIsMediaLibraryOpen( ! isMediaLibraryOpen )}>
+                                            { isMediaLibraryOpen && <MediaCollection images={ files }/> }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
