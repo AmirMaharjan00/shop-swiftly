@@ -189,5 +189,37 @@
                 return [];
             endif;
         }
+
+        /**
+         * Uploads the images in uploads directory
+         * 
+         * @since 1.0.0
+         */
+        public function upload() {
+            if( count( $_FILES ) > 0 ) :
+                $target_path = dirname( dirname( dirname( __DIR__ ) ) ) . '/uploads/';
+                if( ! is_dir( $target_path ) ) mkdir( $target_path );
+                $file_keys = array_keys( $_FILES );
+                if( count( $file_keys ) > 0 ) :
+                    $uploads = [];
+                    foreach( $file_keys as $file_key ) :
+                        if( strpos( $file_key, 'images_' ) !== false ) :
+                            $uploads[] = $file_key;
+                        endif;
+                    endforeach;
+                    if( count( $uploads ) > 0 ) :
+                        foreach( $uploads as $image ) :
+                            $image_path = $target_path . basename( $_FILES[ $image ]['name']);
+                            if( move_uploaded_file( $_FILES[ $image ]['tmp_name'], $image_path ) ) {
+                                echo "File uploaded successfully!";  
+                            } else{  
+                                echo "Sorry, file not uploaded, please try again!";  
+                            }  
+                        endforeach;
+                    endif;
+                    return $_FILES;
+                endif;
+            endif;
+        }
     }
  endif;

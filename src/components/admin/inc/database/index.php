@@ -10,31 +10,32 @@
     if( $_SERVER['REQUEST_METHOD'] == 'POST' ) :
         $parameters = file_get_contents( 'php://input' );
         $arguments = json_decode( $parameters, true );
-        $insert_query = $database->insert_into_table( $arguments['post_type'], $arguments['params'] );
-        switch( $arguments['post_type'] ):
-            case 'post':
-                $table = 'swt_posts';
-                break;
-            case 'page':
-                $table = 'swt_pages';
-                break;
-            case 'category':
-                $table = 'swt_category';
-                break;
-            case 'tag':
-                $table = 'swt_tag';
-                break;
-            case 'user':
-                $table = 'swt_users';
-                break;
-            case 'options':
-                $table = 'swt_options';
-                break;
-            case 'media':
-                $table = 'swt_media';
-                break;
-        endswitch;
-        echo json_encode( $insert_query ? $database->get_table_data( $table ) : $arguments );
+        if( $_POST['post_type'] == 'media' ) :
+            $database->upload();
+        else:
+            $insert_query = $database->insert_into_table( $arguments['post_type'], $arguments['params'] );
+            switch( $arguments['post_type'] ):
+                case 'post':
+                    $table = 'swt_posts';
+                    break;
+                case 'page':
+                    $table = 'swt_pages';
+                    break;
+                case 'category':
+                    $table = 'swt_category';
+                    break;
+                case 'tag':
+                    $table = 'swt_tag';
+                    break;
+                case 'user':
+                    $table = 'swt_users';
+                    break;
+                case 'options':
+                    $table = 'swt_options';
+                    break;
+            endswitch;
+            echo json_encode( $insert_query ? $database->get_table_data( $table ) : $arguments );
+        endif;
     else :
         if( ! empty( $_GET ) && is_array( $_GET ) ) :
             if( array_key_exists( 'swt_posts', $_GET ) ) :
