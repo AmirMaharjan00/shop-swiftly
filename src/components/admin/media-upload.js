@@ -1,14 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileCirclePlus } from '@fortawesome/free-solid-svg-icons'
 
 export default function MediaUpload ({ onFilesSelect }) {
-    // const [ files, setFiles ] = useState([])
-
-    // useEffect(() => {
-    //     handleUpload()
-    // }, [ files ])
-
     const handleUpload = ( uploads ) => {
         const UPLOADS = [ ...uploads ]
         const FORMDATA = new FormData();

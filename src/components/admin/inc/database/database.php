@@ -196,9 +196,9 @@
          * @since 1.0.0
          */
         public function upload() {
+            $target_path = dirname( dirname( dirname( __DIR__ ) ) ) . '/uploads/';
+            if( ! is_dir( $target_path ) ) mkdir( $target_path );
             if( count( $_FILES ) > 0 ) :
-                $target_path = dirname( dirname( dirname( __DIR__ ) ) ) . '/uploads/';
-                if( ! is_dir( $target_path ) ) mkdir( $target_path );
                 $file_keys = array_keys( $_FILES );
                 if( count( $file_keys ) > 0 ) :
                     $uploads = [];

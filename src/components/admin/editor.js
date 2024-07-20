@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Taxonomy from './taxonomy'
 import { MediaCollection } from './media'
+import { getImages } from './functions'
 
 export default function Editor( { prefix, editorClose, newData } ) {
     const [ formInfo, setFormInfo ] = useState({})
@@ -11,14 +12,17 @@ export default function Editor( { prefix, editorClose, newData } ) {
     const [ excerpt, setExcerpt ] = useState( '' )
     const [ price, setPrice ] = useState( 0 )
     const [ stock, setStock ] = useState( 0 )
-    const [ files, setFiles ] = useState([])
+    const [ imageList, setImageList ] = useState([])
     const [ isMediaLibraryOpen, setIsMediaLibraryOpen ] = useState( false )
 
     useEffect(() => {
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_media=get_table_data' )
-        .then(( result ) => result.json())
-        .then( ( data ) => { setFiles( data ) } )
+        const images = getImages()
+        setImageList( images.keys().map(image => images(image)) )
     }, [])
+
+    useEffect(() => {
+        
+    })
 
     // handle form submit
     const handleFormSubmit = ( event ) => {
@@ -37,7 +41,7 @@ export default function Editor( { prefix, editorClose, newData } ) {
             [ prefix + '_date' ]: Date.now(),
             ...formInfo
         }
-        if( prefix == 'post' ) bodyParams = { ...postsParams, ...bodyParams }
+        if( prefix === 'post' ) bodyParams = { ...postsParams, ...bodyParams }
         var apiParameters = {
             method: 'POST',
             body: JSON.stringify({
@@ -89,11 +93,11 @@ export default function Editor( { prefix, editorClose, newData } ) {
                                 <input type='text' placeholder='Title' name={ prefix + '_title' } id={ prefix + '_title' } onChange={( event ) => setTitle( event.target.value ) } />
                                 <textarea placeholder='Description' name={ prefix + '_excerpt' } id={ prefix + '_excerpt' } rows='15' onChange={( event ) => setExcerpt( event.target.value ) }></textarea>
                                 <div className='meta-wrapper'>
-                                    { ( prefix == 'post' ) && <p className='meta price-wrapper'>
+                                    { ( prefix === 'post' ) && <p className='meta price-wrapper'>
                                         <label htmlFor="price">{ 'Price :' }</label>
                                         <input type="number" id="price" value={ price } onChange={( event ) => setPrice( event.target.value )}/>
                                     </p> }
-                                    { ( prefix == 'post' ) && <p className='meta stock-wrapper'>
+                                    { ( prefix === 'post' ) && <p className='meta stock-wrapper'>
                                         <label htmlFor='stock'>{ 'Stock :' }</label>
                                         <input type="number" id="stock" value={ stock } onChange={( event ) => setStock( event.target.value )}/>
                                     </p> }
@@ -102,14 +106,14 @@ export default function Editor( { prefix, editorClose, newData } ) {
                             <div className='editor-sidebar'>
                                 <button className='editor-submit'>Publish</button>
                                 <div className='sidebar-elements-wrap'>
-                                    { prefix == 'post' && <Taxonomy
+                                    { prefix === 'post' && <Taxonomy
                                         handleCheckbox = { handleCategoryCheckboxChange }
                                         placeholder = 'Add New Category'
                                         buttonLabel = 'Add Category'
                                         activeClass = { activeSidebarElement === 'category' }
                                         updateActiveClass = { handleSidebarElementClick }
                                     /> }
-                                    { prefix == 'post' && <Taxonomy
+                                    { prefix === 'post' && <Taxonomy
                                         handleCheckbox = { handleTagCheckboxChange }
                                         placeholder = 'Add New Tag'
                                         buttonLabel = 'Add Tag'
@@ -121,7 +125,11 @@ export default function Editor( { prefix, editorClose, newData } ) {
                                     <div className={'sidebar-element featured-image' + ( activeSidebarElement === 'featured-image' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'featured-image' ) ) }>
                                         <span className='element-head'>{ 'Featured Image' }</span>
                                         <div className='element-body' onClick={() => setIsMediaLibraryOpen( ! isMediaLibraryOpen )}>
-                                            { isMediaLibraryOpen && <MediaCollection images={ files }/> }
+                                                { isMediaLibraryOpen && 
+                                                    <div className='editor-media-wrapper'>
+                                                        <MediaCollection images={ imageList }/> 
+                                                    </div>
+                                                }
                                         </div>
                                     </div>
                                 </div>
