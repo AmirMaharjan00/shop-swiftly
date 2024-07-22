@@ -3,7 +3,7 @@ import Editor from './editor'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 
-export default function Pages ( { editorAddNew } ) {
+export default function Pages () {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
     const [ getPages, setPages ] = useState([]);
     const [ tempPages, setTempPages ] = useState([]);
@@ -31,9 +31,8 @@ export default function Pages ( { editorAddNew } ) {
     }
     
     // handle add new button click
-    const handleAddNewClick = ( event ) => {
-        setEditorIsActive( editorIsActive ? false : true )
-        editorAddNew()
+    const handleAddNewClick = () => {
+        setEditorIsActive( ! editorIsActive )
     }
 
     /**

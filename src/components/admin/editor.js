@@ -3,7 +3,7 @@ import Taxonomy from './taxonomy'
 import { MediaCollection } from './media'
 import { getImages } from './functions'
 
-export default function Editor( { prefix, editorClose, newData } ) {
+export default function Editor( { prefix, editorClose, newData, action } ) {
     const [ formInfo, setFormInfo ] = useState({})
     const [ activeSidebarElement, setActiveSidebarElement ] = useState( 'category' )
     const [ checkedCategory, setCheckedCategory ] = useState([])
@@ -19,10 +19,6 @@ export default function Editor( { prefix, editorClose, newData } ) {
         const images = getImages()
         setImageList( images.keys().map(image => images(image)) )
     }, [])
-
-    useEffect(() => {
-        
-    })
 
     // handle form submit
     const handleFormSubmit = ( event ) => {
@@ -84,6 +80,7 @@ export default function Editor( { prefix, editorClose, newData } ) {
 
     return (
         <>
+            <div className='editor-overlay'></div>
             <div className='swt-admin-editor' id='swt-admin-editor'>
                 <div className='editor-inner'>
                     <span className='editor-close' onClick={ () => { editorClose() } }>X</span>

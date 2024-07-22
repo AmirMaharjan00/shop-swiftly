@@ -19,6 +19,8 @@
             content: '';
             background: #000000a6;
             height: 100%;
+            top: 0;
+            left: 0;
         }
 
         /*========= SIDEBAR ===========*/
@@ -433,7 +435,7 @@
 
         #swt-admin-editor .sidebar-element.taxonomy .taxonomy-item {
             display: flex;
-            align-items: end;
+            align-items: flex-end;
             gap: 12px;
             margin-left: 10px;
             margin-bottom: 5px;
@@ -465,6 +467,14 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
         }
 
+        .swt-admin-main table.users-wrap .head-item.title,
+        .swt-admin-main table.users-wrap .body-item.title,
+        .swt-admin-main table.products-wrap .head-item.title,
+        .swt-admin-main table.products-wrap .body-item.title {
+            width: 300px;
+            text-align: left;
+        }
+        
         .swt-admin-main table.users-wrap .head-item,
         .swt-admin-main table.users-wrap .body-item,
         .swt-admin-main table.products-wrap .head-item,
@@ -565,28 +575,28 @@
         ACTIONS WRAPPER
         =============================
         */
-        #root .body-item.action-item .action-icon {
-            cursor: pointer;
+        #root .body-item.action-item .actions-wrapper {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
         }
 
-        #root .body-item.action-item {
-            position: relative;
-        }
-        #root .actions-wrapper {
-            position: absolute;
-            left: -20px;
-            top: -20px;
-            background-color: #5125d2;
+        #root .body-item.action-item .actions-wrapper .action {
+            padding: 4px 8px;;
+            cursor: pointer;
+            border: none;
             color: #fff;
-            box-shadow: 1px 1px 5px 3px #00000063;
+            border-radius: 3px;
         }
 
-        #root .actions-wrapper .action {
-            cursor: pointer;
-            list-style: none;
-            border-bottom: 1px solid black;
-            text-align: center;
-            padding: 5px 15px;
+        #root .body-item.action-item .actions-wrapper .action.edit {
+            background: rgb(2, 180, 2);
+            box-shadow: 0px 0px 5px 0px rgb(2, 180, 2);
+        }
+
+        #root .body-item.action-item .actions-wrapper .action.trash {
+            background: rgb(194, 3, 3);
+            box-shadow: 0px 0px 5px 0px rgb(194, 3, 3);
         }
 
         /*

@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import Editor from './editor'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 
-export default function Products ( { editorAddNew } ) {
+export default function Products () {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
     const [ getProducts, setProducts ] = useState([]);
     const [ tempProducts, setTempProducts ] = useState([]);
     const [ activeStatus, setActiveStatus ] = useState( 'all' )
-    const [ action, setAction ] = useState( null )
+    const [ editorAction, setEditorAction ] = useState( 'close' )
 
     useEffect(() => {
         if( getProducts.length <= 0 ) setProducts([])
         fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_posts=get_table_data' )
         .then(( result ) => result.json() )
-        .then( ( data ) => setProducts( (data == null) ? [] : data ))
+        .then( ( data ) => setProducts( (data === null) ? [] : data ))
     }, [])
 
     useEffect(() => {
@@ -27,16 +25,6 @@ export default function Products ( { editorAddNew } ) {
         {'label': 'draft'},
         {'label': 'trash'}
     ]
-    
-    // handle add new button click
-    const handleAddNewClick = ( event ) => {
-        setEditorIsActive( editorIsActive ? false : true )
-        editorAddNew()
-    }
-
-    const editorSetState = ( newData ) => {
-        setProducts( newData )
-    }
 
     /**
      * Filter the searched products and set the products to state
@@ -45,7 +33,7 @@ export default function Products ( { editorAddNew } ) {
      * @package Shop Swiftly
      */
     const updateProductsWithSearch = ( searchKey ) => {
-        if( searchKey == '' ) {
+        if( searchKey === '' ) {
             setTempProducts( getProducts )
             return
         }
@@ -53,21 +41,17 @@ export default function Products ( { editorAddNew } ) {
         setTempProducts( productTitles )
     }
 
-    /**
-     * Handler action button click
-     * 
-     * @since 1.0.0
-     */
-    const handlerActionClick = ( index ) => {
-        let state = ( index == action ) ? null : index
-        setAction( state )
-    }
-
     let currentTime = new Date().toLocaleString()
     return (
         <>
+            { editorIsActive && <Editor 
+                prefix = 'post'
+                editorClose = { setEditorIsActive }
+                newData = { setProducts }
+                action = { editorAction }
+            /> }
             <div className='swt-admin-pages admin-products'>
-                <button className='product-add' onClick={ handleAddNewClick }>Add New</button>
+                <button className='product-add' onClick={() => setEditorIsActive( ! editorIsActive ) }>Add New</button>
                 <div className='status-time-wrap'>
                     <div className='page-head'>
                         <h2 className='page-title'>Products Management</h2>
@@ -78,7 +62,7 @@ export default function Products ( { editorAddNew } ) {
                             {
                                 statusItems.map(( element, index ) => { 
                                     var _thisClass = 'status-item'
-                                    if( element.label == activeStatus ) _thisClass += ' active'
+                                    if( element.label === activeStatus ) _thisClass += ' active'
                                     return <span 
                                         key={ index }
                                         className={ _thisClass }
@@ -99,14 +83,14 @@ export default function Products ( { editorAddNew } ) {
                 <table className='products-wrap'>
                     <thead>
                         <tr className='products-element products-table-head'>
-                            <th className='head-item'>Sno</th>
-                            <th className='head-item'>Title</th>
-                            <th className='head-item'>Stock</th>
-                            <th className='head-item'>Price</th>
-                            <th className='head-item'>Category</th>
-                            <th className='head-item'>Tag</th>
-                            <th className='head-item'>Date</th>
-                            <th className='head-item'>Action</th>
+                            <th className='head-item'>{ 'Sno' }</th>
+                            <th className='head-item title'>{ 'Title' }</th>
+                            <th className='head-item'>{ 'Stock' }</th>
+                            <th className='head-item'>{ 'Price' }</th>
+                            <th className='head-item'>{ 'Category' }</th>
+                            <th className='head-item'>{ 'Tag' }</th>
+                            <th className='head-item'>{ 'Date' }</th>
+                            <th className='head-item'>{ 'Action' }</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -115,15 +99,17 @@ export default function Products ( { editorAddNew } ) {
                                     return(
                                         <tr className='products-element products-table-body' key={ index }>
                                             <td className='body-item'>{ index + 1 }</td>
-                                            <td className='body-item'>{ current['post_title'] }</td>
+                                            <td className='body-item title'>{ current['post_title'] }</td>
                                             <td className='body-item'>{ current['post_stock'] }</td>
                                             <td className='body-item'>{ 'Rs ' + current['post_price'] }</td>
                                             <td className='body-item'>{ current['post_category'] }</td>
                                             <td className='body-item'>{ current['post_tags'] }</td>
                                             <td className='body-item'>{ current['post_date'] }</td>
                                             <td className='body-item action-item'>
-                                                <span className="action-icon" onClick={() => handlerActionClick( index ) }><FontAwesomeIcon icon={ faEllipsisVertical } /></span>
-                                                { (index == action) && <Actions/> }
+                                                <div className='actions-wrapper'>
+                                                    <button className='action edit' onClick={() => setEditorIsActive( ! editorIsActive ) }>{ 'Edit' }</button>
+                                                    <button className='action trash'>{ 'Trash' }</button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ); 
@@ -133,24 +119,6 @@ export default function Products ( { editorAddNew } ) {
                     </tbody>
                 </table>
             </div>
-            { editorIsActive && <Editor 
-                prefix = 'post'
-                editorClose = { handleAddNewClick }
-                newData = { editorSetState }
-            /> }
         </>
     );
-}
-
-export const Actions = () => {
-    const ACTIONS = [ 'edit', 'trash' ]
-    return(
-        <ul className='actions-wrapper'>
-            {
-                ACTIONS.map( ( current, index ) => {
-                    return <li key={ index } className='action'>{ current.charAt(0).toUpperCase() + current.slice(1) }</li>
-                })
-            }
-        </ul>
-    )
 }

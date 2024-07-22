@@ -15,35 +15,25 @@ import Index from './components/content/index'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
-  const [ overlay, setOverlay ] = useState( false )
   const [ databaseExists, setDatabaseExists ] = useState( false )
 
-
-  // on Editor add new click 
-  const onEditorAddNewClick = ( event ) => {
-    setOverlay( overlay ? false : true )
-  }
-
   return (
-    <>
-      { overlay && <div className='editor-overlay'></div>}
-      <Router>
-        { databaseExists && <DatabaseForm /> }
-        { ! databaseExists && <AdminFormLinks forEditor={ onEditorAddNewClick } /> }
-      </Router>
-    </>  
+    <Router>
+      { databaseExists && <DatabaseForm /> }
+      { ! databaseExists && <AdminFormLinks /> }
+    </Router>
   );
 }
 
-const AdminFormLinks = ( { forEditor } ) => {
+const AdminFormLinks = () => {
   const [ allUsers, setAllUsers ] = useState([])
   return (
     <Routes>
       <Route exact path='/swt-admin' Component={ Admin }>
         <Route exact path='/swt-admin' Component={ Dashboard }/>
-        <Route exact path='/swt-admin/pages' element={ <Pages editorAddNew={ forEditor } /> }/>
+        <Route exact path='/swt-admin/pages' element={ <Pages /> }/>
         <Route exact path='/swt-admin/media' Component={ Media }/>
-        <Route exact path='/swt-admin/products' element={ <Products editorAddNew={ forEditor } /> }/>
+        <Route exact path='/swt-admin/products' element={ <Products /> }/>
         <Route exact path='/swt-admin/settings' Component={ Settings }/>
         <Route exact path='/swt-admin/users' element={ <Users registeredUsers={ allUsers }/> }/>
       </Route>
