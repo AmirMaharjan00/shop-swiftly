@@ -102,13 +102,6 @@
                     page_image VARCHAR(255) NOT NULL,
                     page_date BIGINT(18) NOT NULL
                 )",
-                "CREATE TABLE IF NOT EXISTS swt_media (
-                    media_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-                    media_path LONGTEXT NOT NULL,
-                    media_name LONGTEXT NOT NULL,
-                    media_size int(11) NOT NULL,
-                    media_type VARCHAR(255) NOT NULL
-                )",
                 "CREATE TABLE IF NOT EXISTS swt_options (
                     option_id INT(11) AUTO_INCREMENT PRIMARY KEY,
                     option_key LONGTEXT NOT NULL,
@@ -136,37 +129,33 @@
          * 
          * @since 1.0.0
          */
-        public function insert_into_table( $type = '', $args = [] ) {
-            if( $type && ! empty( $args ) && is_array( $args ) ) :
-                $insert_query = $insert_result = '';
-                switch( $type ) :
-                    case 'page':
-                        $insert_query = "INSERT INTO swt_pages ( page_title, page_excerpt, page_image, page_date ) VALUES ( '$args[page_title]', '$args[page_excerpt]', '$args[page_image]', $args[page_date] )";
-                        break;
-                    case 'category':
-                        $insert_query = "INSERT INTO swt_category ( category_title, category_slug, category_date, category_excerpt ) VALUES ( '$args[category_title]', '$args[category_slug]', '$args[category_date]', '$args[category_excerpt]' )";
-                        break;
-                    case 'tag':
-                        $insert_query = "INSERT INTO swt_tag ( tag_title, tag_slug, tag_date, tag_excerpt ) VALUES ( '$args[tag_title]', '$args[tag_slug]', '$args[tag_date]', '$args[tag_excerpt]' )";
-                        break;
-                    case 'user':
-                        $insert_query = "INSERT INTO swt_users ( user_name, user_password, user_email, user_role, registered_date ) VALUES ( '$args[user_name]', '$args[user_password]', '$args[user_email]', '$args[user_role]', '$args[registered_date]' )";
-                        break;
-                    case 'options':
-                        $insert_query = "INSERT INTO swt_options ( option_key, option_value ) VALUES ( '$args[option_key]', '$args[option_value]' )";
-                        break;
-                    case 'media':
-                        $insert_query = "INSERT INTO swt_media ( media_path, media_name, media_size, media_type ) VALUES ( '$args[media_path]', '$args[media_name]', '$args[media_size]', '$args[media_type]' )";
-                        break;
-                    default:
-                        $insert_query = "INSERT INTO swt_posts ( post_title, post_excerpt, post_category, post_tags, post_image, post_stock, post_price, post_date ) VALUES ( '$args[post_title]', '$args[post_excerpt]', '$args[post_category]', '$args[post_tags]', '$args[post_image]', $args[post_stock], $args[post_price], $args[post_date] )";
-                        break;
-                endswitch;
-                if( $insert_query ) :
-                    $insert_result = mysqli_query( $this->connection, $insert_query );
-                    if( ! $insert_result ) return [ 'result' => $insert_query ];
-                    return $insert_result;
-                endif;
+        public function insert_into_table() {
+            if( count( $_POST ) <= 0 ) return;
+            $insert_query = $insert_result = '';
+            switch( $_POST['post_type'] ) :
+                case 'page':
+                    $insert_query = "INSERT INTO swt_pages ( page_title, page_excerpt, page_image, page_date ) VALUES ( '$_POST[page_title]', '$_POST[page_excerpt]', '$_POST[page_image]', $_POST[page_date] )";
+                    break;
+                case 'category':
+                    $insert_query = "INSERT INTO swt_category ( category_title, category_slug, category_date, category_excerpt ) VALUES ( '$_POST[category_title]', '$_POST[category_slug]', '$_POST[category_date]', '$_POST[category_excerpt]' )";
+                    break;
+                case 'tag':
+                    $insert_query = "INSERT INTO swt_tag ( tag_title, tag_slug, tag_date, tag_excerpt ) VALUES ( '$_POST[tag_title]', '$_POST[tag_slug]', '$_POST[tag_date]', '$_POST[tag_excerpt]' )";
+                    break;
+                case 'user':
+                    $insert_query = "INSERT INTO swt_users ( user_name, user_password, user_email, user_role, registered_date ) VALUES ( '$_POST[user_name]', '$_POST[user_password]', '$_POST[user_email]', '$_POST[user_role]', '$_POST[registered_date]' )";
+                    break;
+                case 'options':
+                    $insert_query = "INSERT INTO swt_options ( option_key, option_value ) VALUES ( '$_POST[option_key]', '$_POST[option_value]' )";
+                    break;
+                default:
+                    $insert_query = "INSERT INTO swt_posts ( post_title, post_excerpt, post_category, post_tags, post_image, post_stock, post_price, post_date ) VALUES ( '$_POST[post_title]', '$_POST[post_excerpt]', '$_POST[post_category]', '$_POST[post_tags]', '$_POST[post_image]', $_POST[post_stock], $_POST[post_price], $_POST[post_date] )";
+                    break;
+            endswitch;
+            if( $insert_query ) :
+                $insert_result = mysqli_query( $this->connection, $insert_query );
+                if( ! $insert_result ) return [ 'result' => $insert_query ];
+                return $insert_result;
             endif;
         }
 

@@ -3,8 +3,7 @@ import Taxonomy from './taxonomy'
 import { MediaCollection } from './media'
 import { getImages } from './functions'
 
-export default function Editor( { prefix, editorClose, newData, action } ) {
-    const [ formInfo, setFormInfo ] = useState({})
+export default function Editor( { prefix, editorClose, updateNewData, action } ) {
     const [ activeSidebarElement, setActiveSidebarElement ] = useState( 'category' )
     const [ checkedCategory, setCheckedCategory ] = useState([])
     const [ checkedTag, setCheckedTag ] = useState([])
@@ -23,59 +22,25 @@ export default function Editor( { prefix, editorClose, newData, action } ) {
     // handle form submit
     const handleFormSubmit = ( event ) => {
         event.preventDefault()
-        var postsParams = {
-            'post_category' : checkedCategory.join(','),
-            'post_tags' : checkedTag.join(','),
-            'post_stock' : stock,
-            'post_price' : price
+        const FORMDATA = new FormData()
+        FORMDATA.append( prefix + '_title', title )
+        FORMDATA.append( prefix + '_excerpt', excerpt )
+        FORMDATA.append( prefix + '_image', '' )
+        FORMDATA.append( prefix + '_date', Date.now() )
+        FORMDATA.append( 'post_type', prefix )
+        if( prefix === 'post' ) {
+            FORMDATA.append( 'post_category', checkedCategory.join(',') )
+            FORMDATA.append( 'post_tags', checkedTag.join(',') )
+            FORMDATA.append( 'post_stock', stock )
+            FORMDATA.append( 'post_price', price )
         }
-        var bodyParams = {}
-        bodyParams = { 
-            [ prefix + '_title' ]: title,
-            [ prefix + '_excerpt' ]: excerpt,
-            [ prefix + '_image' ]: '',
-            [ prefix + '_date' ]: Date.now(),
-            ...formInfo
-        }
-        if( prefix === 'post' ) bodyParams = { ...postsParams, ...bodyParams }
-        var apiParameters = {
+        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
             method: 'POST',
-            body: JSON.stringify({
-                'params' : bodyParams,
-                'post_type' : prefix
-            })
-        }
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', apiParameters )
+            body: FORMDATA
+        })
         .then(( result ) => result.json())
-        .then( ( data ) => { updateRespectiveStates( data ) } )
-        let formValues = {
-            'post_title' : title,
-            'post_excerpt' : excerpt,
-            'category' : checkedCategory,
-            'tag' : checkedTag,
-        }
-        setFormInfo( formValues )
+        .then( ( data ) => { updateNewData( data ) } )
         editorClose()
-    }
-
-    const updateRespectiveStates = ( data ) => {
-        newData( data )
-        setFormInfo( data )
-    }
-    
-    // handle sidebar element click
-    const handleSidebarElementClick = ( element ) => {
-        setActiveSidebarElement( element )
-    }
-
-    // handle category checkbox change
-    const handleCategoryCheckboxChange = ( checked ) => {
-        setCheckedCategory( checked )
-    }
-
-    // handle tags checkbox change
-    const handleTagCheckboxChange = ( checked ) => {
-        setCheckedTag( checked )
     }
 
     return (
@@ -104,22 +69,22 @@ export default function Editor( { prefix, editorClose, newData, action } ) {
                                 <button className='editor-submit'>Publish</button>
                                 <div className='sidebar-elements-wrap'>
                                     { prefix === 'post' && <Taxonomy
-                                        handleCheckbox = { handleCategoryCheckboxChange }
+                                        handleCheckbox = { setCheckedCategory }
                                         placeholder = 'Add New Category'
                                         buttonLabel = 'Add Category'
                                         activeClass = { activeSidebarElement === 'category' }
-                                        updateActiveClass = { handleSidebarElementClick }
+                                        updateActiveClass = { setActiveSidebarElement }
                                     /> }
                                     { prefix === 'post' && <Taxonomy
-                                        handleCheckbox = { handleTagCheckboxChange }
+                                        handleCheckbox = { setCheckedTag }
                                         placeholder = 'Add New Tag'
                                         buttonLabel = 'Add Tag'
                                         label = 'Tag'
                                         type = 'tag'
                                         activeClass = { activeSidebarElement === 'tag' }
-                                        updateActiveClass = { handleSidebarElementClick }
+                                        updateActiveClass = { setActiveSidebarElement }
                                     /> }
-                                    <div className={'sidebar-element featured-image' + ( activeSidebarElement === 'featured-image' ? ' isactive': '' )} onClick={ () => ( handleSidebarElementClick( 'featured-image' ) ) }>
+                                    <div className={'sidebar-element featured-image' + ( activeSidebarElement === 'featured-image' ? ' isactive': '' )} onClick={ () => ( setActiveSidebarElement( 'featured-image' ) ) }>
                                         <span className='element-head'>{ 'Featured Image' }</span>
                                         <div className='element-body' onClick={() => setIsMediaLibraryOpen( ! isMediaLibraryOpen )}>
                                                 { isMediaLibraryOpen && 

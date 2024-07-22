@@ -47,7 +47,7 @@ export default function Products () {
             { editorIsActive && <Editor 
                 prefix = 'post'
                 editorClose = { setEditorIsActive }
-                newData = { setProducts }
+                updateNewData = { setProducts }
                 action = { editorAction }
             /> }
             <div className='swt-admin-pages admin-products'>

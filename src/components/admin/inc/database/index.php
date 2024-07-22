@@ -13,8 +13,8 @@
         if( $_POST['post_type'] == 'media' ) :
             $database->upload();
         else:
-            $insert_query = $database->insert_into_table( $arguments['post_type'], $arguments['params'] );
-            switch( $arguments['post_type'] ):
+            $insert_query = $database->insert_into_table();
+            switch( $_POST['post_type'] ):
                 case 'post':
                     $table = 'swt_posts';
                     break;
@@ -34,6 +34,7 @@
                     $table = 'swt_options';
                     break;
             endswitch;
+            // var_dump( $insert_query );
             echo json_encode( $insert_query ? $database->get_table_data( $table ) : $arguments );
         endif;
     else :

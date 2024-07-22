@@ -69,20 +69,16 @@ export default function Taxonomy( props ) {
      * @package Shop Swiftly
      */
     const handleInsertingIntoDatabase = ( newItem ) => {
-        var bodyParams = {
-            [ TYPE + '_title' ] : newItem.label,
-            [ TYPE + '_slug' ] : newItem.slug,
-            [ TYPE + '_date' ] : newItem.date,
-            [ TYPE + '_excerpt' ] : ''
-        }
-        let apiParameters = {
+        const FORMDATA = new FormData()
+        FORMDATA.append( TYPE + '_title', newItem.label )
+        FORMDATA.append( TYPE + '_slug', newItem.slug )
+        FORMDATA.append( TYPE + '_date', newItem.date )
+        FORMDATA.append( TYPE + '_excerpt', '' )
+        FORMDATA.append( 'post_type', TYPE )
+        fetch( API, {
             method: 'POST',
-            body: JSON.stringify({
-                'params' : bodyParams,
-                'post_type' : TYPE
-            })
-        }
-        fetch( API, apiParameters )
+            body: FORMDATA
+        })
         .then(( result ) => result.json())
         .then( ( data ) => { setList( TYPE == 'tag' ? [ ...data ] : [ ...DEFAULT, ...data ] ) } )
     }
@@ -104,6 +100,7 @@ export default function Taxonomy( props ) {
                     }
                 </div>
                 <button className={ 'add-new-taxonomy' } onClick={ handleAddingNewTaxonomy }>{ BUTTONLABEL }</button>
+                <input type="hidden" id={ "post_" + ( TYPE === 'category' ? 'category' : 'tags' ) } value={ checkedTaxonomy.join(',') }/>
             </div>
         </div>
     )
