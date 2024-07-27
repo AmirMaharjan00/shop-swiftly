@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import Editor from './editor'
+import { PostTypeDeletionPopup } from './functions'
 
 export default function Products () {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
     const [ getProducts, setProducts ] = useState([]);
     const [ tempProducts, setTempProducts ] = useState([]);
-    const [ activeStatus, setActiveStatus ] = useState( 'all' )
     const [ editorAction, setEditorAction ] = useState( 'close' )
+    const [ status, setStatus ] = useState( 'published' )
+    const [ currentPost, setCurrentPost ] = useState( null )
+    const [ deleteAction, setDeleteAction ] = useState( false )
 
     useEffect(() => {
         if( getProducts.length <= 0 ) setProducts([])
@@ -16,8 +19,28 @@ export default function Products () {
     }, [])
 
     useEffect(() => {
-        setTempProducts( getProducts )
-    }, [ getProducts ])
+        if( getProducts.length > 0 ) {
+            setTemporaryProducts()
+        }
+    }, [ getProducts, status ])
+
+    /**
+     * set temporary products
+     * 
+     * @since 1.0.0
+     */
+    const setTemporaryProducts = () => {
+        let filteredPages = []
+        if( status !== 'all' ) {
+            let _thisStatus = ( status === 'published' ) ? 'publish' : status
+            filteredPages = getProducts.filter(( current ) => {
+                return current.post_status === _thisStatus
+            })
+        } else {
+            filteredPages = getProducts
+        }
+        setTempProducts( filteredPages )
+    }
 
     let statusItems = [
         {'label': 'all'},
@@ -34,11 +57,21 @@ export default function Products () {
      */
     const updateProductsWithSearch = ( searchKey ) => {
         if( searchKey === '' ) {
-            setTempProducts( getProducts )
+            setTemporaryProducts()
             return
         }
         let productTitles = tempProducts.filter( current => { return current.post_title.toLowerCase().includes( searchKey.toLowerCase() ) } )
         setTempProducts( productTitles )
+    }
+
+    /**
+     * Set multiple states upon trash button click
+     * 
+     * @since 1.0.0
+     */
+    const handleTrashButtonClick = ( post ) => {
+        setDeleteAction( true )
+        setCurrentPost( post )
     }
 
     let currentTime = new Date().toLocaleString()
@@ -61,15 +94,15 @@ export default function Products () {
                         <nav className='status-list'>
                             {
                                 statusItems.map(( element, index ) => { 
+                                    const { label } = element
                                     var _thisClass = 'status-item'
-                                    if( element.label === activeStatus ) _thisClass += ' active'
+                                    if( label === status ) _thisClass += ' active'
                                     return <span 
                                         key={ index }
                                         className={ _thisClass }
-                                        onClick={() => setActiveStatus( element.label ) }
-                                        onKeyUp={() => setActiveStatus( element.label ) }
+                                        onClick={() => setStatus( label ) }
                                     >
-                                        { element.label.charAt(0).toUpperCase() + element.label.slice(1) }
+                                        { label.charAt(0).toUpperCase() + label.slice(1) }
                                     </span>
                                 })
                             }  
@@ -90,25 +123,29 @@ export default function Products () {
                             <th className='head-item'>{ 'Category' }</th>
                             <th className='head-item'>{ 'Tag' }</th>
                             <th className='head-item'>{ 'Date' }</th>
+                            { status === 'all' && <th className='head-item'>{ 'Status' }</th> }
                             <th className='head-item'>{ 'Action' }</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             ( tempProducts.length > 0 ) ? tempProducts.map(( current, index ) => {
+                                const { post_id: ID, post_title: title, post_stock: stock, post_price: price, post_category, category, post_tags: tags, post_date: date, post_status: postStatus } = current
+                                const THISSTATUS = ( postStatus === 'publish' ) ? 'published' : postStatus
                                     return(
                                         <tr className='products-element products-table-body' key={ index }>
                                             <td className='body-item'>{ index + 1 }</td>
-                                            <td className='body-item title'>{ current['post_title'] }</td>
-                                            <td className='body-item'>{ current['post_stock'] }</td>
-                                            <td className='body-item'>{ 'Rs ' + current['post_price'] }</td>
-                                            <td className='body-item'>{ current['post_category'] }</td>
-                                            <td className='body-item'>{ current['post_tags'] }</td>
-                                            <td className='body-item'>{ current['post_date'] }</td>
+                                            <td className='body-item title'>{ title }</td>
+                                            <td className='body-item'>{ stock }</td>
+                                            <td className='body-item'>{ 'Rs ' + price }</td>
+                                            <td className='body-item'>{ category }</td>
+                                            <td className='body-item'>{ tags }</td>
+                                            <td className='body-item'>{ date }</td>
+                                            { status === 'all' && <th className='body-item'>{ THISSTATUS.charAt(0).toUpperCase() + THISSTATUS.slice(1) }</th> }
                                             <td className='body-item action-item'>
                                                 <div className='actions-wrapper'>
                                                     <button className='action edit' onClick={() => setEditorIsActive( ! editorIsActive ) }>{ 'Edit' }</button>
-                                                    <button className='action trash'>{ 'Trash' }</button>
+                                                    <button className='action trash' onClick={() => handleTrashButtonClick( ID ) }>{ 'Trash' }</button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -119,6 +156,14 @@ export default function Products () {
                     </tbody>
                 </table>
             </div>
+            {
+                deleteAction && <PostTypeDeletionPopup 
+                    postType = 'post' 
+                    setDeleteAction = { setDeleteAction }
+                    post = { currentPost }
+                    setMainState = { setProducts }
+                />
+            }
         </>
     );
 }

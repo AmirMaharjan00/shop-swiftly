@@ -10,32 +10,35 @@
     if( $_SERVER['REQUEST_METHOD'] == 'POST' ) :
         $parameters = file_get_contents( 'php://input' );
         $arguments = json_decode( $parameters, true );
-        if( $_POST['post_type'] == 'media' ) :
+        if( array_key_exists( 'post_type', $_POST ) && $_POST['post_type'] == 'media' ) :
             $database->upload();
         else:
-            $insert_query = $database->insert_into_table();
-            switch( $_POST['post_type'] ):
-                case 'post':
-                    $table = 'swt_posts';
-                    break;
-                case 'page':
-                    $table = 'swt_pages';
-                    break;
-                case 'category':
-                    $table = 'swt_category';
-                    break;
-                case 'tag':
-                    $table = 'swt_tag';
-                    break;
-                case 'user':
-                    $table = 'swt_users';
-                    break;
-                case 'options':
-                    $table = 'swt_options';
-                    break;
-            endswitch;
-            // var_dump( $insert_query );
-            echo json_encode( $insert_query ? $database->get_table_data( $table ) : $arguments );
+            if( $_POST['action'] == 'insert' ) :
+                $insert_query = $database->insert_into_table();
+                switch( $_POST['post_type'] ):
+                    case 'post':
+                        $table = 'swt_posts';
+                        break;
+                    case 'page':
+                        $table = 'swt_pages';
+                        break;
+                    case 'category':
+                        $table = 'swt_category';
+                        break;
+                    case 'tag':
+                        $table = 'swt_tag';
+                        break;
+                    case 'user':
+                        $table = 'swt_users';
+                        break;
+                    case 'options':
+                        $table = 'swt_options';
+                        break;
+                endswitch;
+                echo json_encode( $insert_query ? $database->get_table_data( $table ) : $arguments );
+            elseif( $_POST['action'] == 'update' ):
+                echo json_encode( $database->update_table() );
+            endif;
         endif;
     else :
         if( ! empty( $_GET ) && is_array( $_GET ) ) :

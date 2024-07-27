@@ -23,10 +23,12 @@ export default function Editor( { prefix, editorClose, updateNewData, action } )
     const handleFormSubmit = ( event ) => {
         event.preventDefault()
         const FORMDATA = new FormData()
+        FORMDATA.append( 'action', 'insert' )
         FORMDATA.append( prefix + '_title', title )
         FORMDATA.append( prefix + '_excerpt', excerpt )
         FORMDATA.append( prefix + '_image', '' )
         FORMDATA.append( prefix + '_date', Date.now() )
+        FORMDATA.append( prefix + '_status', 'publish' )
         FORMDATA.append( 'post_type', prefix )
         if( prefix === 'post' ) {
             FORMDATA.append( 'post_category', checkedCategory.join(',') )

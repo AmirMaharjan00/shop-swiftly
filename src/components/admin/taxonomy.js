@@ -15,7 +15,7 @@ export default function Taxonomy( props ) {
     useEffect(() => {
         fetch( API )
         .then(( result ) => result.json())
-        .then( ( data ) => { setList( TYPE == 'tag' ? [ ...data ] : [ ...DEFAULT, ...data ] ) } )
+        .then( ( data ) => { setList( TYPE === 'tag' ? [ ...data ] : [ ...DEFAULT, ...data ] ) } )
     }, [])
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function Taxonomy( props ) {
         if( checked ) {
             setCheckecTaxonomuy([ ...checkedTaxonomy, value ])
         } else {
-            setCheckecTaxonomuy( checkedTaxonomy.filter( current => current != value ) )
+            setCheckecTaxonomuy( checkedTaxonomy.filter( current => current !== value ) )
         }
     }
 
@@ -57,7 +57,7 @@ export default function Taxonomy( props ) {
     const handleAddingNewTaxonomy = ( event ) => {
         event.preventDefault()
         event.stopPropagation()
-        if( searched == '' ) return
+        if( searched === '' ) return
         let newItem = { 'label': searched, 'slug': searched.toLowerCase(), 'date': Date.now() }
         handleInsertingIntoDatabase( newItem )
     }
@@ -70,6 +70,7 @@ export default function Taxonomy( props ) {
      */
     const handleInsertingIntoDatabase = ( newItem ) => {
         const FORMDATA = new FormData()
+        FORMDATA.append( 'action', 'insert' )
         FORMDATA.append( TYPE + '_title', newItem.label )
         FORMDATA.append( TYPE + '_slug', newItem.slug )
         FORMDATA.append( TYPE + '_date', newItem.date )
@@ -80,7 +81,7 @@ export default function Taxonomy( props ) {
             body: FORMDATA
         })
         .then(( result ) => result.json())
-        .then( ( data ) => { setList( TYPE == 'tag' ? [ ...data ] : [ ...DEFAULT, ...data ] ) } )
+        .then( ( data ) => { setList( TYPE === 'tag' ? [ ...data ] : [ ...DEFAULT, ...data ] ) } )
     }
 
     return (

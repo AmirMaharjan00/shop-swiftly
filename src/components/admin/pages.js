@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import Editor from './editor'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
+import { PostTypeDeletionPopup } from './functions'
 
 export default function Pages () {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
     const [ getPages, setPages ] = useState([]);
     const [ tempPages, setTempPages ] = useState([]);
+    const [ editorAction, setEditorAction ] = useState( 'close' )
+    const [ deleteAction, setDeleteAction ] = useState( false )
+    const [ currentPage, setCurrentPage ] = useState( null )
+    const [ status, setStatus ] = useState( 'published' )
 
     useEffect(() => {
         if( getPages.length <= 0 ) setPages( '' )
@@ -16,8 +19,28 @@ export default function Pages () {
     }, [])
 
     useEffect(() => {
-        setTempPages( getPages )
-    }, [ getPages ])
+        if( getPages.length > 0 ) {
+            setTemporaryProducts()
+        }
+    }, [ getPages, status ])
+
+    /**
+     * set temporary products
+     * 
+     * @since 1.0.0
+     */
+    const setTemporaryProducts = () => {
+        let filteredPages = []
+        if( status !== 'all' ) {
+            let _thisStatus = ( status === 'published' ) ? 'publish' : status
+            filteredPages = getPages.filter(( current ) => {
+                return current.page_status === _thisStatus
+            })
+        } else {
+            filteredPages = getPages
+        }
+        setTempPages( filteredPages )
+    }
 
     let statusItems = [
         {'label': 'all'},
@@ -25,10 +48,6 @@ export default function Pages () {
         {'label': 'draft'},
         {'label': 'trash'}
     ]
-
-    const editorSetState = ( newData ) => {
-        setPages( newData )
-    }
     
     // handle add new button click
     const handleAddNewClick = () => {
@@ -42,12 +61,31 @@ export default function Pages () {
      * @package Shop Swiftly
      */
     const updateProductsWithSearch = ( searchKey ) => {
-        if( searchKey == '' ) {
-            setTempPages( getPages )
+        if( searchKey === '' ) {
+            setTemporaryProducts()
             return
         }
         let productTitles = tempPages.filter( current => { return current.page_title.toLowerCase().includes( searchKey.toLowerCase() ) } )
         setTempPages( productTitles )
+    }
+
+    /**
+     * Set multiple states upon trash button click
+     * 
+     * @since 1.0.0
+     */
+    const handleTrashButtonClick = ( post ) => {
+        setDeleteAction( true )
+        setCurrentPage( post )
+    }
+
+    /**
+     * No pages found jsx
+     * 
+     * @since 1.0.0
+     */
+    const noPagesFound = () => {
+        return <tr className='products-element products-table-body no-products'><td className='body-item' colSpan={8}>No Pages</td></tr> 
     }
 
     let currentTime = new Date().toLocaleString()
@@ -64,9 +102,10 @@ export default function Pages () {
                         <nav className='status-list'>
                             {
                                 statusItems.map(( element, index ) => { 
+                                    const { label } = element
                                     var _thisClass = 'status-item'
-                                    if( index == 0 ) _thisClass += ' active';
-                                    return <span key={ index } className={ _thisClass }>{ element.label.charAt(0).toUpperCase() + element.label.slice(1) }</span>
+                                    if( label == status ) _thisClass += ' active';
+                                    return <span key={ index } className={ _thisClass } onClick={() => setStatus( label )}>{ label.charAt(0).toUpperCase() + label.slice(1) }</span>
                                 })
                             }  
                         </nav>
@@ -82,22 +121,31 @@ export default function Pages () {
                             <th className='head-item'>Sno</th>
                             <th className='head-item'>Title</th>
                             <th className='head-item'>Date</th>
+                            { status === 'all' && <th className='head-item'>Status</th> }
                             <th className='head-item'>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             ( tempPages.length > 0 ) ? tempPages.map(( current, index ) => {
+                                    const { page_id: ID, page_title: pageTitle, page_date: pageDate, page_status: pageStatus } = current
+                                    const THISSTATUS = ( pageStatus === 'publish' ) ? 'published' : pageStatus
                                     return(
                                         <tr className='products-element products-table-body' key={ index }>
                                             <td className='body-item'>{ index + 1 }</td>
-                                            <td className='body-item'>{ current['page_title'] }</td>
-                                            <td className='body-item'>{ current['page_date'] }</td>
-                                            <td className='body-item'><FontAwesomeIcon icon={ faEllipsisVertical } /></td>
+                                            <td className='body-item'>{ pageTitle }</td>
+                                            <td className='body-item'>{ pageDate }</td>
+                                            { status === 'all' && <th className='body-item'>{ THISSTATUS.charAt(0).toUpperCase() + THISSTATUS.slice(1) }</th> }
+                                            <td className='body-item action-item'>
+                                                <div className='actions-wrapper'>
+                                                    <button className='action edit' onClick={() => setEditorIsActive( ! editorIsActive ) }>{ 'Edit' }</button>
+                                                    <button className='action trash' onClick={() => handleTrashButtonClick( ID ) }>{ 'Trash' }</button>
+                                                </div>
+                                            </td>
                                         </tr>
                                     ); 
                                 })
-                            : <tr className='products-element products-table-body no-products'><td className='body-item' colSpan={8}>No Pages</td></tr> 
+                            : noPagesFound()
                         }
                     </tbody>
                 </table>
@@ -105,8 +153,17 @@ export default function Pages () {
             { editorIsActive && <Editor 
                 prefix = 'page'
                 editorClose = { handleAddNewClick }
-                newData = { editorSetState }
+                updateNewData = { setPages }
+                action = { editorAction }
             /> }
+            {
+                deleteAction && <PostTypeDeletionPopup 
+                    postType = 'page' 
+                    setDeleteAction = { setDeleteAction }
+                    post = { currentPage }
+                    setMainState = { setPages }
+                />
+            }
         </>
     );
 }

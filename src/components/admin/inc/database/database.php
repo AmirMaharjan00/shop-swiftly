@@ -91,7 +91,8 @@
                     post_image VARCHAR(255) NOT NULL,
                     post_stock INT(11) NOT NULL,
                     post_price INT(11) NOT NULL,
-                    post_date BIGINT(20) NOT NULL
+                    post_date BIGINT(20) NOT NULL,
+                    post_status VARCHAR(255) NOT NULL DEFAULT 'draft'
                     -- FOREIGN KEY (post_category) REFERENCES swt_category(category_id),
                     -- FOREIGN KEY (post_tags) REFERENCES swt_tag(tag_id)
                 )",
@@ -100,7 +101,8 @@
                     page_title VARCHAR(255) NOT NULL,
                     page_excerpt LONGTEXT NOT NULL,
                     page_image VARCHAR(255) NOT NULL,
-                    page_date BIGINT(18) NOT NULL
+                    page_date BIGINT(18) NOT NULL,
+                    page_status VARCHAR(255) NOT NULL DEFAULT 'draft'
                 )",
                 "CREATE TABLE IF NOT EXISTS swt_options (
                     option_id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -134,7 +136,7 @@
             $insert_query = $insert_result = '';
             switch( $_POST['post_type'] ) :
                 case 'page':
-                    $insert_query = "INSERT INTO swt_pages ( page_title, page_excerpt, page_image, page_date ) VALUES ( '$_POST[page_title]', '$_POST[page_excerpt]', '$_POST[page_image]', $_POST[page_date] )";
+                    $insert_query = "INSERT INTO swt_pages ( page_title, page_excerpt, page_image, page_date, page_status ) VALUES ( '$_POST[page_title]', '$_POST[page_excerpt]', '$_POST[page_image]', '$_POST[page_date]', '$_POST[page_status]' )";
                     break;
                 case 'category':
                     $insert_query = "INSERT INTO swt_category ( category_title, category_slug, category_date, category_excerpt ) VALUES ( '$_POST[category_title]', '$_POST[category_slug]', '$_POST[category_date]', '$_POST[category_excerpt]' )";
@@ -149,7 +151,7 @@
                     $insert_query = "INSERT INTO swt_options ( option_key, option_value ) VALUES ( '$_POST[option_key]', '$_POST[option_value]' )";
                     break;
                 default:
-                    $insert_query = "INSERT INTO swt_posts ( post_title, post_excerpt, post_category, post_tags, post_image, post_stock, post_price, post_date ) VALUES ( '$_POST[post_title]', '$_POST[post_excerpt]', '$_POST[post_category]', '$_POST[post_tags]', '$_POST[post_image]', $_POST[post_stock], $_POST[post_price], $_POST[post_date] )";
+                    $insert_query = "INSERT INTO swt_posts ( post_title, post_excerpt, post_category, post_tags, post_image, post_stock, post_price, post_date, post_status ) VALUES ( '$_POST[post_title]', '$_POST[post_excerpt]', '$_POST[post_category]', '$_POST[post_tags]', '$_POST[post_image]', '$_POST[post_stock]', '$_POST[post_price]', '$_POST[post_date]', '$_POST[post_status]' )";
                     break;
             endswitch;
             if( $insert_query ) :
@@ -209,6 +211,55 @@
                     return $_FILES;
                 endif;
             endif;
+        }
+
+        /**
+         * Function to update table
+         * 
+         * @since 1.0.0
+         */
+        public function update_table() {
+            if( count( $_POST ) > 0 ) :
+                $post = $_POST['post'];
+                $table_identity = $_POST['table_identity'];
+                $table_name = $this->get_table_name( $table_identity );
+                $status = $table_identity . '_status';
+                $id_attr = $table_identity . '_id';
+                $update_query = "UPDATE $table_name SET $status='trash' WHERE $id_attr=$post";
+                $update_result = mysqli_query( $this->connection, $update_query );
+                if( ! $update_result ) return [ 'result' => $update_query ];
+                return $this->get_table_data( $table_name );
+            endif;
+        }
+
+        /**
+         * Get table name
+         * 
+         * @since 1.0.0
+         */
+        public function get_table_name( $case ) {
+            if( ! $case ) return;
+            switch( $case ):
+                case 'post':
+                    $table = 'swt_posts';
+                    break;
+                case 'page':
+                    $table = 'swt_pages';
+                    break;
+                case 'category':
+                    $table = 'swt_category';
+                    break;
+                case 'tag':
+                    $table = 'swt_tag';
+                    break;
+                case 'user':
+                    $table = 'swt_users';
+                    break;
+                case 'options':
+                    $table = 'swt_options';
+                    break;
+            endswitch;
+            return $table;
         }
     }
  endif;
