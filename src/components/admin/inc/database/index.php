@@ -14,30 +14,11 @@
             $database->upload();
         else:
             if( $_POST['action'] == 'insert' ) :
-                $insert_query = $database->insert_into_table();
-                switch( $_POST['post_type'] ):
-                    case 'post':
-                        $table = 'swt_posts';
-                        break;
-                    case 'page':
-                        $table = 'swt_pages';
-                        break;
-                    case 'category':
-                        $table = 'swt_category';
-                        break;
-                    case 'tag':
-                        $table = 'swt_tag';
-                        break;
-                    case 'user':
-                        $table = 'swt_users';
-                        break;
-                    case 'options':
-                        $table = 'swt_options';
-                        break;
-                endswitch;
-                echo json_encode( $insert_query ? $database->get_table_data( $table ) : $arguments );
-            elseif( $_POST['action'] == 'update' ):
+                echo json_encode( $database->insert_into_table() );
+            elseif( $_POST['action'] === 'update' ):
                 echo json_encode( $database->update_table() );
+            elseif( $_POST['action'] === 'select' ):
+                echo json_encode( $database->get_table_data() );
             endif;
         endif;
     else :

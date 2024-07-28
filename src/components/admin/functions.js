@@ -33,7 +33,8 @@ export function elementOutsideClick( event ) {
  * @since 1.0.0
  */
 export const PostTypeDeletionPopup = ( props ) => {
-    const { postType, post, setDeleteAction, setMainState } = props
+    const { postType, post, setDeleteAction, setMainState, postDetails } = props
+    console.log( postDetails )
 
     /**
      * trash the post function
@@ -45,6 +46,16 @@ export const PostTypeDeletionPopup = ( props ) => {
         FORMDATA.append( 'action', 'update' )
         FORMDATA.append( 'post', post )
         FORMDATA.append( 'table_identity', postType )
+        FORMDATA.append( postType + '_title', postDetails[ postType + '_title' ] )
+        FORMDATA.append( postType + '_excerpt', postDetails[ postType + '_excerpt' ] )
+        FORMDATA.append( postType + '_status', 'trash' )
+        if( postType === 'post' ) {
+            FORMDATA.append( 'post_image', postDetails[ 'post_image' ] )
+            FORMDATA.append( 'post_category', postDetails[ 'post_category' ] )
+            FORMDATA.append( 'post_tags', postDetails[ 'post_tags' ] )
+            FORMDATA.append( 'post_stock', postDetails[ 'post_stock' ] )
+            FORMDATA.append( 'post_price', postDetails[ 'post_price' ] )
+        }
         fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
             method : 'POST',
             body: FORMDATA

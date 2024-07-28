@@ -157,7 +157,7 @@
             if( $insert_query ) :
                 $insert_result = mysqli_query( $this->connection, $insert_query );
                 if( ! $insert_result ) return [ 'result' => $insert_query ];
-                return $insert_result;
+                return $this->get_table_data();
             endif;
         }
 
@@ -167,8 +167,16 @@
          * @since 1.0.0
          * @param TableName
          */
-        public function get_table_data( $table_name ) {
-            $select_query = "SELECT * FROM $table_name";
+        public function get_table_data( $all = false ) {
+            $post = isset( $_POST['post'] ) ? $_POST['post'] : false;
+            $table_identity = $_POST['table_identity'];
+            $id_attr = $table_identity . '_id';
+            $table_name = $this->get_table_name( $table_identity );
+            if( $post && ! $all ) :
+                $select_query = "SELECT * FROM $table_name WHERE $id_attr=$post";
+            else:
+                $select_query = "SELECT * FROM $table_name";
+            endif;
             $select_result = mysqli_query( $this->connection, $select_query );
             if( ! $select_result ) return [ 'result' => $select_result ];
             if( $select_result->num_rows > 0 ) :
@@ -223,12 +231,16 @@
                 $post = $_POST['post'];
                 $table_identity = $_POST['table_identity'];
                 $table_name = $this->get_table_name( $table_identity );
-                $status = $table_identity . '_status';
-                $id_attr = $table_identity . '_id';
-                $update_query = "UPDATE $table_name SET $status='trash' WHERE $id_attr=$post";
+                switch( $table_identity ) {
+                    case 'page':
+                        $update_query = "UPDATE $table_name SET page_title='$_POST[page_title]', page_excerpt='$_POST[page_excerpt]', page_status='$_POST[page_status]' WHERE page_id=$post";
+                        break;
+                    default:
+                        $update_query = "UPDATE $table_name SET post_title='$_POST[post_title]', post_excerpt='$_POST[post_excerpt]', post_category='$_POST[post_category]', post_tags='$_POST[post_tags]', post_image='$_POST[post_image]', post_stock=$_POST[post_stock], post_price=$_POST[post_price], post_status='$_POST[post_status]' WHERE post_id=$post";
+                }
                 $update_result = mysqli_query( $this->connection, $update_query );
                 if( ! $update_result ) return [ 'result' => $update_query ];
-                return $this->get_table_data( $table_name );
+                return $this->get_table_data( true );
             endif;
         }
 

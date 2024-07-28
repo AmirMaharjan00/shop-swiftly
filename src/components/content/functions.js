@@ -10,7 +10,7 @@ export const GetTaxonomy = () => {
     }, [])
 
     useEffect(() => {
-        console.log( categories )
+        // console.log( categories )
     }, [ categories ])
 
     return(

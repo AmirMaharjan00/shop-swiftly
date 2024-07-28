@@ -6,14 +6,21 @@ export default function Products () {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
     const [ getProducts, setProducts ] = useState([]);
     const [ tempProducts, setTempProducts ] = useState([]);
-    const [ editorAction, setEditorAction ] = useState( 'close' )
+    const [ editorAction, setEditorAction ] = useState( 'insert' )
     const [ status, setStatus ] = useState( 'published' )
-    const [ currentPost, setCurrentPost ] = useState( null )
+    const [ postId, setPostId ] = useState( null )
     const [ deleteAction, setDeleteAction ] = useState( false )
+    const [ currentIndex, setCurrentIndex ] = useState( null )
 
     useEffect(() => {
         if( getProducts.length <= 0 ) setProducts([])
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_posts=get_table_data' )
+        const FORMDATA = new FormData()
+        FORMDATA.append( 'action', 'select' )
+        FORMDATA.append( 'table_identity', 'post' )
+        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
+            method: 'POST',
+            body: FORMDATA 
+        })
         .then(( result ) => result.json() )
         .then( ( data ) => setProducts( (data === null) ? [] : data ))
     }, [])
@@ -69,10 +76,21 @@ export default function Products () {
      * 
      * @since 1.0.0
      */
-    const handleTrashButtonClick = ( post ) => {
+    const handleTrashButtonClick = ( post, index ) => {
         setDeleteAction( true )
-        setCurrentPost( post )
+        setPostId( post )
+        setCurrentIndex( index )
     }
+
+    /**
+     * Handle editor Actions
+     * 
+     * @since 1.0.0
+     */
+    const handleEditorActions = ( action, postId ) => {
+        setEditorAction( action )
+        setEditorIsActive( ! editorIsActive )
+        setPostId( ( action === 'insert' ) ? '' : postId )}
 
     let currentTime = new Date().toLocaleString()
     return (
@@ -82,9 +100,10 @@ export default function Products () {
                 editorClose = { setEditorIsActive }
                 updateNewData = { setProducts }
                 action = { editorAction }
+                post = { postId }
             /> }
             <div className='swt-admin-pages admin-products'>
-                <button className='product-add' onClick={() => setEditorIsActive( ! editorIsActive ) }>Add New</button>
+                <button className='product-add' onClick={() => handleEditorActions( 'insert' ) }>Add New</button>
                 <div className='status-time-wrap'>
                     <div className='page-head'>
                         <h2 className='page-title'>Products Management</h2>
@@ -130,7 +149,7 @@ export default function Products () {
                     <tbody>
                         {
                             ( tempProducts.length > 0 ) ? tempProducts.map(( current, index ) => {
-                                const { post_id: ID, post_title: title, post_stock: stock, post_price: price, post_category, category, post_tags: tags, post_date: date, post_status: postStatus } = current
+                                const { post_id: ID, post_title: title, post_stock: stock, post_price: price, post_category: category, post_tags: tags, post_date: date, post_status: postStatus } = current
                                 const THISSTATUS = ( postStatus === 'publish' ) ? 'published' : postStatus
                                     return(
                                         <tr className='products-element products-table-body' key={ index }>
@@ -144,8 +163,8 @@ export default function Products () {
                                             { status === 'all' && <th className='body-item'>{ THISSTATUS.charAt(0).toUpperCase() + THISSTATUS.slice(1) }</th> }
                                             <td className='body-item action-item'>
                                                 <div className='actions-wrapper'>
-                                                    <button className='action edit' onClick={() => setEditorIsActive( ! editorIsActive ) }>{ 'Edit' }</button>
-                                                    <button className='action trash' onClick={() => handleTrashButtonClick( ID ) }>{ 'Trash' }</button>
+                                                    <button className='action edit' onClick={() => handleEditorActions( 'update', ID ) }>{ 'Edit' }</button>
+                                                    <button className='action trash' onClick={() => handleTrashButtonClick( ID, index ) }>{ 'Trash' }</button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -160,8 +179,9 @@ export default function Products () {
                 deleteAction && <PostTypeDeletionPopup 
                     postType = 'post' 
                     setDeleteAction = { setDeleteAction }
-                    post = { currentPost }
+                    post = { postId }
                     setMainState = { setProducts }
+                    postDetails = { tempProducts[currentIndex] }
                 />
             }
         </>

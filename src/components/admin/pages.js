@@ -13,7 +13,13 @@ export default function Pages () {
 
     useEffect(() => {
         if( getPages.length <= 0 ) setPages( '' )
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_pages=get_table_data' )
+        const FORMDATA = new FormData()
+        FORMDATA.append( 'action', 'select' )
+        FORMDATA.append( 'table_identity', 'page' )
+        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
+            method: 'POST',
+            body: FORMDATA 
+        })
         .then(( result ) => result.json())
         .then( ( data ) => { setPages( data ) } )
     }, [])
@@ -80,6 +86,17 @@ export default function Pages () {
     }
 
     /**
+     * Handle editor Actions
+     * 
+     * @since 1.0.0
+     */
+    const handleEditorActions = ( action, pageId ) => {
+        setEditorAction( action )
+        setEditorIsActive( ! editorIsActive )
+        if( action === 'update' ) setCurrentPage( pageId )
+    }
+
+    /**
      * No pages found jsx
      * 
      * @since 1.0.0
@@ -92,7 +109,7 @@ export default function Pages () {
     return (
         <>
             <div className='swt-admin-pages admin-products'>
-                <button className='product-add' onClick={ handleAddNewClick }>Add New</button>
+                <button className='product-add' onClick={() => handleEditorActions( 'insert' ) }>Add New</button>
                 <div className='status-time-wrap'>
                     <div className='page-head'>
                         <h2 className='page-title'>Pages Management</h2>
@@ -138,7 +155,7 @@ export default function Pages () {
                                             { status === 'all' && <th className='body-item'>{ THISSTATUS.charAt(0).toUpperCase() + THISSTATUS.slice(1) }</th> }
                                             <td className='body-item action-item'>
                                                 <div className='actions-wrapper'>
-                                                    <button className='action edit' onClick={() => setEditorIsActive( ! editorIsActive ) }>{ 'Edit' }</button>
+                                                    <button className='action edit' onClick={() => handleEditorActions( 'update', ID ) }>{ 'Edit' }</button>
                                                     <button className='action trash' onClick={() => handleTrashButtonClick( ID ) }>{ 'Trash' }</button>
                                                 </div>
                                             </td>
@@ -155,6 +172,7 @@ export default function Pages () {
                 editorClose = { handleAddNewClick }
                 updateNewData = { setPages }
                 action = { editorAction }
+                post = { currentPage }
             /> }
             {
                 deleteAction && <PostTypeDeletionPopup 

@@ -47,7 +47,7 @@ export default function Settings () {
             }
             fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', apiParameters )
             .then(( result ) => result.json())
-            .then( ( data ) => { console.log( data ) } )
+            // .then( ( data ) => { console.log( data ) } )
         } )
     }
 
