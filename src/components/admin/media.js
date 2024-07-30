@@ -38,5 +38,5 @@ export const MediaCollection = ({ setImage }) => {
 }
 
 MediaCollection.defaultProps = {
-    images: []
+    setImage: function(){}
 }
