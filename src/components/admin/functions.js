@@ -48,6 +48,7 @@ export const PostTypeDeletionPopup = ( props ) => {
         FORMDATA.append( 'table_identity', postType )
         FORMDATA.append( postType + '_title', postDetails[ postType + '_title' ] )
         FORMDATA.append( postType + '_excerpt', postDetails[ postType + '_excerpt' ] )
+        FORMDATA.append( postType + '_image', postDetails[ postType + '_image' ] )
         FORMDATA.append( postType + '_status', 'trash' )
         if( postType === 'post' ) {
             FORMDATA.append( 'post_image', postDetails[ 'post_image' ] )
@@ -67,7 +68,6 @@ export const PostTypeDeletionPopup = ( props ) => {
 
     return (
         <div className="delete-popup-wrapper">
-            {/* <div className='delete-popup-overlay'></div> */}
             <div className='delete-popup-content'>
                 <h2 className="title">{ 'Are you sure you want to delete this ' + postType + ' ?' }</h2>
                 <div className="delete-action-wrapper">

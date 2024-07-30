@@ -10,6 +10,7 @@ export default function Pages () {
     const [ deleteAction, setDeleteAction ] = useState( false )
     const [ currentPage, setCurrentPage ] = useState( null )
     const [ status, setStatus ] = useState( 'published' )
+    const [ postId, setPostId ] = useState( null )
 
     useEffect(() => {
         if( getPages.length <= 0 ) setPages( '' )
@@ -75,9 +76,10 @@ export default function Pages () {
      * 
      * @since 1.0.0
      */
-    const handleTrashButtonClick = ( post ) => {
+    const handleTrashButtonClick = ( post, index ) => {
         setDeleteAction( true )
-        setCurrentPage( post )
+        setCurrentPage( index )
+        setPostId( post )
     }
 
     /**
@@ -88,7 +90,7 @@ export default function Pages () {
     const handleEditorActions = ( action, pageId ) => {
         setEditorAction( action )
         setEditorIsActive( ! editorIsActive )
-        if( action === 'update' ) setCurrentPage( pageId )
+        if( action === 'update' ) setPostId( pageId )
     }
 
     /**
@@ -151,7 +153,7 @@ export default function Pages () {
                                             <td className='body-item action-item'>
                                                 <div className='actions-wrapper'>
                                                     <button className='action edit' onClick={() => handleEditorActions( 'update', ID ) }>{ 'Edit' }</button>
-                                                    <button className='action trash' onClick={() => handleTrashButtonClick( ID ) }>{ 'Trash' }</button>
+                                                    <button className='action trash' onClick={() => handleTrashButtonClick( ID, index ) }>{ 'Trash' }</button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -167,14 +169,15 @@ export default function Pages () {
                 editorClose = { setEditorIsActive }
                 updateNewData = { setPages }
                 action = { editorAction }
-                post = { currentPage }
+                post = { postId }
             /> }
             {
                 deleteAction && <PostTypeDeletionPopup 
                     postType = 'page' 
                     setDeleteAction = { setDeleteAction }
-                    post = { currentPage }
                     setMainState = { setPages }
+                    post = { postId }
+                    postDetails = { tempPages[currentPage] }
                 />
             }
         </>
