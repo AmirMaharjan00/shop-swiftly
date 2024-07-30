@@ -54,11 +54,6 @@ export default function Pages () {
         {'label': 'draft'},
         {'label': 'trash'}
     ]
-    
-    // handle add new button click
-    const handleAddNewClick = () => {
-        setEditorIsActive( ! editorIsActive )
-    }
 
     /**
      * Filter the searched products and set the products to state
@@ -169,7 +164,7 @@ export default function Pages () {
             </div>
             { editorIsActive && <Editor 
                 prefix = 'page'
-                editorClose = { handleAddNewClick }
+                editorClose = { setEditorIsActive }
                 updateNewData = { setPages }
                 action = { editorAction }
                 post = { currentPage }

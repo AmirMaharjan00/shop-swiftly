@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Taxonomy from './taxonomy'
 import { MediaCollection } from './media'
-import { getImages } from './functions'
 
 export default function Editor( { prefix, editorClose, updateNewData, action, post } ) {
     const [ activeSidebarElement, setActiveSidebarElement ] = useState( 'category' )
@@ -11,13 +10,9 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
     const [ excerpt, setExcerpt ] = useState( '' )
     const [ price, setPrice ] = useState( 0 )
     const [ stock, setStock ] = useState( 0 )
-    const [ imageList, setImageList ] = useState([])
+    const [ image, setImage ] = useState( '' )
+    const [ isImageSelected, setIsImageSelected ] = useState( false )
     const [ isMediaLibraryOpen, setIsMediaLibraryOpen ] = useState( false )
-
-    useEffect(() => {   
-        const images = getImages()
-        setImageList( images.keys().map(image => images(image)) )
-    }, [])
 
     useEffect(() => {
         if( action === 'update' ) {
@@ -31,7 +26,6 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
             })
             .then(( result ) => result.json())
             .then( ( data ) => { updatePostInfo( data ) } )
-            // handleFormData()
         }
     }, [])
 
@@ -45,6 +39,7 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
             data.map(( current ) => {
                 setTitle( current[ prefix + '_title' ] )
                 setExcerpt( current[ prefix + '_excerpt' ] )
+                setImage( current[ prefix + '_image' ] )
                 if( prefix === 'post' ) {
                     setCheckedCategory( current[ 'post_category' ] )
                     setCheckedTag( current[ 'post_tags' ] )
@@ -71,7 +66,7 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
         }
         FORMDATA.append( prefix + '_title', title )
         FORMDATA.append( prefix + '_excerpt', excerpt )
-        FORMDATA.append( prefix + '_image', '' )
+        FORMDATA.append( prefix + '_image', image )
         FORMDATA.append( prefix + '_status', 'publish' )
         FORMDATA.append( 'post_type', prefix )
         if( prefix === 'post' ) {
@@ -93,6 +88,16 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
         event.preventDefault()
         handleFormData()
         editorClose()
+    }
+
+    /**
+     * Handle image select
+     * 
+     * @since 1.0.0
+     */
+    const handleImageSelect = ( imagePath ) => {
+        setImage( imagePath )
+        setIsImageSelected( true )
     }
 
     return (
@@ -143,11 +148,14 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
                                     <div className={'sidebar-element featured-image' + ( activeSidebarElement === 'featured-image' ? ' isactive': '' )} onClick={ () => ( setActiveSidebarElement( 'featured-image' ) ) }>
                                         <span className='element-head'>{ 'Featured Image' }</span>
                                         <div className='element-body' onClick={() => setIsMediaLibraryOpen( ! isMediaLibraryOpen )}>
-                                                { isMediaLibraryOpen && 
-                                                    <div className='editor-media-wrapper'>
-                                                        <MediaCollection images={ imageList }/> 
-                                                    </div>
-                                                }
+                                            { ( isImageSelected || action === 'update' ) && <figure className='post-thumbnail-wrapper'>
+                                                <img src={ image } alt="" className='post-thumbnail' />
+                                            </figure> }
+                                            { isMediaLibraryOpen && 
+                                                <div className='editor-media-wrapper'>
+                                                    <MediaCollection setImage={ handleImageSelect }/> 
+                                                </div>
+                                            }
                                         </div>
                                     </div>
                                 </div>

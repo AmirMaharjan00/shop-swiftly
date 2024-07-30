@@ -3,6 +3,18 @@ import MediaUpload from './media-upload';
 import { getImages } from './functions'
 
 export default function Media () {
+    return (
+        <section className="media-wrapper">
+            <div className='title-wraper'>
+                <h2 className='title'>{ 'Upload New Media' }</h2>
+            </div>
+            <MediaUpload />
+            <MediaCollection />
+        </section>
+    );
+}
+
+export const MediaCollection = ({ setImage }) => {
     const [ imageList, setImageList ] = useState([])
 
     useEffect(() => {
@@ -11,23 +23,11 @@ export default function Media () {
     }, [])
 
     return (
-        <section className="media-wrapper">
-            <div className='title-wraper'>
-                <h2 className='title'>{ 'Upload New Media' }</h2>
-            </div>
-            <MediaUpload />
-            <MediaCollection images={ imageList }/>
-        </section>
-    );
-}
-
-export const MediaCollection = ({ images }) => {
-    return (
         <div className='media-collection-wrapper'>
             {
-                images.map( ( current, index ) => {
+                imageList.map( ( current, index ) => {
                     return ( 
-                        <figure className='image-wrapper' key={ index }>
+                        <figure className='image-wrapper' key={ index } onClick={() => setImage( current )}>
                             <img src={ current } className='thumb' alt=''/>
                         </figure>
                     )

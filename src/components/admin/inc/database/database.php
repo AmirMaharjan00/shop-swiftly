@@ -88,7 +88,7 @@
                     post_excerpt LONGTEXT NOT NULL,
                     post_category VARCHAR(255) NOT NULL,
                     post_tags VARCHAR(255) NOT NULL,
-                    post_image VARCHAR(255) NOT NULL,
+                    post_image LONGTEXT NOT NULL,
                     post_stock INT(11) NOT NULL,
                     post_price INT(11) NOT NULL,
                     post_date BIGINT(20) NOT NULL,
@@ -100,7 +100,7 @@
                     page_id INT(11) AUTO_INCREMENT PRIMARY KEY,
                     page_title VARCHAR(255) NOT NULL,
                     page_excerpt LONGTEXT NOT NULL,
-                    page_image VARCHAR(255) NOT NULL,
+                    page_image LONGTEXT NOT NULL,
                     page_date BIGINT(18) NOT NULL,
                     page_status VARCHAR(255) NOT NULL DEFAULT 'draft'
                 )",
@@ -233,7 +233,7 @@
                 $table_name = $this->get_table_name( $table_identity );
                 switch( $table_identity ) {
                     case 'page':
-                        $update_query = "UPDATE $table_name SET page_title='$_POST[page_title]', page_excerpt='$_POST[page_excerpt]', page_status='$_POST[page_status]' WHERE page_id=$post";
+                        $update_query = "UPDATE $table_name SET page_title='$_POST[page_title]', page_excerpt='$_POST[page_excerpt]', page_status='$_POST[page_status]', page_image='$_POST[page_image]' WHERE page_id=$post";
                         break;
                     default:
                         $update_query = "UPDATE $table_name SET post_title='$_POST[post_title]', post_excerpt='$_POST[post_excerpt]', post_category='$_POST[post_category]', post_tags='$_POST[post_tags]', post_image='$_POST[post_image]', post_stock=$_POST[post_stock], post_price=$_POST[post_price], post_status='$_POST[post_status]' WHERE post_id=$post";

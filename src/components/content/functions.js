@@ -4,14 +4,12 @@ export const GetTaxonomy = () => {
     const [ categories, setCategories ] = useState([])
 
     useEffect(() => {
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_category=get_table_data' )
-        .then(( result ) => result.json() )
-        .then( ( data ) => setCategories( (data == null) ? [] : data ))
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'category',
+            setterFunction: setCategories
+        })
     }, [])
-
-    useEffect(() => {
-        // console.log( categories )
-    }, [ categories ])
 
     return(
         <ul className='categories-wrapper'>
@@ -20,7 +18,7 @@ export const GetTaxonomy = () => {
                     const CategoryTitle = current.category_title
                     const Count = index + 1
                     if( Count > 5 ) return
-                    return <li className='category'>
+                    return <li className='category' key={ index }>
                         <figure className='cat-thumb-wrapper no-image'>
                             <img src='' />
                         </figure>
@@ -30,4 +28,17 @@ export const GetTaxonomy = () => {
             }
         </ul>
     );
+}
+
+export const fetchFunction = ( props ) => {
+    const { action, tableIdentity, setterFunction } = props
+    const FORMDATA = new FormData()
+    FORMDATA.append( 'action', action )
+    FORMDATA.append( 'table_identity', tableIdentity )
+    fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
+        method: 'POST',
+        body: FORMDATA
+    })
+    .then(( result ) => result.json() )
+    .then( ( data ) => setterFunction( data ))
 }

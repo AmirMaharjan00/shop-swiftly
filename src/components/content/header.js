@@ -11,7 +11,13 @@ export default function Header() {
     const [ isLoginPopupActive, setIsLoginPopupActive ] = useState( false )
 
     useEffect(() => {
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_pages=get_table_data' )
+        const FORMDATA = new FormData()
+        FORMDATA.append( 'action', 'select' )
+        FORMDATA.append( 'table_identity', 'page' )
+        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
+            method: 'POST',
+            body: FORMDATA
+        })
         .then(( result ) => result.json())
         .then( ( data ) => { setPages( data ) } )
     }, [])

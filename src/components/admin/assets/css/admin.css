@@ -570,6 +570,21 @@
             margin: 10px;
         }
 
+        .swt-admin-main .sidebar-element.featured-image .post-thumbnail-wrapper {
+            display: none;
+        }
+        .swt-admin-main .sidebar-element.featured-image.isactive .post-thumbnail-wrapper {
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
+
+        .swt-admin-main .sidebar-element.featured-image.isactive .post-thumbnail-wrapper img.post-thumbnail {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+
         /*
         =============================
         ACTIONS WRAPPER
@@ -660,6 +675,10 @@
         MEDIA
         ===============================
         */
+        #root .media-wrapper #media-form:hover {
+            background: #a0a0a02f;
+        }
+
         #root .media-wrapper .media-collection-wrapper,
         #swt-admin-editor .media-collection-wrapper {
             /* margin-top: 30px; */
