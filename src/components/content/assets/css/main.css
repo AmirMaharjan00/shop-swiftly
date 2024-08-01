@@ -64,8 +64,79 @@
         box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);
     }
 
+    .site-header .site-actions {
+        display: flex;
+    }
+
+    .site-header .site-actions .cart-popup-wrapper {
+        position: absolute;
+        width: 17%;
+        left: 78%;
+        z-index: 9;
+        background: #fff;
+    }
+
+    .site-header .cart-popup-wrapper .item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        margin: 10px 0;
+        color: #000;
+    }
+
+    .site-header .cart-popup-wrapper .checkout-button {
+        display: block;
+        text-align: center;
+        padding: 6px 12px;
+        background: rgb(3, 172, 3);
+        border: none;
+        border-radius: 3px;
+        color: #fff;
+        margin: 0 auto;
+        margin-bottom: 10px;
+    }
+
+    .cart-popup-wrapper .item .post-title {
+        font-size: 15px;   
+    }
+
+    .cart-popup-wrapper .item .post-price {
+        font-size: 13px;
+    }
+
+    .cart-popup-wrapper .item .quantity-button {
+        background: none;
+        border: none;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .cart-popup-wrapper .item .increase {
+        background: green;
+        padding: 3px 5px;
+    }
+
+    .cart-popup-wrapper .item .quantity-indicator {
+        font-size: 12px;
+        margin: 0 5px;
+        background: #000;
+        color: #fff;
+        padding: 3px 5px;
+    }
+
+    .cart-popup-wrapper .item .decrease {
+        background: red;
+        padding: 3px 5px;
+    }
+
+    .site-header .cart-popup-wrapper .post-thumb-wrapper.no-post-thumb {
+        background: rgba(135, 135, 135, 0.713);
+        height: 80px;
+        width: 80px;
+    }
+
     .site-header .site-actions .site-action {
-        font-size: 16px;
         margin: 0 10px;
     }
 
