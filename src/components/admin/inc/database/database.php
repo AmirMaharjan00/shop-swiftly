@@ -273,5 +273,28 @@
             endswitch;
             return $table;
         }
+
+        /**
+         * Select from data with where clause
+         * 
+         * @since 1.0.0
+         */
+        public function swt_query() {
+            $post = isset( $_POST['post'] ) ? $_POST['post'] : false;
+            $table_identity = $_POST['table_identity'];
+            $id_attr = $table_identity . '_id';
+            $table_name = $this->get_table_name( $table_identity );
+            $select_query = "SELECT * FROM $table_name WHERE $id_attr=$post";
+            $select_result = mysqli_query( $this->connection, $select_query );
+            if( ! $select_result ) return [ 'result' => $select_result ];
+            if( $select_result->num_rows > 0 ) :
+                while( $row = mysqli_fetch_assoc( $select_result ) ) :
+                    $data = $row;
+                endwhile;
+                return $data;
+            else:
+                return [];
+            endif;
+        }
     }
  endif;

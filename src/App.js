@@ -3,7 +3,7 @@ import AdminLogin from './components/admin/inc/admin-forms/admin-login'
 import AdminForgotPassword from './components/admin/inc/admin-forms/admin-re-password'
 import AdminRegistration from './components/admin/inc/admin-forms/admin-registration'
 import Admin from './components/admin/dashboard'
-import {Dashboard} from './components/admin/dashboard'
+import { Dashboard } from './components/admin/dashboard'
 import Media from './components/admin/media'
 import Pages from './components/admin/pages'
 import Products from './components/admin/products'
@@ -12,6 +12,7 @@ import Users from './components/admin/users'
 import ErrorPage from './components/error-page'
 import DatabaseForm from './components/admin/inc/admin-forms/database-form'
 import Index from './components/content/index'
+import { Single } from './components/content/single'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -42,6 +43,7 @@ const AdminFormLinks = () => {
       <Route exact path='/swt-admin/swt-registration' Component={ AdminRegistration }/>
       <Route exact path='/' Component={ Index }/>
       <Route path='*' Component={ ErrorPage } />
+      <Route path='/single' Component={ Single } />
     </Routes>
   );
 }

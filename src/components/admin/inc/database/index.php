@@ -19,6 +19,8 @@
                 echo json_encode( $database->update_table() );
             elseif( $_POST['action'] === 'select' ):
                 echo json_encode( $database->get_table_data() );
+            elseif( $_POST['action'] === 'select_where' ):
+                echo json_encode( $database->swt_query() );
             endif;
         endif;
     else :

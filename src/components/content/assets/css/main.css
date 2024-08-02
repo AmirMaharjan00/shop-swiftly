@@ -4,6 +4,7 @@
     ========= MAIN BANNER ========
     ========= TRENDING PRODUCTS ========
     =========== Footer ===========
+    =========== SINGLE ===========
 */
 
 /*
@@ -24,6 +25,13 @@
         margin-top: calc(var(--tms-gutter-y) * -1);
         margin-right: calc(var(--tms-gutter-x) * -.5);
         margin-left: calc(var(--tms-gutter-x) * -.5);
+    }
+
+    img {
+        height: 100%;
+        width: 100%;
+        display: block;
+        object-fit: cover;
     }
 /*
     =========== Header ===========
@@ -314,4 +322,30 @@
         height: 250px;
         width: 100%;
         background: black;
+    }
+
+    /*
+    =========== SINGLE ===========
+    */
+    .single-wrapper {
+        margin-top: 40px;
+    }
+
+    .single-wrapper .post-wrapper {
+        display: flex;
+        gap: 10px;
+        box-sizing: border-box;
+    }
+
+    .single-wrapper .post-thumbnail-wrapper,
+    .single-wrapper .post-elements {
+        flex: 0 1 40%;
+    }
+
+    .single-wrapper .featured-offers-wrapper {
+        flex: 0 1 20%;
+    }
+
+    .single-wrapper .post-thumbnail-wrapper {
+        height: 500px;
     }

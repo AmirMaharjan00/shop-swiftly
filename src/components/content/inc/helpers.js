@@ -6,6 +6,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation } from 'swiper/modules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleArrowRight, faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { Single } from '../single'
+
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';

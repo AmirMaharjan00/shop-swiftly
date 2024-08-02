@@ -31,10 +31,11 @@ export const GetTaxonomy = () => {
 }
 
 export const fetchFunction = ( props ) => {
-    const { action, tableIdentity, setterFunction } = props
+    const { action, tableIdentity, setterFunction, post } = props
     const FORMDATA = new FormData()
     FORMDATA.append( 'action', action )
     FORMDATA.append( 'table_identity', tableIdentity )
+    if( post !== undefined ) FORMDATA.append( 'post', post )
     fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
         method: 'POST',
         body: FORMDATA
