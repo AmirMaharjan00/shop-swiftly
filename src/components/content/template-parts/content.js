@@ -9,7 +9,7 @@ export const Content = ({ post, exclude }) => {
                 <img src={ image } alt=''/>
             </figure>
             <div className='post-elements'>
-                <Link to='/single' state={{ ID: post_id }}>{ ! exclude.includes( 'title' ) && <h2 className='post-title'>{ title }</h2> }</Link>
+                { ! exclude.includes( 'title' ) && <h2 className='post-title'><Link to='/single' state={{ ID: post_id }}>{ title }</Link></h2> }
                 { ! exclude.includes( 'excerpt' ) && <p className="post-excerpt">{ excerpt }</p> }
                 { ! exclude.includes( 'price' ) && <p className="post-price">{ 'Rs. ' + price }</p> }
             </div>

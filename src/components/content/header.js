@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import './assets/css/main.css'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass, faSun, faMoon, faUserTie, faCartShopping, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
+import { faMagnifyingGlass, faSun, faMoon, faCartShopping, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
+import { SignIn } from './inc/helpers';
+import { fetchFunction } from './functions'
 
 export default function Header() {
     const [ getPages, setPages ] = useState([]);
-    const [ isSearchActive, setIsSearchActive ] = useState( false )
     const [ isLightMode, setIsLightMode ] = useState( true )
-    const [ isLoginPopupActive, setIsLoginPopupActive ] = useState( false )
     const [ isShoppingCartActive, setIsShoppingCartActive ] = useState( false )
+    const [ isSignInActive, setIsSignInActive ] = useState( false )
+    const [ userDetails, setUserDetails ] = useState({})
+    const [ isUserLoggedIn, setIsUserLoggedIn ] = useState( false )
+    const { user_name: userName } = userDetails
 
     useEffect(() => {
         const FORMDATA = new FormData()
@@ -23,12 +27,32 @@ export default function Header() {
         .then( ( data ) => { setPages( data ) } )
     }, [])
 
+    useEffect(() => {
+        if( sessionStorage.length > 0 ) {
+            const userId = sessionStorage.getItem( 'userId' ) 
+            const loggedIn = sessionStorage.getItem( 'loggedIn' ) 
+            setIsUserLoggedIn( loggedIn === 'true' )
+            fetchFunction({
+                action: 'select_where',
+                tableIdentity: 'user',
+                post: userId,
+                setterFunction: setUserDetails
+            })
+        }
+    }, [ isSignInActive ])
+
+    useEffect(() => {
+        if( Object.keys( userDetails ).length > 0 ) {
+            console.log( userDetails )
+        }
+    }, [ userDetails ])
+
     return (
         <header className='site-header'>
             <div className='container'>
                 <div className='row'>
                     <div className='site-logo'>
-                        <h2 className='site-branding'>Shop swiftly</h2>
+                        <h2 className='site-branding'><Link to="/">{ 'Shop swiftly' }</Link></h2>
                     </div>
                     <nav className='site-menu'>
                         {
@@ -39,10 +63,15 @@ export default function Header() {
                         }
                     </nav>
                     <div className='site-actions'>
-                        <SearchBox isSearchActive={ isSearchActive } setIsSearchActive={ setIsSearchActive }/>
+                        <SearchBox />
                         <ThemeMode isLightMode={ isLightMode } setIsLightMode={ setIsLightMode }/>
                         <ShoppingCart isShoppingCartActive={ isShoppingCartActive } setIsShoppingCartActive={ setIsShoppingCartActive }/>
-                        <UserLogin isLoginPopupActive={ isLoginPopupActive } setIsLoginPopupActive={ setIsLoginPopupActive }/>
+                        { 
+                            isUserLoggedIn ? <div className="user-login-wrapper">
+                                { 'Hello, ' + userName }
+                            </div> :
+                            <UserLogin isSignInActive={ isSignInActive } setIsSignInActive={ setIsSignInActive }/>
+                        }
                     </div>
                 </div>
             </div>
@@ -50,13 +79,13 @@ export default function Header() {
     )
 }
 
-const SearchBox = ({ isSearchActive, setIsSearchActive }) => {
+const SearchBox = () => {
     return(
         <div className='search-box-wrapper'>
-            <FontAwesomeIcon icon={ faMagnifyingGlass } className='site-action site-search' onClick={() => setIsSearchActive( ! isSearchActive ) }/>
-            { isSearchActive && <form onSubmit="" className='header-search-form'>
-                <input type="search" placeholder="Search..." />
-            </form> }
+            <form className='header-search-form'>
+                <input type="search" placeholder="Search..." className='header-search-input'/>
+                <button className='header-search-button'><FontAwesomeIcon icon={ faMagnifyingGlass } className='site-action site-search'/></button>
+            </form>
         </div>
     )
 }
@@ -76,9 +105,9 @@ const ShoppingCart = ({ isShoppingCartActive, setIsShoppingCartActive }) => {
             <FontAwesomeIcon icon={ faCartShopping } className='site-action site-user' onClick={() => setIsShoppingCartActive( ! isShoppingCartActive ) }/>
             { isShoppingCartActive && <div className='cart-popup-wrapper'>
                 {
-                    cartArray.map(( current ) => {
+                    cartArray.map(( current, index ) => {
                         return(
-                            <div className='item'>
+                            <div className='item' key={ index }>
                                 <figure className='post-thumb-wrapper no-post-thumb'>
                                     <img src="" alt=""/>
                                 </figure>
@@ -101,10 +130,12 @@ const ShoppingCart = ({ isShoppingCartActive, setIsShoppingCartActive }) => {
     )
 }
 
-const UserLogin = ({ isLoginPopupActive, setIsLoginPopupActive }) => {
+const UserLogin = ({ isSignInActive, setIsSignInActive }) => {
+
     return(
         <div className='user-login-wrapper'>
-            <FontAwesomeIcon icon={ faUserTie } className='site-action site-user' onClick={() => setIsLoginPopupActive( ! isLoginPopupActive ) }/>
+            <button className='user-sign-in' onClick={() => setIsSignInActive( ! isSignInActive )}>{ 'Sign in' }</button>
+            { isSignInActive && <SignIn setIsSignInActive={ setIsSignInActive } /> }
         </div>
     )
 }

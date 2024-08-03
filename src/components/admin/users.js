@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
+import { fetchFunction } from '../content/functions'
 
 export default function Users ( props ) {
     const [ allUsers, setAllUsers ] = useState( props.registeredUsers )
@@ -8,9 +7,11 @@ export default function Users ( props ) {
     const [ tempUsers, setTempUsers ] = useState([]);
 
     useEffect(() => {
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_users=get_table_data' )
-        .then( result => result.json() )
-        .then( data => setAllUsers( data ) )
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'user',
+            setterFunction: setAllUsers
+        })
     }, [])
 
     useEffect(() => {
@@ -80,14 +81,22 @@ export default function Users ( props ) {
                 <tbody>
                     {
                         ( tempUsers.length > 0 ) ? tempUsers.map(( current, index ) => {
+                                const { user_name: name, user_email: email, user_role: role, registered_date: date } = current
                                 return(
                                     <tr className='users-element users-table-body' key={ index }>
                                         <td className='body-item'>{ index + 1 }</td>
-                                        <td className='body-item'>{ current['user_name'] }</td>
-                                        <td className='body-item'>{ current['user_email'] }</td>
-                                        <td className='body-item'>{ current['user_role'] }</td>
-                                        <td className='body-item'>{ current['registered_date'] }</td>
-                                        <td className='body-item'><FontAwesomeIcon icon={ faEllipsisVertical } /></td>
+                                        <td className='body-item'>{ name }</td>
+                                        <td className='body-item'>{ email }</td>
+                                        <td className='body-item'>{ role.charAt( 0 ).toUpperCase() + role.slice( 1 ) }</td>
+                                        <td className='body-item'>{ date }</td>
+                                        <td className='body-item action-item'>
+                                            <div className='actions-wrapper'>
+                                                {/* onClick={() => handleEditorActions( 'update', ID ) } */}
+                                                <button className='action edit' >{ 'Edit' }</button>
+                                                {/* onClick={() => handleTrashButtonClick( ID, index ) } */}
+                                                <button className='action trash' >{ 'Trash' }</button>
+                                            </div>
+                                        </td>
                                     </tr>
                                 ); 
                             })

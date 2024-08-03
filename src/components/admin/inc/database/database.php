@@ -111,11 +111,11 @@
                 )",
                 "CREATE TABLE IF NOT EXISTS swt_users (
                     user_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-                    user_name LONGTEXT NOT NULL,
+                    user_name varchar(255) NOT NULL,
                     user_password LONGTEXT NOT NULL,
-                    user_email LONGTEXT NOT NULL,
-                    user_role LONGTEXT NOT NULL,
-                    registered_date LONGTEXT NOT NULL
+                    user_email varchar(255) NOT NULL,
+                    user_role varchar(255) NOT NULL,
+                    registered_date BIGINT(18) NOT NULL
                 )"
             ];
             if( ! empty( $table_queries ) && is_array( $table_queries ) ):
@@ -283,8 +283,13 @@
             $post = isset( $_POST['post'] ) ? $_POST['post'] : false;
             $table_identity = $_POST['table_identity'];
             $id_attr = $table_identity . '_id';
+            $where_clause = isset( $_POST['where_clause'] ) ? $_POST['where_clause'] : false;
             $table_name = $this->get_table_name( $table_identity );
-            $select_query = "SELECT * FROM $table_name WHERE $id_attr=$post";
+            if( $where_clause ) {
+                $select_query = "SELECT * FROM $table_name WHERE $where_clause";
+            } else {
+                $select_query = "SELECT * FROM $table_name WHERE $id_attr=$post";
+            }
             $select_result = mysqli_query( $this->connection, $select_query );
             if( ! $select_result ) return [ 'result' => $select_result ];
             if( $select_result->num_rows > 0 ) :

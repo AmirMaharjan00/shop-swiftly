@@ -34,7 +34,6 @@ export function elementOutsideClick( event ) {
  */
 export const PostTypeDeletionPopup = ( props ) => {
     const { postType, post, setDeleteAction, setMainState, postDetails } = props
-    console.log( postDetails )
 
     /**
      * trash the post function
