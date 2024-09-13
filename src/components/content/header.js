@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext, createContext } from 'react'
 import './assets/css/main.css'
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faSun, faMoon, faCartShopping, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 import { SignIn } from './inc/helpers';
 import { fetchFunction } from './functions'
+
+const HEADERCONTEXT = createContext( null )
 
 export default function Header() {
     const [ getPages, setPages ] = useState([]);
@@ -41,12 +43,6 @@ export default function Header() {
         }
     }, [ isSignInActive ])
 
-    useEffect(() => {
-        if( Object.keys( userDetails ).length > 0 ) {
-            console.log( userDetails )
-        }
-    }, [ userDetails ])
-
     return (
         <header className='site-header'>
             <div className='container'>
@@ -63,15 +59,17 @@ export default function Header() {
                         }
                     </nav>
                     <div className='site-actions'>
-                        <SearchBox />
-                        <ThemeMode isLightMode={ isLightMode } setIsLightMode={ setIsLightMode }/>
-                        <ShoppingCart isShoppingCartActive={ isShoppingCartActive } setIsShoppingCartActive={ setIsShoppingCartActive }/>
-                        { 
-                            isUserLoggedIn ? <div className="user-login-wrapper">
-                                { 'Hello, ' + userName }
-                            </div> :
-                            <UserLogin isSignInActive={ isSignInActive } setIsSignInActive={ setIsSignInActive }/>
-                        }
+                        <HEADERCONTEXT.Provider value={{ isSignInActive: isSignInActive, setIsSignInActive:{ setIsSignInActive }, isUserLoggedIn: isUserLoggedIn }}>
+                            <SearchBox />
+                            <ThemeMode isLightMode={ isLightMode } setIsLightMode={ setIsLightMode }/>
+                            <ShoppingCart isShoppingCartActive={ isShoppingCartActive } setIsShoppingCartActive={ setIsShoppingCartActive }/>
+                            { 
+                                isUserLoggedIn ? <div className="user-login-wrapper">
+                                    { 'Hello, ' + userName }
+                                </div> :
+                                <UserLogin isSignInActive={ isSignInActive } setIsSignInActive={ setIsSignInActive }/>
+                            }
+                        </HEADERCONTEXT.Provider>
                     </div>
                 </div>
             </div>
@@ -99,39 +97,49 @@ const ThemeMode = ({ isLightMode, setIsLightMode }) => {
 }
 
 const ShoppingCart = ({ isShoppingCartActive, setIsShoppingCartActive }) => {
+    const GLOBAL = useContext( HEADERCONTEXT )
+    const { isSignInActive, setIsSignInActive, isUserLoggedIn } = GLOBAL
     const cartArray = [ 1, 2, 3, 4, 5 ]
     return(
         <div className='shopping-cart-wrapper'>
             <FontAwesomeIcon icon={ faCartShopping } className='site-action site-user' onClick={() => setIsShoppingCartActive( ! isShoppingCartActive ) }/>
             { isShoppingCartActive && <div className='cart-popup-wrapper'>
-                {
-                    cartArray.map(( current, index ) => {
-                        return(
-                            <div className='item' key={ index }>
-                                <figure className='post-thumb-wrapper no-post-thumb'>
-                                    <img src="" alt=""/>
-                                </figure>
-                                <div className='post-elements'>
-                                    <h2 className='post-title'>{ 'Amir Maharjan' }</h2>
-                                    <span className='post-price'>{ 'Rs. 100' }</span>
-                                    <div className='quantity-wrapper'>
-                                        <button className='quantity-button decrease'><FontAwesomeIcon icon={ faMinus }/></button>
-                                        <span className='quantity-indicator'>{ current }</span>
-                                        <button className='quantity-button increase'><FontAwesomeIcon icon={ faPlus }/></button>
+                { 
+                    isUserLoggedIn ? <>
+                        { cartArray.map(( current, index ) => {
+                            return(
+                                <div className='item' key={ index }>
+                                    <figure className='post-thumb-wrapper no-post-thumb'>
+                                        <img src="" alt=""/>
+                                    </figure>
+                                    <div className='post-elements'>
+                                        <h2 className='post-title'>{ 'Amir Maharjan' }</h2>
+                                        <span className='post-price'>{ 'Rs. 100' }</span>
+                                        <div className='quantity-wrapper'>
+                                            <button className='quantity-button decrease'><FontAwesomeIcon icon={ faMinus }/></button>
+                                            <span className='quantity-indicator'>{ current }</span>
+                                            <button className='quantity-button increase'><FontAwesomeIcon icon={ faPlus }/></button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )
-                    })
+                            )
+                        })}
+                        <button className='checkout-button'>{ 'Checkout' }</button>
+                    </> : <div className='not-logged-in'>
+                        <span className='message'>{ 'Sorry, you have not logged in.' }</span>
+                        {/* <UserLogin isSignInActive={ isSignInActive } setIsSignInActive={ setIsSignInActive }/> */}
+                        {/* <button className='checkout-button' onClick={() => setIsSignInActive( true )}>{ 'Sign in' }</button> */}
+                    </div>
                 }
-                <button className='checkout-button'>{ 'Checkout' }</button>
             </div> }
         </div>
     )
 }
 
 const UserLogin = ({ isSignInActive, setIsSignInActive }) => {
-
+// const UserLogin = () => {
+    // const GLOBAL = useContext( HEADERCONTEXT )
+    // const { isSignInActive, setIsSignInActive, isUserLoggedIn } = GLOBAL
     return(
         <div className='user-login-wrapper'>
             <button className='user-sign-in' onClick={() => setIsSignInActive( ! isSignInActive )}>{ 'Sign in' }</button>

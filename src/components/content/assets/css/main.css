@@ -177,6 +177,13 @@
         margin-bottom: 10px;
     }
 
+    .site-header .cart-popup-wrapper .not-logged-in .message {
+        display: block;
+        color: #000;
+        margin: 14px 0;
+        text-align: center;
+    }
+
     .cart-popup-wrapper .item .post-title {
         font-size: 15px;   
     }
