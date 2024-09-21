@@ -626,7 +626,7 @@
             gap: 10px;
         }
 
-        #root .meta input {
+        #root .meta input[type="text"] {
             width: 3%;
             border-color: #fff;
             border-style: solid;

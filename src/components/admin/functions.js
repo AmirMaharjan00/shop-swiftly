@@ -55,6 +55,8 @@ export const PostTypeDeletionPopup = ( props ) => {
             FORMDATA.append( 'post_tags', postDetails[ 'post_tags' ] )
             FORMDATA.append( 'post_stock', postDetails[ 'post_stock' ] )
             FORMDATA.append( 'post_price', postDetails[ 'post_price' ] )
+            FORMDATA.append( 'is_featured', postDetails[ 'is_featured' ] )
+            FORMDATA.append( 'meta_data', postDetails[ 'meta_data' ] )
         }
         fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
             method : 'POST',

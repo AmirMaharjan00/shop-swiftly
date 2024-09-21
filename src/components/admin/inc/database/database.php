@@ -92,6 +92,8 @@
                     post_stock INT(11) NOT NULL,
                     post_price INT(11) NOT NULL,
                     post_date BIGINT(20) NOT NULL,
+                    is_featured BOOLEAN NOT NULL,
+                    meta_data LONGTEXT NOT NULL,
                     post_status VARCHAR(255) NOT NULL DEFAULT 'draft'
                     -- FOREIGN KEY (post_category) REFERENCES swt_category(category_id),
                     -- FOREIGN KEY (post_tags) REFERENCES swt_tag(tag_id)
@@ -151,7 +153,7 @@
                     $insert_query = "INSERT INTO swt_options ( option_key, option_value ) VALUES ( '$_POST[option_key]', '$_POST[option_value]' )";
                     break;
                 default:
-                    $insert_query = "INSERT INTO swt_posts ( post_title, post_excerpt, post_category, post_tags, post_image, post_stock, post_price, post_date, post_status ) VALUES ( '$_POST[post_title]', '$_POST[post_excerpt]', '$_POST[post_category]', '$_POST[post_tags]', '$_POST[post_image]', '$_POST[post_stock]', '$_POST[post_price]', '$_POST[post_date]', '$_POST[post_status]' )";
+                    $insert_query = "INSERT INTO swt_posts ( post_title, post_excerpt, post_category, post_tags, post_image, post_stock, post_price, post_date, post_status, is_featured, meta_data ) VALUES ( '$_POST[post_title]', '$_POST[post_excerpt]', '$_POST[post_category]', '$_POST[post_tags]', '$_POST[post_image]', '$_POST[post_stock]', '$_POST[post_price]', '$_POST[post_date]', '$_POST[post_status]', '$_POST[is_featured]', '$_POST[meta_data]' )";
                     break;
             endswitch;
             if( $insert_query ) :
@@ -236,7 +238,7 @@
                         $update_query = "UPDATE $table_name SET page_title='$_POST[page_title]', page_excerpt='$_POST[page_excerpt]', page_status='$_POST[page_status]', page_image='$_POST[page_image]' WHERE page_id=$post";
                         break;
                     default:
-                        $update_query = "UPDATE $table_name SET post_title='$_POST[post_title]', post_excerpt='$_POST[post_excerpt]', post_category='$_POST[post_category]', post_tags='$_POST[post_tags]', post_image='$_POST[post_image]', post_stock=$_POST[post_stock], post_price=$_POST[post_price], post_status='$_POST[post_status]' WHERE post_id=$post";
+                        $update_query = "UPDATE $table_name SET post_title='$_POST[post_title]', post_excerpt='$_POST[post_excerpt]', post_category='$_POST[post_category]', post_tags='$_POST[post_tags]', post_image='$_POST[post_image]', post_stock=$_POST[post_stock], post_price=$_POST[post_price], post_status='$_POST[post_status]', is_featured='$_POST[is_featured]', meta_data='$_POST[meta_data]' WHERE post_id=$post";
                 }
                 $update_result = mysqli_query( $this->connection, $update_query );
                 if( ! $update_result ) return [ 'result' => $update_query ];

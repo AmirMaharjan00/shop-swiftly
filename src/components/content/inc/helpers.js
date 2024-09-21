@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { GetTaxonomy, fetchFunction } from '../functions'
 import { Content } from '../template-parts/content'
 import { SectionWrapper } from './extras'
@@ -46,7 +46,8 @@ export const MainBanner = () => {
                             {
                                 posts.map(( current, index ) => {
                                     if( index > 4 ) return
-                                    const { post_title: title, post_image: image, post_excerpt: excerpt, post_id } = current
+                                    const { post_title: title, post_image: image, post_excerpt: excerpt, post_id, post_status: status } = current
+                                    if( status !== 'publish' ) return
                                     return <SwiperSlide className='item' key={ index }>
                                         <figure className='thumbnail-wrapper'>
                                             <img src={ image } alt=''/>
@@ -76,6 +77,7 @@ export const CategoryCollection = () => {
 
 export const TrendingProducts = () => {
     const [ posts, setPosts ] = useState([])
+    const [ activeTab, setActiveTab ] = useState( 'featured' )
 
     useEffect(() => {
         fetchFunction({
@@ -85,14 +87,29 @@ export const TrendingProducts = () => {
         })
     }, [])
 
+    const filteredPosts = useMemo(() => {
+        let filtered = posts.filter(( post ) => {
+            const { is_featured: featured, post_status: status } = post
+            if( status !== 'publish' ) return
+            if( activeTab === 'featured' ) {
+                return featured === "1"
+            } else if( activeTab === 'latest' ){
+                return post
+            } else {
+                return post
+            }
+        })
+        return filtered
+    }, [ activeTab, posts ])
+
     return(
         <SectionWrapper main='swt-trending-products'>
             <div className='trending-products-wrapper'>
                 <h2 className='section-header'>{ '# Trending Products #' }</h2>
                 <div className='section-menu'>
-                    <button className='menu-item active'>{ 'Featured' }</button>
-                    <button className='menu-item'>{ 'Latest' }</button>
-                    <button className='menu-item'>{ 'Bestseller' }</button>
+                    <button className={ 'menu-item' + (( activeTab === 'featured' ) ? ' active' : '' )} onClick={() => setActiveTab( 'featured' )}>{ 'Featured' }</button>
+                    <button className={ 'menu-item' + (( activeTab === 'latest' ) ? ' active' : '' )} onClick={() => setActiveTab( 'latest' )}>{ 'Latest' }</button>
+                    <button className={ 'menu-item' + (( activeTab === 'best-seller' ) ? ' active' : '' )} onClick={() => setActiveTab( 'best-seller' )}>{ 'Bestseller' }</button>
                 </div>
                 <Swiper
                     slidesPerView = { 4 }
@@ -106,10 +123,8 @@ export const TrendingProducts = () => {
                     spaceBetween = { 15 }
                 >
                     {
-                        posts.map(( current, index ) => {
-                            if( index > 4 ) return
+                        filteredPosts.map(( current, index ) => {
                             return <SwiperSlide className='item' key={ index }>
-                                {/* 'excerpt' */}
                                 <Content post={ current } exclude={[]}/>
                             </SwiperSlide>
                         })
@@ -389,7 +404,8 @@ export const GridView = () => {
             <div className='articles-wrapper'>
                 {
                     posts.map(( post, index ) => {
-                        const { post_id, post_image: image, post_title: title, post_date: date, post_excerpt: excerpt, post_category: categories } = post
+                        const { post_id, post_image: image, post_title: title, post_date: date, post_excerpt: excerpt, post_category: categories, post_status: status } = post
+                        if( status !== 'publish' ) return
                         let newCategories = getCategory( categories )
                         return <article className='post' key={ index }>
                             { ( image !== undefined || image !== null ) && <figure className='thumbnail-wrapper'>

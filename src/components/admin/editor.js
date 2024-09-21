@@ -10,7 +10,9 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
     const [ excerpt, setExcerpt ] = useState( '' )
     const [ price, setPrice ] = useState( 0 )
     const [ stock, setStock ] = useState( 0 )
+    const [ featured, setFeatured ] = useState( "0" )
     const [ image, setImage ] = useState( '' )
+    const [ metaData, setMetaData ] = useState({})
     const [ isImageSelected, setIsImageSelected ] = useState( false )
     const [ isMediaLibraryOpen, setIsMediaLibraryOpen ] = useState( false )
 
@@ -45,6 +47,8 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
                     setCheckedTag( current[ 'post_tags' ] )
                     setPrice( current[ 'post_price' ] )
                     setStock( current[ 'post_stock' ] )
+                    setFeatured( current[ 'is_featured' ] )
+                    setMetaData( current[ 'meta_data' ] )
                 }
             })
         }
@@ -74,6 +78,8 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
             FORMDATA.append( 'post_tags', checkedTag )
             FORMDATA.append( 'post_stock', stock )
             FORMDATA.append( 'post_price', price )
+            FORMDATA.append( 'is_featured', featured )
+            FORMDATA.append( 'meta_data', JSON.stringify( metaData ) )
         }
         fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
             method: 'POST',
@@ -112,14 +118,23 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
                                 <input type='text' placeholder='Title' value={ title } name={ prefix + '_title' } id={ prefix + '_title' } onChange={( event ) => setTitle( event.target.value ) } />
                                 <textarea placeholder='Description' value={ excerpt } name={ prefix + '_excerpt' } id={ prefix + '_excerpt' } rows='15' onChange={( event ) => setExcerpt( event.target.value ) }></textarea>
                                 <div className='meta-wrapper'>
-                                    { ( prefix === 'post' ) && <p className='meta price-wrapper'>
-                                        <label htmlFor="price">{ 'Price :' }</label>
-                                        <input type="number" id="price" value={ price } onChange={( event ) => setPrice( event.target.value )}/>
-                                    </p> }
-                                    { ( prefix === 'post' ) && <p className='meta stock-wrapper'>
-                                        <label htmlFor='stock'>{ 'Stock :' }</label>
-                                        <input type="number" id="stock" value={ stock } onChange={( event ) => setStock( event.target.value )}/>
-                                    </p> }
+                                    {( prefix === 'post' ) && <>
+                                        <div className='meta price-wrapper'>
+                                            <label htmlFor="price">{ 'Price :' }</label>
+                                            <input type="number" id="price" value={ price } onChange={( event ) => setPrice( event.target.value )}/>
+                                        </div>
+                                        <div className='meta stock-wrapper'>
+                                            <label htmlFor='stock'>{ 'Stock :' }</label>
+                                            <input type="number" id="stock" value={ stock } onChange={( event ) => setStock( event.target.value )}/>
+                                        </div>
+                                        <div className='meta stock-wrapper featured'>
+                                            <label htmlFor='featured'>{ 'Featured :' }</label>
+                                            <div className='switch'>
+                                                <input type="checkbox" id="featured" checked={ featured === "1" } onChange={( event ) => setFeatured( event.target.checked ? '1' : '0' )}/>
+                                                <span className="slider round"></span>
+                                            </div>
+                                        </div>
+                                    </> }
                                 </div>
                             </div>
                             <div className='editor-sidebar'>
