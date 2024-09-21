@@ -634,6 +634,10 @@
             color: #fff
         }
 
+        #root input[type="number"] {
+            width: 150px;
+        }
+
         #root .meta label {
             flex: 0 1 5%;
             color: #fff;

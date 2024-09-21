@@ -388,7 +388,9 @@
     /*
     ========= MAIN BANNER ========
     */
-    #root .swt-main-banner {
+    #root .swt-main-banner,
+    #root .swt-trending-products,
+    #root .grid-view-wrapper {
         margin-bottom: 30px;
     }
 
@@ -431,7 +433,7 @@
         transform: translate(-50%, -50%);
         color: #ffffff;
         background: #000000b3;
-        padding: 5% 10%;
+        padding: 2% 7%;
     }
 
     .swt-main-banner .main-banner-wrapper .thumbnail-wrapper .post-elements .post-title {
@@ -466,52 +468,72 @@
         font-size: 15px;
         background: none;
         border: none;
-        padding: 10px;
+        padding: 6px 10px;
         margin: 0 10px;
         margin-bottom: 20px;
         font-weight: lighter;
         cursor: pointer;
+        font-weight: 700;
     }
 
-    .swt-trending-products .section-menu .menu-item.active,
+    .swt-trending-products .section-menu .menu-item.active {
+        color: #fff;    
+        background: var(--hover-color);
+    }
+
     .swt-trending-products .section-menu .menu-item:hover {
-        background: #000;
         color: #fff;
+        background: var(--hover-color);
+    }
+
+    .swt-trending-products article.post {
+        padding: 10px;
+        background: #a4a4a45f;
+        border-radius: 3px;
+        box-shadow: 0px 0px 9px -2px rgba(144, 144, 144, 0.592);
     }
 
     .swt-trending-products .thumbnail-wrapper {
-        width: 300px;
-        height: 400px;
+        height: 300px;
+        width: 100%;
         margin-bottom: 10px;
     }
 
     .swt-trending-products .thumbnail-wrapper img {
-        width: 100%;
-        height: 100%;
         object-fit: cover;
-        display: block;
+        height: 100%;
+        width: 100%;
+        border-radius: 3px;
     }
 
-    .swt-trending-products .post-title {
+    .swt-trending-products .post-title a {
         font-size: 18px;
+        font-weight: 700;
+        cursor: pointer;
     }
 
-    .swt-trending-products .post-title:hover a {
-        color: var(--hover-color);
+    .swt-trending-products .post-title a:hover {
+        color: var(--hover-color)
     }
 
-    .swt-trending-products .post-excerpt,
-    .swt-trending-products .post-price {
-        font-size: 14px;
+    .swt-trending-products .swiper-wrapper {
+        margin-bottom: 10px;
+    }
+
+    .swt-trending-products article.post h2.post-title,
+    .swt-trending-products article.post p.post-price {
         margin-bottom: 5px;
-        font-weight: lighter;
+    }
+
+    .swt-trending-products article.post p.post-price,
+    .swt-trending-products article.post p.post-excerpt {
+        font-size: 14px;
     }
 
     .swt-trending-products .pagination-item {
         padding: 6px;
         border: none;
         font-size: 15px;
-
     }
 
     .swt-trending-products .pagination-item .button-label {
@@ -560,4 +582,89 @@
 
     .single-wrapper .post-thumbnail-wrapper {
         height: 500px;
+    }
+
+    /*
+    =====================
+    GRID VIEW
+    =====================
+    */
+
+    .grid-view-wrapper .section-header {
+        text-align: center;
+        font-size: 35px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .grid-view-wrapper .articles-wrapper {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 15px;
+    }
+
+    .grid-view-main article.post {
+        padding: 10px;
+        background: #a4a4a45f;
+        border-radius: 3px;
+        box-shadow: 0px 0px 9px -2px rgba(144, 144, 144, 0.592);
+    }
+
+    .grid-view-main article.post figure {
+        margin-bottom: 10px;
+        width: 100%;
+        height: 200px;
+    }
+
+    .grid-view-main article.post img {
+        object-fit: cover;
+        border-radius: 3px;
+    }
+
+    .grid-view-main article.post h2.post-title a {
+        font-size: 18px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .grid-view-main article.post h2.post-title a:hover {
+        color: var(--hover-color)
+    }
+
+    .grid-view-main article.post span.post-date,
+    .grid-view-main article.post li.cat-item {
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .grid-view-main article.post .post-excerpt {
+        font-size: 14px;
+    }
+
+    .grid-view-main article.post li.cat-item:hover {
+        color: #fff;
+        background: rgb(34, 139, 34);
+    }
+
+    .grid-view-main article.post h2.post-title,
+    .grid-view-main article.post div.post-meta {
+        margin-bottom: 10px;
+    }
+
+    .grid-view-main article.post span.post-date {
+        margin-right: 10px;
+    }
+
+    .grid-view-main article.post .post-categories {
+        list-style: none;
+        display: inline-block;
+    }
+
+    .grid-view-main article.post .cat-item {
+        display: inline-block;
+        margin-right: 10px;
+        background: var(--hover-color);
+        padding: 3px 7px;
+        border-radius: 3px;
+        color: #fff;
     }

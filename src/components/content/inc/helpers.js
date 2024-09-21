@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation } from 'swiper/modules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleArrowRight, faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons'
-import { Single } from '../single'
+import { usePostRelatedHooks } from './hooks'
 
 // Import Swiper styles
 import 'swiper/css';
@@ -45,13 +45,14 @@ export const MainBanner = () => {
                         >
                             {
                                 posts.map(( current, index ) => {
+                                    if( index > 4 ) return
                                     const { post_title: title, post_image: image, post_excerpt: excerpt, post_id } = current
                                     return <SwiperSlide className='item' key={ index }>
                                         <figure className='thumbnail-wrapper'>
                                             <img src={ image } alt=''/>
                                             <div className='post-elements'>
                                                 <h2 className='post-title'><Link to="/single" state={{ ID: post_id }}>{ title }</Link></h2>
-                                                <p className="post-excerpt">{ excerpt }</p>
+                                                <p className="post-excerpt">{ excerpt.split(" ").slice(0, 10).join(" ") + "..." }</p>
                                             </div>
                                         </figure>
                                     </SwiperSlide>
@@ -102,11 +103,14 @@ export const TrendingProducts = () => {
                     }}
                     modules = {[ Navigation ]}
                     className = "mySwiper"
+                    spaceBetween = { 15 }
                 >
                     {
                         posts.map(( current, index ) => {
+                            if( index > 4 ) return
                             return <SwiperSlide className='item' key={ index }>
-                                <Content post={ current } exclude={[ 'excerpt' ]}/>
+                                {/* 'excerpt' */}
+                                <Content post={ current } exclude={[]}/>
                             </SwiperSlide>
                         })
                     }
@@ -359,3 +363,56 @@ export const SignIn = ({ setIsSignInActive }) => {
         </>
     )
 }
+
+/**
+ * Products View
+ * 
+ * @since 1.0.0
+ */
+export const GridView = () => {
+    const [ posts, setPosts ] = useState([])
+    const { getTheDate, getCategory } = usePostRelatedHooks()
+
+    useEffect(() => {
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'post',
+            setterFunction: setPosts
+        })
+    }, [])
+
+    return <SectionWrapper main="grid-view-wrapper">
+        <div className='grid-view-main'>
+            <div className='section-details'>
+                <h2 className='section-header'>{ '# Recently Added #' }</h2>
+            </div>
+            <div className='articles-wrapper'>
+                {
+                    posts.map(( post, index ) => {
+                        const { post_id, post_image: image, post_title: title, post_date: date, post_excerpt: excerpt, post_category: categories } = post
+                        let newCategories = getCategory( categories )
+                        return <article className='post' key={ index }>
+                            { ( image !== undefined || image !== null ) && <figure className='thumbnail-wrapper'>
+                                <img src={ image } className='post-thumbnail'/>
+                            </figure> }
+                            <div className='post-elements'>
+                                { title && <h2 className='post-title'><Link to='/single' state={{ ID: post_id }}>{ title }</Link></h2> }
+                                <div className='post-meta'>
+                                    { date && <span className='post-date'>{ getTheDate( date ) }</span> }
+                                    <ul className='post-categories'>
+                                        {
+                                            newCategories.map(( cat, index ) => (
+                                                <li className='cat-item' key={ index }>{ cat }</li>
+                                            ))
+                                        }
+                                    </ul>
+                                </div>
+                                { excerpt && <p className='post-excerpt'>{ excerpt.split(" ").slice(0, 10).join(" ") + "..." }</p> }
+                            </div>
+                        </article>
+                    })
+                }
+            </div>
+        </div>
+    </SectionWrapper>
+} 
