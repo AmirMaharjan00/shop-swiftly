@@ -99,14 +99,19 @@ const ThemeMode = ({ isLightMode, setIsLightMode }) => {
 const ShoppingCart = ({ isShoppingCartActive, setIsShoppingCartActive }) => {
     const GLOBAL = useContext( HEADERCONTEXT )
     const { isSignInActive, setIsSignInActive, isUserLoggedIn } = GLOBAL
-    const cartArray = [ 1, 2, 3, 4, 5 ]
+    let productDetails = sessionStorage.getItem( 'productDetails' )
+    
+    useEffect(() => {
+        console.log( 'ya' )
+    })
+
     return(
         <div className='shopping-cart-wrapper'>
             <FontAwesomeIcon icon={ faCartShopping } className='site-action site-user' onClick={() => setIsShoppingCartActive( ! isShoppingCartActive ) }/>
             { isShoppingCartActive && <div className='cart-popup-wrapper'>
                 { 
                     isUserLoggedIn ? <>
-                        { cartArray.map(( current, index ) => {
+                        { productDetails?.map(( current, index ) => {
                             return(
                                 <div className='item' key={ index }>
                                     <figure className='post-thumb-wrapper no-post-thumb'>
@@ -127,8 +132,8 @@ const ShoppingCart = ({ isShoppingCartActive, setIsShoppingCartActive }) => {
                         <button className='checkout-button'>{ 'Checkout' }</button>
                     </> : <div className='not-logged-in'>
                         <span className='message'>{ 'Sorry, you have not logged in.' }</span>
-                        {/* <UserLogin isSignInActive={ isSignInActive } setIsSignInActive={ setIsSignInActive }/> */}
-                        {/* <button className='checkout-button' onClick={() => setIsSignInActive( true )}>{ 'Sign in' }</button> */}
+                        {/* <UserLogin isSignInActive={ isSignInActive } setIsSignInActive={ setIsSignInActive }/>
+                        <button className='checkout-button' onClick={() => setIsSignInActive( true )}>{ 'Sign in' }</button> */}
                     </div>
                 }
             </div> }

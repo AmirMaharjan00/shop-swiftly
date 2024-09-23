@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useContext, createContext } from 'react'
 import { useLocation  } from 'react-router-dom'
 import { fetchFunction } from './functions'
 import Header from './header'
 import Footer from './footer'
 import { SectionWrapper } from './inc/extras'
+import { usePostRelatedHooks } from './inc/hooks'
+import { Link } from 'react-router-dom';
+
+const SINGLECONTEXT = createContext( null );
 
 export const Single = () => {
     const { state } = useLocation()
     const { ID } = state
     const [ allPosts, setAllPosts ] = useState([])
+    const [ isUserloggedIn, setIsUserLoggedIn ] = useState( false )
 
     useEffect(() => {
         fetchFunction({
@@ -17,20 +22,42 @@ export const Single = () => {
             setterFunction: setAllPosts,
             post: ID
         })
+        if( sessionStorage.length > 0 ) {
+            const userId = sessionStorage.getItem( 'userId' )
+            const loggedIn = sessionStorage.getItem( 'loggedIn' )
+            setIsUserLoggedIn( loggedIn === 'true' )
+        }
     }, [])
 
     return (
         <>
 
             <Header />
-            <SingleContent post={ allPosts } />
+            <SINGLECONTEXT.Provider value={{ isUserloggedIn }}>
+                <SingleContent post={ allPosts } />
+                <RelatedProducts post={ allPosts } />
+            </SINGLECONTEXT.Provider>
             <Footer />
         </>
     );
 }
 
 const SingleContent = ({ post }) => {
+    const Global = useContext( SINGLECONTEXT )
+    const { isUserloggedIn } = Global
     const { post_image: image, post_title: title, post_excerpt: excerpt, post_price: price } = post
+
+    /**
+     * Handle add to cart click
+     * 
+     * @since 1.0.0
+     */
+    const handleClick = () => {
+        let arr = { 'pro': 1, 'cons': 2 }
+        sessionStorage.setItem( 'productDetails', JSON.stringify( arr ) )
+        console.log( sessionStorage )
+    }
+
     return <SectionWrapper main='single-wrapper'>
         <div className='post-wrapper'>
             <figure className='post-thumbnail-wrapper'>
@@ -59,7 +86,115 @@ const SingleContent = ({ post }) => {
             </div>
             <div className='featured-offers-wrapper'>
                 { 'Current there are no offers for this product' }
+                <div className='add-to-cart'>
+                    <button onClick={ handleClick }>{ 'Add to cart' }</button>
+                </div>
+                <CategoryList />
             </div>
         </div>
     </SectionWrapper>
+}
+
+/**
+ * Related products
+ * 
+ * @since 1.0.0
+ */
+const RelatedProducts = ( props ) => {
+    const [ allPosts, setAllPosts ] = useState([])
+    const { post_category: category } = props.post
+    const structuredCategory = category?.replace(',', '')
+    const { getTheDate, getCategory } = usePostRelatedHooks()
+
+    const relatedPosts = useMemo(() => {
+        return allPosts.filter(( post ) => {
+            const { post_category: _thisCat } = post
+            return _thisCat.includes( structuredCategory )
+        })
+    }, [ allPosts ])
+
+    useEffect(() => {
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'post',
+            setterFunction: setAllPosts
+        })
+    }, [])
+
+    return <SectionWrapper main='related-products-section'>
+        <div className='related-products-wrapper'>
+            <div className='section-details'>
+                <h2 className='section-header'>{ '# Related Products #' }</h2>
+            </div>
+            <div className='articles-wrapper'>
+                {
+                    relatedPosts?.map(( post, index ) => {
+                        const { post_id: ID, post_image: image, post_title: title, post_excerpt: excerpt, post_date: date, post_status: status, post_category: categories } = post
+                        if( status !== 'publish' ) return
+                            let newCategories = getCategory( categories )
+                            return <article className='post' key={ index }>
+                                { ( image !== undefined || image !== null ) && <figure className='thumbnail-wrapper'>
+                                    <img src={ image } className='post-thumbnail'/>
+                                </figure> }
+                                <div className='post-elements'>
+                                    { title && <h2 className='post-title'><Link to='/single' state={{ ID: ID }}>{ title }</Link></h2> }
+                                    <div className='post-meta'>
+                                        { date && <span className='post-date'>{ getTheDate( date ) }</span> }
+                                        <ul className='post-categories'>
+                                            {
+                                                newCategories.map(( cat, index ) => (
+                                                    <li className='cat-item' key={ index }>{ cat }</li>
+                                                ))
+                                            }
+                                        </ul>
+                                    </div>
+                                    { excerpt && <p className='post-excerpt'>{ excerpt.split(" ").slice(0, 10).join(" ") + "..." }</p> }
+                                </div>
+                            </article>
+                    })
+                }
+            </div>
+        </div>
+    </SectionWrapper>
+}
+
+/**
+ * Category list
+ * 
+ * @since 1.0.0
+ */
+const CategoryList = () => {
+    const [ categories, setCategories ] = useState([])
+    const { getTheDate } = usePostRelatedHooks()
+
+    useEffect(() => {
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'category',
+            setterFunction: setCategories
+        })
+    }, [])
+
+    return <div className='category-collection'>
+        <div className='header'>
+            <h2 className='title'>{ 'Categories' }</h2>
+        </div>
+        <div className='collection'>
+            {
+                categories.map(( cat, index ) => {
+                    if( index >= 4 ) return
+                    const { category_title: title, category_date: date } = cat
+                    return <article className='category' key={ index }>
+                        <figure className='cat-thumbnail-wrapper no-image'>
+                            <img src="" alt=""/>
+                        </figure>
+                        <div className='category-elements'>
+                            <h2 className='cat-title'>{ title }</h2>
+                            <span className='cat-date'>{ getTheDate( date ) }</span>
+                        </div>
+                    </article>
+                })
+            }
+        </div>
+    </div>
 }

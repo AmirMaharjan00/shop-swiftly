@@ -349,6 +349,7 @@ export const SignIn = ({ setIsSignInActive }) => {
         if( okToStartSession ) {
             sessionStorage.setItem( 'loggedIn', true )
             sessionStorage.setItem( 'userId', userID )
+            sessionStorage.setItem( 'productDetails', {} )
             setIsSignInActive( false )
         }
     }, [ okToStartSession ])

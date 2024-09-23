@@ -562,7 +562,7 @@
     =========== SINGLE ===========
     */
     .single-wrapper {
-        margin-top: 40px;
+        margin: 40px 0;
     }
 
     .single-wrapper .post-wrapper {
@@ -578,10 +578,80 @@
 
     .single-wrapper .featured-offers-wrapper {
         flex: 0 1 20%;
+        padding: 10px;
+        border: 1px solid rgba(183, 183, 183, 0.285);
     }
 
     .single-wrapper .post-thumbnail-wrapper {
         height: 500px;
+    }
+
+    .single-wrapper .add-to-cart button {
+        width: 100%;
+        padding: 6px;
+        color: white;
+        background: var(--hover-color);
+        border: none;
+        border-radius: 3px;
+        margin-top: 8px;
+        cursor: pointer;
+    }
+
+    .single-wrapper .add-to-cart button:hover {
+        box-shadow: 0px 0px 9px -2px var(--hover-color);
+    }
+
+    .single-wrapper .category-collection {
+        margin-top: 10px;
+    }
+
+    .single-wrapper .category-collection .header {
+        margin-bottom: 10px;
+    }
+
+    .single-wrapper .category-collection .title {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .single-wrapper .category-collection .collection {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 5px;
+    }
+
+    .single-wrapper .category-collection .cat-thumbnail-wrapper {
+        flex: 0 1 30%;
+    }
+
+    .single-wrapper .category-collection .cat-thumbnail-wrapper.no-image {
+        background-color: #00000042;
+        border-radius: 100%;
+        height: 70px;
+    }
+
+    .single-wrapper .category-collection .cat-thumbnail-wrapper.no-image img {
+        display: none;
+    }
+
+    .single-wrapper .category-collection img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .single-wrapper .category-collection .category-elements {
+        flex: 0 1 70%;
+    }
+
+    .single-wrapper .category-collection article.category {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        background-color: #a4a4a45f;
+        padding: 10px;
+        box-shadow: 0px 0px 9px -2px rgba(144, 144, 144);
     }
 
     /*
@@ -590,77 +660,96 @@
     =====================
     */
 
-    .grid-view-wrapper .section-header {
+    .grid-view-wrapper .section-header,
+    .related-products-section .section-header {
         text-align: center;
         font-size: 35px;
         font-weight: 700;
         margin-bottom: 10px;
     }
 
-    .grid-view-wrapper .articles-wrapper {
+    .grid-view-wrapper .articles-wrapper,
+    .related-products-section .articles-wrapper {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: 15px;
     }
 
-    .grid-view-main article.post {
+    .grid-view-main article.post,
+    .related-products-wrapper article.post {
         padding: 10px;
         background: #a4a4a45f;
         border-radius: 3px;
         box-shadow: 0px 0px 9px -2px rgba(144, 144, 144, 0.592);
     }
 
-    .grid-view-main article.post figure {
+    .grid-view-main article.post figure,
+    .related-products-wrapper article.post figure {
         margin-bottom: 10px;
         width: 100%;
         height: 200px;
     }
 
-    .grid-view-main article.post img {
+    .grid-view-main article.post img,
+    .related-products-wrapper article.post img {
         object-fit: cover;
         border-radius: 3px;
     }
 
-    .grid-view-main article.post h2.post-title a {
+    .grid-view-main article.post h2.post-title a,
+    .related-products-wrapper article.post h2.post-title a,
+    .single-wrapper .category-collection h2.cat-title {
         font-size: 18px;
         font-weight: 700;
         cursor: pointer;
     }
 
-    .grid-view-main article.post h2.post-title a:hover {
+    .grid-view-main article.post h2.post-title a:hover,
+    .related-products-wrapper article.post h2.post-title a:hover,
+    .single-wrapper .category-collection h2.cat-title:hover {
         color: var(--hover-color)
     }
 
     .grid-view-main article.post span.post-date,
-    .grid-view-main article.post li.cat-item {
+    .grid-view-main article.post li.cat-item,
+    .related-products-wrapper article.post span.post-date,
+    .related-products-wrapper article.post li.cat-item,
+    .single-wrapper .category-collection span.cat-date {
         font-size: 14px;
         cursor: pointer;
     }
 
-    .grid-view-main article.post .post-excerpt {
+    .grid-view-main article.post .post-excerpt,
+    .related-products-wrapper article.post .post-excerpt {
         font-size: 14px;
     }
 
-    .grid-view-main article.post li.cat-item:hover {
+    .grid-view-main article.post li.cat-item:hover,
+    .related-products-wrapper article.post li.cat-item:hover {
         color: #fff;
         background: rgb(34, 139, 34);
     }
 
     .grid-view-main article.post h2.post-title,
-    .grid-view-main article.post div.post-meta {
+    .grid-view-main article.post div.post-meta,
+    .related-products-wrapper article.post h2.post-title,
+    .related-products-wrapper article.post div.post-meta {
         margin-bottom: 10px;
     }
 
-    .grid-view-main article.post span.post-date {
+    .grid-view-main article.post span.post-date,
+    .related-products-wrapper article.post span.post-date {
         margin-right: 10px;
     }
 
-    .grid-view-main article.post .post-categories {
+    .grid-view-main article.post .post-categories,
+    .related-products-wrapper article.post .post-categories {
         list-style: none;
         display: inline-block;
     }
 
-    .grid-view-main article.post .cat-item {
+    .grid-view-main article.post .cat-item,
+    .related-products-wrapper article.post .cat-item {
         display: inline-block;
         margin-right: 10px;
         background: var(--hover-color);
