@@ -55,7 +55,6 @@ const SingleContent = ({ post }) => {
     const handleClick = () => {
         let arr = { 'pro': 1, 'cons': 2 }
         sessionStorage.setItem( 'productDetails', JSON.stringify( arr ) )
-        console.log( sessionStorage )
     }
 
     return <SectionWrapper main='single-wrapper'>
@@ -163,7 +162,7 @@ const RelatedProducts = ( props ) => {
  * 
  * @since 1.0.0
  */
-const CategoryList = () => {
+export const CategoryList = () => {
     const [ categories, setCategories ] = useState([])
     const { getTheDate } = usePostRelatedHooks()
 
@@ -183,13 +182,13 @@ const CategoryList = () => {
             {
                 categories.map(( cat, index ) => {
                     if( index >= 4 ) return
-                    const { category_title: title, category_date: date } = cat
+                    const { category_id: ID, category_title: title, category_date: date } = cat
                     return <article className='category' key={ index }>
                         <figure className='cat-thumbnail-wrapper no-image'>
                             <img src="" alt=""/>
                         </figure>
                         <div className='category-elements'>
-                            <h2 className='cat-title'>{ title }</h2>
+                            <h2 className='cat-title'><Link to='/archive' state={{ ID: ID }}>{ title }</Link></h2>
                             <span className='cat-date'>{ getTheDate( date ) }</span>
                         </div>
                     </article>

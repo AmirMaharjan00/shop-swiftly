@@ -13,6 +13,7 @@ import ErrorPage from './components/error-page'
 import DatabaseForm from './components/admin/inc/admin-forms/database-form'
 import Index from './components/content/index'
 import { Single } from './components/content/single'
+import { Archive } from './components/content/archive'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 function App() {
@@ -44,6 +45,7 @@ const AdminFormLinks = () => {
       <Route exact path='/' Component={ Index }/>
       <Route path='*' Component={ ErrorPage } />
       <Route path='/single' Component={ Single } />
+      <Route path='/archive' Component={ Archive } />
     </Routes>
   );
 }

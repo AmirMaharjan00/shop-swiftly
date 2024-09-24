@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, createContext } from 'react'
 import './assets/css/main.css'
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass, faSun, faMoon, faCartShopping, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
+import { faMagnifyingGlass, faSun, faMoon, faCartShopping, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { SignIn } from './inc/helpers';
 import { fetchFunction } from './functions'
 
@@ -15,6 +15,7 @@ export default function Header() {
     const [ isSignInActive, setIsSignInActive ] = useState( false )
     const [ userDetails, setUserDetails ] = useState({})
     const [ isUserLoggedIn, setIsUserLoggedIn ] = useState( false )
+    const [ isUserDropdownActive, setIsUserDropdownActive ] = useState( false )
     const { user_name: userName } = userDetails
 
     useEffect(() => {
@@ -31,8 +32,8 @@ export default function Header() {
 
     useEffect(() => {
         if( sessionStorage.length > 0 ) {
-            const userId = sessionStorage.getItem( 'userId' ) 
-            const loggedIn = sessionStorage.getItem( 'loggedIn' ) 
+            const userId = sessionStorage.getItem( 'userId' )
+            const loggedIn = sessionStorage.getItem( 'loggedIn' )
             setIsUserLoggedIn( loggedIn === 'true' )
             fetchFunction({
                 action: 'select_where',
@@ -42,6 +43,26 @@ export default function Header() {
             })
         }
     }, [ isSignInActive ])
+
+    /**
+     * Handle user click
+     * 
+     * @since 1.0.0
+     */
+    const handleUserClick = () => {
+        setIsUserDropdownActive( ! isUserDropdownActive )
+    }
+
+    /**
+     * Handle logout click
+     * 
+     * @since 1.0.0
+     */
+    const handleLogout = () => {
+        sessionStorage.removeItem( 'userId' )
+        sessionStorage.removeItem( 'loggedIn' )
+        setIsUserLoggedIn( false )
+    }
 
     return (
         <header className='site-header'>
@@ -64,8 +85,16 @@ export default function Header() {
                             <ThemeMode isLightMode={ isLightMode } setIsLightMode={ setIsLightMode }/>
                             <ShoppingCart isShoppingCartActive={ isShoppingCartActive } setIsShoppingCartActive={ setIsShoppingCartActive }/>
                             { 
-                                isUserLoggedIn ? <div className="user-login-wrapper">
-                                    { 'Hello, ' + userName }
+                                isUserLoggedIn ? 
+                                <div className="user-login-wrapper" onClick={ handleUserClick }>
+                                    <div className='user-wrapper'>
+                                        <span className='user-name'>{ 'Hello, ' + userName }</span>
+                                        <FontAwesomeIcon icon={ isUserDropdownActive ? faAngleUp : faAngleDown } className='dropdown'/>
+                                    </div>
+                                    { isUserDropdownActive && <div className='user-dropdown-wrapper'>
+                                        <button className='admin-dashboard'><Link to="/swt-admin">{ 'Admin Dashboard' }</Link></button>
+                                        <button className='logout' onClick={ handleLogout }>{ 'Logout' }</button>
+                                    </div> }
                                 </div> :
                                 <UserLogin isSignInActive={ isSignInActive } setIsSignInActive={ setIsSignInActive }/>
                             }
@@ -100,10 +129,6 @@ const ShoppingCart = ({ isShoppingCartActive, setIsShoppingCartActive }) => {
     const GLOBAL = useContext( HEADERCONTEXT )
     const { isSignInActive, setIsSignInActive, isUserLoggedIn } = GLOBAL
     let productDetails = sessionStorage.getItem( 'productDetails' )
-    
-    useEffect(() => {
-        console.log( 'ya' )
-    })
 
     return(
         <div className='shopping-cart-wrapper'>
@@ -146,7 +171,7 @@ const UserLogin = ({ isSignInActive, setIsSignInActive }) => {
     // const GLOBAL = useContext( HEADERCONTEXT )
     // const { isSignInActive, setIsSignInActive, isUserLoggedIn } = GLOBAL
     return(
-        <div className='user-login-wrapper'>
+        <div className='login-form-wrapper'>
             <button className='user-sign-in' onClick={() => setIsSignInActive( ! isSignInActive )}>{ 'Sign in' }</button>
             { isSignInActive && <SignIn setIsSignInActive={ setIsSignInActive } /> }
         </div>

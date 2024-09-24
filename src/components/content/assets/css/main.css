@@ -230,9 +230,54 @@
     .site-header .site-actions .user-login-wrapper {
         margin: 0 10px;
         cursor: pointer;
+        position: relative;
     }
 
-    .site-header .site-actions .user-login-wrapper .user-sign-in {
+    .site-header .site-actions .user-login-wrapper .user-wrapper {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .site-header .site-actions .user-login-wrapper .user-dropdown-wrapper {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid var(--hover-color);
+        position: absolute;
+        width: 100%;
+        z-index: 99;
+        background: #000;
+        top: 27px;
+    }
+
+    .site-header .site-actions .user-login-wrapper .user-dropdown-wrapper button {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: var(--hover-color);
+    }
+
+    .site-header .site-actions .user-login-wrapper .user-dropdown-wrapper button:hover {
+        color: #fff;
+        background-color: var(--hover-color);
+        box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);
+    }
+
+    .site-header .site-actions .user-login-wrapper .user-dropdown-wrapper .admin-dashboard {
+        border-bottom: 1px solid var(--hover-color);
+    }
+
+    .site-header .site-actions .user-login-wrapper .user-dropdown-wrapper .admin-dashboard a {
+        color: var(--hover-color);
+    }
+    .site-header .site-actions .user-login-wrapper .user-dropdown-wrapper .admin-dashboard:hover a {
+        color: #fff;
+    }
+
+    .site-header .site-actions .login-form-wrapper .user-sign-in {
         padding: 5px 10px;
         background: none;
         border: 1px solid var(--hover-color);
@@ -240,7 +285,7 @@
         cursor: pointer;
     }
 
-    .site-header .site-actions .user-login-wrapper .user-sign-in:hover {
+    .site-header .site-actions .login-form-wrapper .user-sign-in:hover {
         background: var(--hover-color);
         color: #fff;
         box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);
@@ -561,7 +606,8 @@
     /*
     =========== SINGLE ===========
     */
-    .single-wrapper {
+    .single-wrapper,
+    .archive-wrapper {
         margin: 40px 0;
     }
 
@@ -669,14 +715,16 @@
     }
 
     .grid-view-wrapper .articles-wrapper,
-    .related-products-section .articles-wrapper {
+    .related-products-section .articles-wrapper,
+    .archive-wrapper .post-wrapper {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: 15px;
     }
 
     .grid-view-main article.post,
-    .related-products-wrapper article.post {
+    .related-products-wrapper article.post,
+    .archive-wrapper .post-wrapper article.post {
         padding: 10px;
         background: #a4a4a45f;
         border-radius: 3px;
@@ -684,21 +732,24 @@
     }
 
     .grid-view-main article.post figure,
-    .related-products-wrapper article.post figure {
+    .related-products-wrapper article.post figure,
+    .archive-wrapper .post-wrapper article.post figure {
         margin-bottom: 10px;
         width: 100%;
         height: 200px;
     }
 
     .grid-view-main article.post img,
-    .related-products-wrapper article.post img {
+    .related-products-wrapper article.post img
+    .archive-wrapper .post-wrapper article.post img {
         object-fit: cover;
         border-radius: 3px;
     }
 
     .grid-view-main article.post h2.post-title a,
     .related-products-wrapper article.post h2.post-title a,
-    .single-wrapper .category-collection h2.cat-title {
+    .single-wrapper .category-collection h2.cat-title,
+    .archive-wrapper .post-wrapper h2.post-title a {
         font-size: 18px;
         font-weight: 700;
         cursor: pointer;
@@ -706,7 +757,8 @@
 
     .grid-view-main article.post h2.post-title a:hover,
     .related-products-wrapper article.post h2.post-title a:hover,
-    .single-wrapper .category-collection h2.cat-title:hover {
+    .single-wrapper .category-collection h2.cat-title:hover,
+    .archive-wrapper .post-wrapper h2.post-title a:hover {
         color: var(--hover-color)
     }
 
@@ -733,7 +785,8 @@
     .grid-view-main article.post h2.post-title,
     .grid-view-main article.post div.post-meta,
     .related-products-wrapper article.post h2.post-title,
-    .related-products-wrapper article.post div.post-meta {
+    .related-products-wrapper article.post div.post-meta,
+    .archive-wrapper .post-wrapper h2.post-title {
         margin-bottom: 10px;
     }
 
