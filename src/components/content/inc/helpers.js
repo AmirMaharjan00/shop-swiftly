@@ -47,6 +47,7 @@ export const MainBanner = () => {
                                 posts.map(( current, index ) => {
                                     if( index > 4 ) return
                                     const { post_title: title, post_image: image, post_excerpt: excerpt, post_id, post_status: status } = current
+                                    console.log( image )
                                     if( status !== 'publish' ) return
                                     return <SwiperSlide className='item' key={ index }>
                                         <figure className='thumbnail-wrapper'>

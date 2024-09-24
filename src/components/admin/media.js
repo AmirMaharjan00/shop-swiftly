@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import MediaUpload from './media-upload';
-import { getImages } from './functions'
 
 export default function Media () {
     return (
@@ -18,7 +17,7 @@ export const MediaCollection = ({ setImage }) => {
     const [ imageList, setImageList ] = useState([])
 
     useEffect(() => {
-        const images = getImages()
+        const images = require.context( '../uploads', true );
         setImageList( images.keys().map(image => images(image)) )
     }, [])
 
