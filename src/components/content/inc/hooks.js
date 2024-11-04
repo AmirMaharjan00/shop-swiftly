@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { fetchFunction } from '../functions'
 
 /**
@@ -101,5 +101,67 @@ export const useSession = () => {
         loggedIn,
         parsedProductDetails,
         products
+    }
+}
+
+/**
+ * Hooks to handle session
+ * 
+ * @since 1.0.0
+ */
+export const useOptions = () => {
+    const [ options, setOptions ] = useState({})
+
+    /**
+     * Get the options
+     * 
+     * @since 1.0.0
+     */
+    useEffect(() => {
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'options',
+            setterFunction: setOptions
+        })
+    }, [])
+
+    /**
+     * Get option keys
+     * 
+     * @since 1.0.0
+     */
+    const keys = useMemo(() => {
+        if( Array.isArray( options ) ) {
+            return options.reduce(( newValue, option ) => {
+                const { option_key: key } = option
+                newValue = [ ...newValue, key ]
+                return newValue
+            }, [])
+        } else {
+            return []
+        }
+    }, [ options ])
+
+    /**
+     * Get key value pairs
+     * 
+     * @since 1.0.0
+     */
+    const keyValuePairs = useMemo(() => {
+        if( Array.isArray( options ) ) {
+            return options.reduce(( newValue, option ) => {
+                const { option_key: key, option_value: value } = option
+                newValue = { ...newValue, [key]: value }
+                return newValue
+            }, {})
+        } else {
+            return {}
+        }
+    }, [ options ])
+
+    return {
+        options,
+        keys,
+        keyValuePairs
     }
 }

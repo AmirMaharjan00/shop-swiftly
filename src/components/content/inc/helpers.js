@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation } from 'swiper/modules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleArrowRight, faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons'
-import { usePostRelatedHooks } from './hooks'
+import { usePostRelatedHooks, useOptions } from './hooks'
 
 // Import Swiper styles
 import 'swiper/css';
@@ -434,3 +434,63 @@ export const GridView = () => {
         </div>
     </SectionWrapper>
 } 
+
+export const YouTube = () => {
+    const { options, keys, keyValuePairs } = useOptions()
+    const apiKey = ( keyValuePairs['api_key'] !== undefined ? keyValuePairs['api_key'] : '' )
+    const youtubeUrl = ( keyValuePairs['youtube_urls'] !== undefined ? keyValuePairs['youtube_urls'].split(',') : [] )
+    const [ videos, setVideos ] = useState([])
+    const [ activeVideo, setActiveVideo ] = useState( 0 )
+
+    /**
+     * Get url unique id
+     * 
+     * @since 1.0.0
+     */
+    const uniqueUrlIds = useMemo(() => {
+        return youtubeUrl.reduce(( newValue, url ) => {
+            const parsedUrl = new URL( url )
+            const { searchParams } = parsedUrl
+            const videoId = searchParams.get('v')
+            newValue = [ ...newValue, videoId ]
+            return newValue
+        }, [])
+    }, [ youtubeUrl ])
+
+    /**
+     * Use api to fetch video information
+     * 
+     * @since 1.0.0
+     */
+    useEffect(() => {
+        const api_url = "https://www.googleapis.com/youtube/v3/videos?id=" + uniqueUrlIds.join(',') + "&key=" + apiKey + "&part=snippet,contentDetails";
+        fetch( api_url ).then( response => response.json() ).then( data => setVideos( data.items ) )
+    }, [ apiKey ])
+
+    return <SectionWrapper main='swt-youtube'>
+        <div className='youtube-wrapper'>
+            {
+                videos && videos.map(( video, index ) => {
+                    console.log( video )
+                    const { id, snippet } = video
+                    const { thumbnails, title, channelTitle } = snippet
+                    if( index === activeVideo ) {
+                        return <div className='active-player' key={ index }>
+                            <iframe width="560" height="315" src={ "https://www.youtube.com/embed/" + id + "?enablejsapi=1&mute=1" } frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                        </div>
+                    } else {
+                        return <div className='playlist-wrapper' key={ index }>
+                            <figure>
+                                <img src={ thumbnails.medium.url } alt={ title }/>
+                            </figure>
+                            <div className='video-info'>
+                                <h2 className='video-title'>{ title }</h2>
+                                <span className='channel-title'>{ channelTitle }</span>
+                            </div>
+                        </div>
+                    }
+                })
+            }
+        </div>
+    </SectionWrapper>
+}

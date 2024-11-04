@@ -237,6 +237,9 @@
                     case 'page':
                         $update_query = "UPDATE $table_name SET page_title='$_POST[page_title]', page_excerpt='$_POST[page_excerpt]', page_status='$_POST[page_status]', page_image='$_POST[page_image]' WHERE page_id=$post";
                         break;
+                    case 'options':
+                        $update_query = "UPDATE $table_name SET option_key='$_POST[option_key]', option_value='$_POST[option_value]' WHERE option_key='$post'";
+                        break;
                     default:
                         $update_query = "UPDATE $table_name SET post_title='$_POST[post_title]', post_excerpt='$_POST[post_excerpt]', post_category='$_POST[post_category]', post_tags='$_POST[post_tags]', post_image='$_POST[post_image]', post_stock=$_POST[post_stock], post_price=$_POST[post_price], post_status='$_POST[post_status]', is_featured='$_POST[is_featured]', meta_data='$_POST[meta_data]' WHERE post_id=$post";
                 }

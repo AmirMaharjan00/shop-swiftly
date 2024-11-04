@@ -1,32 +1,50 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
+import { fetchFunction } from '../content/functions'
 
 export default function Settings () {
-    const [ getKeyValuePair, setKeyValuePair ] = useState([])
-    const [ getKey, setKey ] = useState( '' )
-    const [ getValue, setValue ] = useState( '' )
-    
-    const DATABASE = {
-        'option_key' : getKey,
-        'option_value': getValue
-    }
+    const [ getKeyValuePair, setKeyValuePair ] = useState({
+        'api_key': '',
+        'youtube_urls': [ '' ]
+    })
+    const [ options, setOptions ] = useState([])
+    const [ keyCollection, setKeyCollection ] = useState([ 'api_key', 'youtube_urls' ])
+
+    useEffect(() => {
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'options',
+            setterFunction: setOptions
+        })
+    }, [])
 
     /**
-     * set getKey state
+     * Filter options
      * 
      * @since 1.0.0
      */
-    const updateGetKeyState = ( key ) => {
-        setKey( key )
-    }
+    const filteredOptions = useMemo(() => {
+        return options.reduce(( newValue, option ) => {
+            const { option_key: key, option_value: value } = option
+            if( keyCollection.includes( key ) ) newValue = { ...newValue, [key]: value }
+            return newValue
+        }, {})
+    }, [ options ])
 
-    /**
-     * set getValue state
-     * 
-     * @since 1.0.0
-     */
-    const updateGetValueState = ( value ) => {
-        setValue( value )
-    }
+    useEffect(() => {
+        let newKeyValuePair = keyCollection.reduce(( newValue, key ) => {
+            if( 'youtube_urls' === key ) {
+                if( filteredOptions[key] ) {
+                    newValue = { ...newValue, [key]: filteredOptions[key].split(',') }
+                } else {
+                    newValue = { ...newValue, [key]: getKeyValuePair[key] }
+                }
+            } else {
+                newValue = { ...newValue, [key]: filteredOptions[key] }
+            }
+            return newValue
+        }, {})
+        setKeyValuePair( newKeyValuePair )
+    }, [ options ])
 
     /**
      * Handle save button click
@@ -34,59 +52,57 @@ export default function Settings () {
      * @since 1.0.0
      */
     const handleSaveButtonClick = () => {
-        let newPairs =  [ ...getKeyValuePair, DATABASE ]
-        setKeyValuePair( newPairs )
-
-        newPairs.map( current => {
-            var apiParameters = {
-                method: 'POST',
-                body: JSON.stringify({
-                    'params' : current,
-                    'post_type' : 'options'
-                })
+        Object.entries( getKeyValuePair ).map(([ optionKey, optionValue ]) => {
+            const FORMDATA = new FormData()
+            FORMDATA.append( 'action', ( optionKey in filteredOptions ) ? 'update' : 'insert' )
+            FORMDATA.append( 'table_identity', 'options' )
+            if( ( optionKey in filteredOptions ) ) {
+                FORMDATA.append( 'post', optionKey )
+            } else {
+                FORMDATA.append( 'post_type', 'options' )
             }
-            fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', apiParameters )
+            FORMDATA.append( 'option_key', optionKey )
+            FORMDATA.append( 'option_value', optionValue )
+            fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
+                method: 'POST',
+                body: FORMDATA
+            })
             .then(( result ) => result.json())
-        } )
+        })
     }
 
     return (
         <>
-            <h2>Settings</h2>
+            <div className='page-header'>
+                <h2>{ 'Settings' }</h2>
+                <button className="save-settings" onClick={ handleSaveButtonClick }>{ 'Save' }</button>
+            </div>
             <ApiDivStructure
-                setKey = { updateGetKeyState }
-                setValue = { updateGetValueState }
+                setOption = { setKeyValuePair }
+                getKeyValuePair = { getKeyValuePair }
             />
-            <button className="save-settings" onClick={ handleSaveButtonClick }>{ 'Save' }</button>
+            <YoutubeRepeater
+                setOption = { setKeyValuePair }
+                getKeyValuePair = { getKeyValuePair }
+            />
         </>
     );
 }
 
-const ApiDivStructure = ({ label, description, placeholder, value, setKey, setValue }) => {
-    const [ api, setApi ] = useState( value )
-    const [ getOptions, setOptions ] = useState([])
+const ApiDivStructure = ( props ) => {
+    const { label, description, placeholder, getKeyValuePair } = props
+    const key = 'api_key'
+    const api = getKeyValuePair[ key ]
 
-    const KEYID =  label.toLowerCase().trim().replaceAll( ' ', '_' )
-
-    useEffect(() => {
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php?swt_options=get_table_data' )
-        .then(( result ) => result.json() )
-        .then( ( data ) => setOptions( (data == null) ? [] : data ))
-    }, [] )
-
-    useEffect(() => {
-        if( getOptions.length > 0 ) {
-            let filteredOptions = getOptions.filter( current => {
-                return current.option_key == KEYID
-            } )
-            if( filteredOptions.length > 0 ) setApi( filteredOptions[ filteredOptions.length - 1 ].option_value )
-        }
-    }, [ getOptions ])
-
-    useEffect(() => {
-        setKey( KEYID )
-        setValue( api )
-    }, [ api ])
+    /**
+     * Handle api key change
+     * 
+     * @since 1.0.0
+     */
+    const handleApiKeyChange = ( event ) => {
+        let value = event.target.value
+        props.setOption({ ...getKeyValuePair, [key]: value })
+    }
 
     return (
         <div className='api-wrapper'>
@@ -95,7 +111,7 @@ const ApiDivStructure = ({ label, description, placeholder, value, setKey, setVa
                 <p className='description'>{ description }</p>
             </div>
             <div className='api-key-wrapper'>
-                <input value={ api } placeholder={ placeholder } id={ KEYID } onChange={ event => setApi( event.target.value ) } />
+                <input value={ api } placeholder={ placeholder } id={ key } onChange={ handleApiKeyChange } />
             </div>
         </div>
     );
@@ -105,7 +121,64 @@ ApiDivStructure.defaultProps = {
     label: 'YouTube API Key',
     description: 'Insert your api key here to render a video playlist in the website.',
     placeholder: 'AIzaSyC4JZb8vS2hLxxxxxxx_xxxxxxxx_xxxxxxxxx',
-    value: '',
-    setKey: null,
-    setValue: null
+    options: '',
+    setOption: null
+}
+
+/**
+ * Youtube repeater 
+ * 
+ * @since 1.0.0
+ */
+const YoutubeRepeater = ( props ) => {
+    const { getKeyValuePair } = props
+    const key = 'youtube_urls'
+    const urlRepeater = getKeyValuePair[ key ]
+
+    /**
+     * Adding to repeater
+     * 
+     * @since 1.0.0
+     */
+    const addToRepeater = () => {
+        const newValue = [ ...urlRepeater, '' ]
+        props.setOption({ ...getKeyValuePair, [key]: newValue })
+    }
+
+    /**
+     * Removing from repeater
+     * 
+     * @since 1.0.0
+     */
+    const removeFromRepeater = ( index ) => {
+        const newValue = [ ...urlRepeater.slice( 0, index ), ...urlRepeater.slice( index + 1 ) ]
+        props.setOption({ ...getKeyValuePair, [key]: newValue })
+    }
+
+    /**
+     * Handle change in url
+     * 
+     * @since 1.0.0
+     */
+    const handleUrlChange = ( event, index ) => {
+        let value = event.target.value
+        const newValue = [ ...urlRepeater.slice( 0, index ), value, ...urlRepeater.slice( index + 1 ) ]
+        props.setOption({ ...getKeyValuePair, [key]: newValue })
+    }
+
+    return <div className='youtube-wrapper'>
+        <h2 className='title'>{ 'Enter Urls' }</h2>
+        <ul className='repeater-wrapper'>
+            {
+                urlRepeater?.map(( url, index ) => {
+                    return <li className='repeater-field' key={ index }>
+                        <label htmlFor={ index }>{ 'URL' }</label>
+                        <input className='link' id={ index } value={ url } placeholder='http://example' onChange={( event ) => handleUrlChange( event, index )}/>
+                        { urlRepeater.length > 1 && <button className="remove-url" onClick={() => removeFromRepeater( index )}>{ 'Remove' }</button> }
+                    </li>
+                })
+            }
+        </ul>
+        <button className='add-url' onClick={ addToRepeater }>{ 'Add' }</button>
+    </div>
 }

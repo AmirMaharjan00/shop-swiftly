@@ -648,9 +648,15 @@
         SETTINGS PAGE
         ===========================
         */
+        #root .swt-admin-main .page-header {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
         #root .swt-admin-main .save-settings {
             background-color: rgb(11, 189, 11);
-            padding: 10px 15px;
+            padding: 10px 20px;
             border: none;
             border-radius: 3px;
             color: #fff;
@@ -670,9 +676,7 @@
             width: 30%;
             margin-top: 10px;
             border-radius: 3px;
-            /* background: transparent; */
             border: 1px solid black;
-            /* border-bottom: 1px solid white; */
         }
 
         /*
@@ -810,4 +814,50 @@
         .delete-popup-wrapper .delete-action-wrapper button.action.negetive {
             background: rgb(194, 3, 3);
             box-shadow: 0px 0px 5px 0px rgb(194, 3, 3);
+        }
+
+        /*
+        ======================
+        YOUTUBE WRAPPER
+        ======================
+        */
+        .swt-admin-main .repeater-wrapper {
+            margin: 10px 0;
+        }
+
+        .swt-admin-main .repeater-wrapper .repeater-field {
+            display: flex;
+            gap: 10px;
+            background-color: #5125d2;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .swt-admin-main .repeater-wrapper .repeater-field input {
+            width: 40%;
+            padding: 10px;
+            border-radius: 3px;
+            border: 1px solid black;
+        }
+
+        .swt-admin-main .repeater-wrapper .repeater-field .remove-url {
+            background-color: #ff0000;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            box-shadow: 0px 0px 20px 0px #ff0000;;
+            cursor: pointer;
+        }
+
+        .swt-admin-main .add-url {
+            background-color: rgb(11, 189, 11);;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);;;
+            cursor: pointer;
         }
