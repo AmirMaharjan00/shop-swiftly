@@ -31,6 +31,7 @@ export const MainBanner = () => {
                 <div className='row'>
                     <div className='main-banner-wrapper'>
                         <Swiper
+                            modules={[Navigation]}
                             slidesPerView = { 1 }
                             spaceBetween = { 0 }
                             loop = { true }
@@ -40,7 +41,7 @@ export const MainBanner = () => {
                             autoPlay = {{
                                 delay: 3000
                             }}
-                            navigation = { true }
+                            navigation
                             className = "mySwiper"
                         >
                             {
@@ -349,7 +350,7 @@ export const SignIn = ({ setIsSignInActive }) => {
         if( okToStartSession ) {
             sessionStorage.setItem( 'loggedIn', true )
             sessionStorage.setItem( 'userId', userID )
-            sessionStorage.setItem( 'productDetails', {} )
+            sessionStorage.setItem( 'productDetails', JSON.stringify([]) )
             setIsSignInActive( false )
         }
     }, [ okToStartSession ])

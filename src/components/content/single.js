@@ -3,7 +3,7 @@ import { useLocation  } from 'react-router-dom'
 import { fetchFunction } from './functions'
 import Header from './header'
 import Footer from './footer'
-import { SectionWrapper } from './inc/extras'
+import { SectionWrapper, AddToCartButton } from './inc/extras'
 import { usePostRelatedHooks } from './inc/hooks'
 import { Link } from 'react-router-dom';
 
@@ -45,17 +45,7 @@ export const Single = () => {
 const SingleContent = ({ post }) => {
     const Global = useContext( SINGLECONTEXT )
     const { isUserloggedIn } = Global
-    const { post_image: image, post_title: title, post_excerpt: excerpt, post_price: price } = post
-
-    /**
-     * Handle add to cart click
-     * 
-     * @since 1.0.0
-     */
-    const handleClick = () => {
-        let arr = { 'pro': 1, 'cons': 2 }
-        sessionStorage.setItem( 'productDetails', JSON.stringify( arr ) )
-    }
+    const { post_image: image, post_title: title, post_excerpt: excerpt, post_price: price, post_id: ID } = post
 
     return <SectionWrapper main='single-wrapper'>
         <div className='post-wrapper'>
@@ -85,9 +75,9 @@ const SingleContent = ({ post }) => {
             </div>
             <div className='featured-offers-wrapper'>
                 { 'Current there are no offers for this product' }
-                <div className='add-to-cart'>
-                    <button onClick={ handleClick }>{ 'Add to cart' }</button>
-                </div>
+                <AddToCartButton 
+                    productId = { ID }
+                />
                 <CategoryList />
             </div>
         </div>

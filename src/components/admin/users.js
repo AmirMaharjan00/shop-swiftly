@@ -35,7 +35,6 @@ export default function Users ( props ) {
             return
         }
         let productTitles = tempUsers.filter( current => { return current.user_name.toLowerCase().includes( searchKey.toLowerCase() ) } )
-        // console.log( tempUsers )
         setTempUsers( productTitles )
     }
     return (

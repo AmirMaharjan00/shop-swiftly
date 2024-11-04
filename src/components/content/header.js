@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useContext, createContext } from 'react'
+import React, { useState, useEffect, useContext, createContext, useMemo } from 'react'
 import './assets/css/main.css'
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faSun, faMoon, faCartShopping, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { SignIn } from './inc/helpers';
 import { fetchFunction } from './functions'
+import { useSession } from './inc/hooks'
 
 const HEADERCONTEXT = createContext( null )
 
@@ -59,8 +60,7 @@ export default function Header() {
      * @since 1.0.0
      */
     const handleLogout = () => {
-        sessionStorage.removeItem( 'userId' )
-        sessionStorage.removeItem( 'loggedIn' )
+        sessionStorage.clear()
         setIsUserLoggedIn( false )
     }
 
@@ -125,29 +125,38 @@ const ThemeMode = ({ isLightMode, setIsLightMode }) => {
     )
 }
 
-const ShoppingCart = ({ isShoppingCartActive, setIsShoppingCartActive }) => {
-    const GLOBAL = useContext( HEADERCONTEXT )
-    const { isSignInActive, setIsSignInActive, isUserLoggedIn } = GLOBAL
-    let productDetails = sessionStorage.getItem( 'productDetails' )
+const ShoppingCart = () => {
+    const [ cartActive, setCartActive ] = useState( false )
+    const { loggedIn, products } = useSession()
+
+    /**
+     * Handle Shopping cart click
+     * 
+     * @since 1.0.0
+     */
+    const handleClick = () => {
+        setCartActive( ! cartActive )
+    }
 
     return(
         <div className='shopping-cart-wrapper'>
-            <FontAwesomeIcon icon={ faCartShopping } className='site-action site-user' onClick={() => setIsShoppingCartActive( ! isShoppingCartActive ) }/>
-            { isShoppingCartActive && <div className='cart-popup-wrapper'>
-                { 
-                    isUserLoggedIn ? <>
-                        { productDetails?.map(( current, index ) => {
+            <FontAwesomeIcon icon={ faCartShopping } className='site-action site-user' onClick={ handleClick }/>
+            { cartActive && <div className='cart-popup-wrapper'>
+                {
+                    loggedIn ? <>
+                        { products.map(( product, index ) => {
+                            const { post_title: title, post_price: price, post_image: image } = product
                             return(
                                 <div className='item' key={ index }>
                                     <figure className='post-thumb-wrapper no-post-thumb'>
-                                        <img src="" alt=""/>
+                                        <img src={ image } alt={ title } />
                                     </figure>
                                     <div className='post-elements'>
-                                        <h2 className='post-title'>{ 'Amir Maharjan' }</h2>
-                                        <span className='post-price'>{ 'Rs. 100' }</span>
+                                        <h2 className='post-title'>{ title }</h2>
+                                        <span className='post-price'>{ 'Rs. ' + price }</span>
                                         <div className='quantity-wrapper'>
                                             <button className='quantity-button decrease'><FontAwesomeIcon icon={ faMinus }/></button>
-                                            <span className='quantity-indicator'>{ current }</span>
+                                            <span className='quantity-indicator'>{ 1 }</span>
                                             <button className='quantity-button increase'><FontAwesomeIcon icon={ faPlus }/></button>
                                         </div>
                                     </div>
@@ -157,8 +166,6 @@ const ShoppingCart = ({ isShoppingCartActive, setIsShoppingCartActive }) => {
                         <button className='checkout-button'>{ 'Checkout' }</button>
                     </> : <div className='not-logged-in'>
                         <span className='message'>{ 'Sorry, you have not logged in.' }</span>
-                        {/* <UserLogin isSignInActive={ isSignInActive } setIsSignInActive={ setIsSignInActive }/>
-                        <button className='checkout-button' onClick={() => setIsSignInActive( true )}>{ 'Sign in' }</button> */}
                     </div>
                 }
             </div> }

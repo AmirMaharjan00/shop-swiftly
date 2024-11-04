@@ -58,4 +58,48 @@ export const usePostRelatedHooks = () => {
         getTheDate,
         getCategory
     }
-} 
+}
+
+/**
+ * Hooks to handle session
+ * 
+ * @since 1.0.0
+ */
+export const useSession = () => {
+    const userId = sessionStorage.getItem( 'userId' )
+    const loggedIn = sessionStorage.getItem( 'loggedIn' )
+    const productDetails = sessionStorage.getItem( 'productDetails' )
+    const parsedProductDetails = JSON.parse( productDetails )
+    const [ products, setProducts ] = useState([])
+
+    /**
+     * Get the category name from the given category index
+     * 
+     * @since 1.0.0
+     */
+    useEffect(() => {
+        let value = []
+        if( parsedProductDetails !== null ) {
+            parsedProductDetails.map(( productId ) => {
+                const FORMDATA = new FormData()
+                FORMDATA.append( 'action', 'select_where' )
+                FORMDATA.append( 'table_identity', 'post' )
+                if( productId !== undefined ) FORMDATA.append( 'post', productId )
+                fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
+                    method: 'POST',
+                    body: FORMDATA
+                })
+                .then((res) => res.json())
+                .then(( data ) => value.push( data ))
+            })
+        }
+        setProducts( value )
+    }, [ productDetails ])
+
+    return {
+        userId,
+        loggedIn,
+        parsedProductDetails,
+        products
+    }
+}
