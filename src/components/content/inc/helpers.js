@@ -440,7 +440,8 @@ export const YouTube = () => {
     const apiKey = ( keyValuePairs['api_key'] !== undefined ? keyValuePairs['api_key'] : '' )
     const youtubeUrl = ( keyValuePairs['youtube_urls'] !== undefined ? keyValuePairs['youtube_urls'].split(',') : [] )
     const [ videos, setVideos ] = useState([])
-    const [ activeVideo, setActiveVideo ] = useState( 0 )
+    const [ activeVideo, setActiveVideo ] = useState('')
+    const [ autoplay, setAutoplay ] = useState( 0 )
 
     /**
      * Get url unique id
@@ -465,32 +466,61 @@ export const YouTube = () => {
     useEffect(() => {
         const api_url = "https://www.googleapis.com/youtube/v3/videos?id=" + uniqueUrlIds.join(',') + "&key=" + apiKey + "&part=snippet,contentDetails";
         fetch( api_url ).then( response => response.json() ).then( data => setVideos( data.items ) )
+        setActiveVideo( uniqueUrlIds[0] )
     }, [ apiKey ])
+
+    /**
+     * Active video details
+     * 
+     * @since 1.0.0
+     */
+    const activeVideoDetails = useMemo(() => {
+        let videoDetails = videos?.filter(( video ) => video.id === activeVideo )
+        if( videoDetails !== undefined ) return videoDetails[0]
+        return []
+    }, [ activeVideo ])
+
+    /**
+     * Handle new video click
+     * 
+     * @since 1.0.0
+     */
+    const handleNewVideoClick = ( props ) => {
+        const { id } = props
+        setActiveVideo( id )
+        setAutoplay( 1 )
+    }
 
     return <SectionWrapper main='swt-youtube'>
         <div className='youtube-wrapper'>
-            {
-                videos && videos.map(( video, index ) => {
-                    console.log( video )
-                    const { id, snippet } = video
-                    const { thumbnails, title, channelTitle } = snippet
-                    if( index === activeVideo ) {
-                        return <div className='active-player' key={ index }>
-                            <iframe width="560" height="315" src={ "https://www.youtube.com/embed/" + id + "?enablejsapi=1&mute=1" } frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
-                        </div>
-                    } else {
-                        return <div className='playlist-wrapper' key={ index }>
-                            <figure>
-                                <img src={ thumbnails.medium.url } alt={ title }/>
-                            </figure>
-                            <div className='video-info'>
-                                <h2 className='video-title'>{ title }</h2>
-                                <span className='channel-title'>{ channelTitle }</span>
-                            </div>
-                        </div>
-                    }
-                })
-            }
+            <div className='active-player'>
+                <iframe width="560" height="315" src={ "https://www.youtube.com/embed/" + activeVideo + "?enablejsapi=1&mute=1&autoplay=" + autoplay } frameBorder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
+                <h2></h2>
+            </div>
+            {/* { activeVideoDetails?.snippet.title } */}
+            <div className='active-player-info'>
+                <h2 className='video-title'></h2>
+                <span className='channel-title'></span>
+            </div>
+            <ul className="playlist-wrapper">
+                {
+                    videos && videos.map(( video, index ) => {
+                        const { id, snippet } = video
+                        const { thumbnails, title, channelTitle } = snippet
+                        if( activeVideo !== id ) {
+                            return <li className='video' key={ index } onClick={() => handleNewVideoClick({ id })}>
+                                <figure className='thumb-wrapper'>
+                                    <img src={ thumbnails.medium.url } alt={ title }/>
+                                </figure>
+                                <div className='video-info'>
+                                    <h2 className='video-title'>{ title }</h2>
+                                    <span className='channel-title'>{ channelTitle }</span>
+                                </div>
+                            </li>
+                        }
+                    })
+                }
+            </ul>
         </div>
     </SectionWrapper>
 }

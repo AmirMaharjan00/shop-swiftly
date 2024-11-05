@@ -810,3 +810,46 @@
         border-radius: 3px;
         color: #fff;
     }
+
+    /*
+    ===============================
+    YOUTUBE PLAYLIST
+    ===============================
+    */
+    .swt-youtube .youtube-wrapper {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .swt-youtube .active-player {
+        flex: 60%;
+    }
+
+    .swt-youtube .active-player iframe {
+        width: 100%;
+        height: 70%;
+    }
+
+    .swt-youtube .youtube-wrapper .playlist-wrapper {
+        flex: 20%;
+    }
+
+    .swt-youtube .youtube-wrapper .playlist-wrapper .thumb-wrapper {
+        width: 100px;
+        height: 100px;
+    }
+
+    .swt-youtube .youtube-wrapper .playlist-wrapper .video-title {
+        font-size: 16px;
+    }
+
+    .swt-youtube .youtube-wrapper .video {
+        display: flex;
+        gap: 15px;
+        cursor: pointer;
+    }
+
+    .swt-youtube .youtube-wrapper .video:hover .video-title {
+        color:rgb(11, 189, 11);
+    }
