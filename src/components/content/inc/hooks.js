@@ -165,3 +165,29 @@ export const useOptions = () => {
         keyValuePairs
     }
 }
+
+/**
+ * Hook to handle posts
+ * 
+ * @since 1.0.0
+ */
+export const useQuery = ( table ) => {
+    const [ posts, setPosts ] = useState([])
+
+    /**
+     * Get the options
+     * 
+     * @since 1.0.0
+     */
+    useEffect(() => {
+        fetchFunction({
+            action: 'select',
+            tableIdentity: table,
+            setterFunction: setPosts
+        })
+    }, [])
+
+    return {
+        posts
+    }
+}

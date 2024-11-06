@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, createContext, useMemo } from 'react'
 import './assets/css/main.css'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faSun, faMoon, faCartShopping, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { SignIn } from './inc/helpers';
@@ -107,10 +107,36 @@ export default function Header() {
 }
 
 const SearchBox = () => {
+    const [ search, setSearch ] = useState( '' )
+    const navigate = useNavigate()
+
+    /**
+     * Handle submit
+     * 
+     * @since 1.0.0
+     */
+    const handleSubmit = ( event ) => {
+        if( search === '' ) {
+            event.preventDefault()
+            return
+        }
+        navigate( '/search', { state: { search } } )
+    }
+
+    /**
+     * Handle change
+     * 
+     * @since 1.0.0
+     */
+    const handleChange = ( event ) => {
+        let value = event.target.value
+        setSearch( value )
+    }
+
     return(
         <div className='search-box-wrapper'>
-            <form className='header-search-form'>
-                <input type="search" placeholder="Search..." className='header-search-input'/>
+            <form className='header-search-form' onSubmit={ handleSubmit }>
+                <input type="search" placeholder="Search..." className='header-search-input' onChange={ handleChange }/>
                 <button className='header-search-button'><FontAwesomeIcon icon={ faMagnifyingGlass } className='site-action site-search'/></button>
             </form>
         </div>
