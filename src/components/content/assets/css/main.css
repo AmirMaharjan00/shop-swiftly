@@ -776,16 +776,22 @@
 
     .swt-youtube .active-player iframe {
         width: 100%;
-        height: 70%;
+        height: 100%;
     }
 
     .swt-youtube .youtube-wrapper .playlist-wrapper {
-        flex: 20%;
+        flex: 20% 1;
+        height: 400px;
+        overflow-y: auto;
     }
 
     .swt-youtube .youtube-wrapper .playlist-wrapper .thumb-wrapper {
         width: 100px;
         height: 100px;
+    }
+
+    .swt-youtube .youtube-wrapper .playlist-wrapper .video-info {
+        flex: 0 1 70%;
     }
 
     .swt-youtube .youtube-wrapper .playlist-wrapper .video-title {
