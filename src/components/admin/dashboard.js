@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link, Outlet } from 'react-router-dom';
 import './assets/css/admin.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faGauge, faPhotoFilm, faFile, faUserTie, faGear, faThumbtack } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faGauge, faPhotoFilm, faFile, faUserTie, faGear, faThumbtack, faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
 export default function Admin() {
     return (
@@ -26,7 +26,8 @@ const Sidebar = () => {
         { 'label': 'media', 'link': '/swt-admin/media', 'icon': faPhotoFilm },
         { 'label': 'pages', 'link': '/swt-admin/pages', 'icon': faFile },
         { 'label': 'users', 'link': '/swt-admin/users', 'icon': faUserTie },
-        { 'label': 'settings', 'link': '/swt-admin/settings', 'icon': faGear }
+        { 'label': 'settings', 'link': '/swt-admin/settings', 'icon': faGear },
+        { 'label': 'report', 'link': '/swt-admin/report', 'icon': faFilePdf }
     ]
     return (
         <>

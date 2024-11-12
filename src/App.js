@@ -8,6 +8,7 @@ import Media from './components/admin/media'
 import Pages from './components/admin/pages'
 import Products from './components/admin/products'
 import Settings from './components/admin/settings'
+import { Report } from './components/admin/report.js'
 import Users from './components/admin/users'
 import ErrorPage from './components/error-page'
 import DatabaseForm from './components/admin/inc/admin-forms/database-form'
@@ -38,6 +39,7 @@ const AdminFormLinks = () => {
         <Route exact path='/swt-admin/media' Component={ Media }/>
         <Route exact path='/swt-admin/products' element={ <Products /> }/>
         <Route exact path='/swt-admin/settings' Component={ Settings }/>
+        <Route exact path='/swt-admin/report' Component={ Report }/>
         <Route exact path='/swt-admin/users' element={ <Users registeredUsers={ allUsers }/> }/>
       </Route>
       <Route exact path='/swt-admin/login' Component={ AdminLogin }/>
