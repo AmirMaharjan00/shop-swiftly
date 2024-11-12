@@ -1,20 +1,24 @@
-import React, { useState } from 'react'
-import { Link, Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from 'react'
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import './assets/css/admin.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useSession } from '../content/inc/hooks'
 import { faBars, faGauge, faPhotoFilm, faFile, faUserTie, faGear, faThumbtack, faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
 export default function Admin() {
-    return (
-        <>
-            <div className='swt-dashboard' id='swt-dashboard'>
-                <Sidebar/>
-                <div className='swt-admin-main'>
-                    <Outlet/>
-                </div>
-            </div>
-        </>
-    );
+    const { loggedIn } = useSession()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if( loggedIn ) navigate( '/swt-admin/login' )
+    }, [])
+
+    return <div className='swt-dashboard' id='swt-dashboard'>
+        <Sidebar/>
+        <div className='swt-admin-main'>
+            <Outlet/>
+        </div>
+    </div>
 }
 
 const Sidebar = () => {

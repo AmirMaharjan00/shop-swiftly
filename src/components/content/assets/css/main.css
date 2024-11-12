@@ -175,6 +175,11 @@
         color: #fff;
         margin: 0 auto;
         margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .site-header .cart-popup-wrapper .checkout-button:hover {
+        box-shadow: 0px 0px 10px 0px rgb(11, 189, 11);
     }
 
     .site-header .cart-popup-wrapper .not-logged-in .message {

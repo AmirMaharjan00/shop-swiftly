@@ -94,9 +94,9 @@
                     post_date BIGINT(20) NOT NULL,
                     is_featured BOOLEAN NOT NULL,
                     meta_data LONGTEXT NOT NULL,
-                    post_status VARCHAR(255) NOT NULL DEFAULT 'draft'
-                    -- FOREIGN KEY (post_category) REFERENCES swt_category(category_id),
-                    -- FOREIGN KEY (post_tags) REFERENCES swt_tag(tag_id)
+                    post_status VARCHAR(255) NOT NULL DEFAULT 'draft',
+                    FOREIGN KEY (`post_category`) REFERENCES swt_category(`category_id`),
+                    FOREIGN KEY (`post_tags`) REFERENCES swt_tag(`tag_id`)
                 )",
                 "CREATE TABLE IF NOT EXISTS swt_pages (
                     page_id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -118,6 +118,13 @@
                     user_email varchar(255) NOT NULL,
                     user_role varchar(255) NOT NULL,
                     registered_date BIGINT(18) NOT NULL
+                )",
+                "CREATE TABLE IF NOT EXISTS swt_orders (
+                    order_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+                    order_date BIGINT(18) NOT NULL,
+                    product_id INT(11) NOT NULL,
+                    user_id LONGTEXT NOT NULL,
+                    FOREIGN KEY (`user_id`) REFERENCES swt_users(`user_id`)
                 )"
             ];
             if( ! empty( $table_queries ) && is_array( $table_queries ) ):
@@ -151,6 +158,9 @@
                     break;
                 case 'options':
                     $insert_query = "INSERT INTO swt_options ( option_key, option_value ) VALUES ( '$_POST[option_key]', '$_POST[option_value]' )";
+                    break;
+                case 'order':
+                    $insert_query = "INSERT INTO swt_orders ( order_date, product_id, user_id ) VALUES ( '$_POST[order_date]', '$_POST[product_id]', '$_POST[user_id]' )";
                     break;
                 default:
                     $insert_query = "INSERT INTO swt_posts ( post_title, post_excerpt, post_category, post_tags, post_image, post_stock, post_price, post_date, post_status, is_featured, meta_data ) VALUES ( '$_POST[post_title]', '$_POST[post_excerpt]', '$_POST[post_category]', '$_POST[post_tags]', '$_POST[post_image]', '$_POST[post_stock]', '$_POST[post_price]', '$_POST[post_date]', '$_POST[post_status]', '$_POST[is_featured]', '$_POST[meta_data]' )";
@@ -305,6 +315,16 @@
             else:
                 return [];
             endif;
+        }
+
+        /**
+         * Create signature for esewa
+         * 
+         * @since 1.0.0
+         */
+        public function signature() {
+            $s = hash_hmac('sha256', 'Message', 'secret', true);
+            return base64_encode($s); 
         }
     }
  endif;

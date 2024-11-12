@@ -21,6 +21,8 @@
                 echo json_encode( $database->get_table_data() );
             elseif( $_POST['action'] === 'select_where' ):
                 echo json_encode( $database->swt_query() );
+            elseif( $_POST['action'] === 'signature' ):
+                echo json_encode( $database->signature() );
             endif;
         endif;
     else :

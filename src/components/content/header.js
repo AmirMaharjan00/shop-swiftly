@@ -153,7 +153,20 @@ const ThemeMode = ({ isLightMode, setIsLightMode }) => {
 
 const ShoppingCart = () => {
     const [ cartActive, setCartActive ] = useState( false )
+    const [ checkout, setCheckout ] = useState({})
+    const [ signature, setSignature ] = useState( '' )
     const { loggedIn, products } = useSession()
+
+    useEffect(() => {
+        const FORMDATA = new FormData()
+        FORMDATA.append( 'action', 'signature' )
+        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
+            method: 'POST',
+            body: FORMDATA
+        })
+        .then(( result ) => result.json())
+        .then( ( data ) => { setSignature( data ) } )
+    }, [ checkout ])
 
     /**
      * Handle Shopping cart click
@@ -189,7 +202,10 @@ const ShoppingCart = () => {
                                 </div>
                             )
                         })}
-                        <button className='checkout-button'>{ 'Checkout' }</button>
+                        <Payment 
+                            products = { products }
+                            signature = { signature }
+                        />
                     </> : <div className='not-logged-in'>
                         <span className='message'>{ 'Sorry, you have not logged in.' }</span>
                     </div>
@@ -209,4 +225,48 @@ const UserLogin = ({ isSignInActive, setIsSignInActive }) => {
             { isSignInActive && <SignIn setIsSignInActive={ setIsSignInActive } /> }
         </div>
     )
+}
+
+/**
+ * Handle payment
+ * 
+ * @since 1.0.0
+ */
+export const Payment = ( props ) => {
+    const { products } = props
+    const [ amount, setAmount ] = useState( 0 )
+    const taxAmount = 10
+    
+    /**
+     * Handle checkout
+     * 
+     * @since 1.0.0
+     */
+    const handleCheckout = ( event ) => {
+        let amount = 0
+        products.map(( product ) => {
+            const { post_price } = product
+            amount += parseInt( post_price )
+        })
+        setAmount( amount )
+    }
+
+    /**
+     * eSewa ID: 9806800001/2/3/4/5
+     * Password: Nepal@123
+     * MPIN: 1122 (for application only)
+     * Token:123456
+     */
+    return <form action="https://uat.esewa.com.np/epay/main" method="POST">
+        <input value={ 100 + taxAmount } name="tAmt" type="hidden" />
+        <input value={ 100 } name="amt" type="hidden" />
+        <input value={ taxAmount } name="txAmt" type="hidden" />
+        <input value="0" name="psc" type="hidden" />
+        <input value="0" name="pdc" type="hidden" />
+        <input value="EPAYTEST" name="scd" type="hidden" />
+        <input value={ Math.floor( Math.random() * 100000 ) } name="pid" type="hidden" />
+        <input value="http://localhost:3000/single" type="hidden" name="su" />
+        <input value="https://google.com" type="hidden" name="fu" />
+        <input className="checkout-button" value="Checkout" type="submit" onClick={ handleCheckout }/>
+    </form>
 }
