@@ -1,4 +1,5 @@
 import react from 'react'
+import { useSession } from './hooks'
 
 export const SectionWrapper = ({ main, children }) => {
     return (
@@ -14,6 +15,7 @@ export const SectionWrapper = ({ main, children }) => {
 
 export const AddToCartButton = ( props ) => {
     const { productId: ID } = props
+    const { loggedIn, parsedProductDetails } = useSession()
 
     /**
      * Handle click event
@@ -21,10 +23,8 @@ export const AddToCartButton = ( props ) => {
      * @since 1.0.0
      */
     const handleClick = () => {
-        let cartProducts = sessionStorage.getItem( 'productDetails', ID )
-        let parsedCartProducts = JSON.parse( cartProducts )
-        if( ! parsedCartProducts.includes( ID ) ) {
-            sessionStorage.setItem( 'productDetails', JSON.stringify([ ...parsedCartProducts, ID ]) )
+        if( loggedIn && ! parsedProductDetails.includes( ID ) ) {
+            sessionStorage.setItem( 'productDetails', JSON.stringify([ ...parsedProductDetails, ID ]) )
         }
     }
 

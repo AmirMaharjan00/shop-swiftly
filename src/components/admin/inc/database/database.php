@@ -122,7 +122,7 @@
                 "CREATE TABLE IF NOT EXISTS swt_orders (
                     order_id INT(11) AUTO_INCREMENT PRIMARY KEY,
                     order_date BIGINT(18) NOT NULL,
-                    product_id INT(11) NOT NULL,
+                    product_id varchar(255) NOT NULL,
                     user_id LONGTEXT NOT NULL,
                     FOREIGN KEY (`user_id`) REFERENCES swt_users(`user_id`)
                 )"
@@ -284,6 +284,9 @@
                     break;
                 case 'options':
                     $table = 'swt_options';
+                    break;
+                case 'order':
+                    $table = 'swt_orders';
                     break;
             endswitch;
             return $table;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, createContext, useMemo } from 'react'
 import './assets/css/main.css'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faSun, faMoon, faCartShopping, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { SignIn } from './inc/helpers';
@@ -216,9 +216,6 @@ const ShoppingCart = () => {
 }
 
 const UserLogin = ({ isSignInActive, setIsSignInActive }) => {
-// const UserLogin = () => {
-    // const GLOBAL = useContext( HEADERCONTEXT )
-    // const { isSignInActive, setIsSignInActive, isUserLoggedIn } = GLOBAL
     return(
         <div className='login-form-wrapper'>
             <button className='user-sign-in' onClick={() => setIsSignInActive( ! isSignInActive )}>{ 'Sign in' }</button>
@@ -258,15 +255,15 @@ export const Payment = ( props ) => {
      * Token:123456
      */
     return <form action="https://uat.esewa.com.np/epay/main" method="POST">
-        <input value={ 100 + taxAmount } name="tAmt" type="hidden" />
-        <input value={ 100 } name="amt" type="hidden" />
+        <input value={ amount + taxAmount } name="tAmt" type="hidden" />
+        <input value={ amount } name="amt" type="hidden" />
         <input value={ taxAmount } name="txAmt" type="hidden" />
         <input value="0" name="psc" type="hidden" />
         <input value="0" name="pdc" type="hidden" />
         <input value="EPAYTEST" name="scd" type="hidden" />
         <input value={ Math.floor( Math.random() * 100000 ) } name="pid" type="hidden" />
-        <input value="http://localhost:3000/single" type="hidden" name="su" />
-        <input value="https://google.com" type="hidden" name="fu" />
+        <input value="http://localhost:3000" type="hidden" name="su" />
+        <input value="http://localhost:3000" type="hidden" name="fu" />
         <input className="checkout-button" value="Checkout" type="submit" onClick={ handleCheckout }/>
     </form>
 }
