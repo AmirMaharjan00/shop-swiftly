@@ -6,10 +6,11 @@ import { faMagnifyingGlass, faSun, faMoon, faCartShopping, faPlus, faMinus, faAn
 import { SignIn } from './inc/helpers';
 import { fetchFunction } from './functions'
 import { useSession } from './inc/hooks'
+import { HOMECONTEXT } from './index'
 
 const HEADERCONTEXT = createContext( null )
 
-export default function Header() {
+export default function Header( props ) {
     const [ getPages, setPages ] = useState([]);
     const [ isLightMode, setIsLightMode ] = useState( true )
     const [ isShoppingCartActive, setIsShoppingCartActive ] = useState( false )
@@ -152,7 +153,8 @@ const ThemeMode = ({ isLightMode, setIsLightMode }) => {
 }
 
 const ShoppingCart = () => {
-    const [ cartActive, setCartActive ] = useState( false )
+    const homeContext = useContext( HOMECONTEXT )
+    const { setOverlay, overlay, setCartActive, cartActive } = homeContext
     const [ checkout, setCheckout ] = useState({})
     const [ signature, setSignature ] = useState( '' )
     const { loggedIn, products } = useSession()
@@ -175,6 +177,7 @@ const ShoppingCart = () => {
      */
     const handleClick = () => {
         setCartActive( ! cartActive )
+        setOverlay( ! overlay )
     }
 
     return(
@@ -233,6 +236,9 @@ export const Payment = ( props ) => {
     const { products } = props
     const [ amount, setAmount ] = useState( 0 )
     const taxAmount = 10
+    const linkEsewa = false
+    const { userId, parsedProductDetails } = useSession()
+    const navigate = useNavigate()
     
     /**
      * Handle checkout
@@ -240,12 +246,35 @@ export const Payment = ( props ) => {
      * @since 1.0.0
      */
     const handleCheckout = ( event ) => {
-        let amount = 0
+        let newAmount = 0
         products.map(( product ) => {
             const { post_price } = product
-            amount += parseInt( post_price )
+            newAmount += parseInt( post_price )
         })
-        setAmount( amount )
+        setAmount( newAmount )
+        if( ! linkEsewa ) {
+            const FORMDATA = new FormData()
+            FORMDATA.append( 'action', 'insert' )
+            FORMDATA.append( 'post_type', 'order' )
+            FORMDATA.append( 'table_identity', 'order' )
+            FORMDATA.append( 'order_date', Date.now() )
+            FORMDATA.append( 'product_id', parsedProductDetails.toString() )
+            FORMDATA.append( 'user_id', userId )
+            FORMDATA.append( 'order_price', newAmount )
+            FORMDATA.append( 'order_quantity', 1 )
+            fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
+                method: 'POST',
+                body: FORMDATA
+            })
+            .then(( result ) => result.json())
+            .then(( data ) => {
+                if( data.length > 0 ) {
+                    sessionStorage.setItem( 'productDetails', JSON.stringify([]) )
+                    navigate('/')
+                }
+            })
+            event.preventDefault()
+        }
     }
 
     /**
@@ -254,7 +283,7 @@ export const Payment = ( props ) => {
      * MPIN: 1122 (for application only)
      * Token:123456
      */
-    return <form action="https://uat.esewa.com.np/epay/main" method="POST">
+    return ( products.length > 0 ) ? <form action="https://uat.esewa.com.np/epay/main" method="POST">
         <input value={ amount + taxAmount } name="tAmt" type="hidden" />
         <input value={ amount } name="amt" type="hidden" />
         <input value={ taxAmount } name="txAmt" type="hidden" />
@@ -265,5 +294,5 @@ export const Payment = ( props ) => {
         <input value="http://localhost:3000" type="hidden" name="su" />
         <input value="http://localhost:3000" type="hidden" name="fu" />
         <input className="checkout-button" value="Checkout" type="submit" onClick={ handleCheckout }/>
-    </form>
+    </form> : <div className='no-products'>{ 'No products in cart yet.' }</div>
 }

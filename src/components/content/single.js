@@ -7,6 +7,7 @@ import { SectionWrapper, AddToCartButton } from './inc/extras'
 import { usePostRelatedHooks } from './inc/hooks'
 import { Link } from 'react-router-dom';
 import { Sidebar } from './sidebar'
+import { HOMECONTEXT } from './index'
 
 const SINGLECONTEXT = createContext( null );
 
@@ -32,8 +33,7 @@ export const Single = () => {
 
     return (
         <>
-
-            <Header />
+            <Header homeContext={ HOMECONTEXT }/>
             <SINGLECONTEXT.Provider value={{ isUserloggedIn }}>
                 <SingleContent post={ allPosts } />
                 <RelatedProducts post={ allPosts } />

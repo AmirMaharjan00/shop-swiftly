@@ -1,4 +1,6 @@
 import react, { useState, useEffect, useMemo, useCallback, createContext, useContext, useRef } from 'react'
+import { fetchFunction } from '../content/functions'
+import { usePostRelatedHooks, useQuery } from '../content/inc/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import { jsPDF } from 'jspdf';
@@ -7,11 +9,21 @@ const REPORTCONTEXT = createContext()
 export const Report = () => {
     const [ activeTimePeriod, setActiveTimePeriod ] = useState( 'daily' )
     const reportHTML = useRef()
+    const [ reportData, setReportData ] = useState([])
+
+    useEffect(() => {
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'order',
+            setterFunction: setReportData
+        })
+    }, [])
 
     const contextObject = {
         time: activeTimePeriod,
         setTime: setActiveTimePeriod,
-        reportHTML
+        reportHTML,
+        reportData
     }
 
     return <div className='report-section-wrappper' id="report-section-wrappper">
@@ -47,12 +59,15 @@ const TimePeriod = () => {
  */
 const ReportTable = () => {
     const context = useContext( REPORTCONTEXT )
-    const { reportHTML } = context
+    const { getTheDate } = usePostRelatedHooks()
+    const { posts } = useQuery( 'post' )
+    const { reportHTML, reportData } = context
 
     return <div className='report-table-wrapper'>
         <table className='products-wrap' ref={ reportHTML }>
             <thead>
                 <tr className='products-element products-table-head'>
+                    <th className='head-item'>{ 'S.No' }</th>
                     <th className='head-item'>{ 'Date' }</th>
                     <th className='head-item title'>{ 'Product Name' }</th>
                     <th className='head-item'>{ 'Quantity Sold' }</th>
@@ -61,31 +76,20 @@ const ReportTable = () => {
                 </tr>
             </thead>
             <tbody>
-                {/* {
-                    ( tempProducts.length > 0 ) ? tempProducts.map(( current, index ) => {
-                        const { post_id: ID, post_title: title, post_stock: stock, post_price: price, post_category: category, post_tags: tags, post_date: date, post_status: postStatus } = current
-                        const THISSTATUS = ( postStatus === 'publish' ) ? 'published' : postStatus
-                            return( */}
-                                <tr className='products-element products-table-body'>
-                                    <td className='body-item'>{ 'index + 1' }</td>
-                                    <td className='body-item title'>{ 'title' }</td>
-                                    <td className='body-item'>{ 'stock' }</td>
-                                    <td className='body-item'>{ 'Rs ' + 'price' }</td>
-                                    <td className='body-item'>{ 'category' }</td>
-                                    {/* <td className='body-item'>{ tags }</td>
-                                    <td className='body-item'>{ date }</td> */}
-                                    {/* { status === 'all' && <th className='body-item'>{ THISSTATUS.charAt(0).toUpperCase() + THISSTATUS.slice(1) }</th> } */}
-                                    {/* <td className='body-item action-item'>
-                                        <div className='actions-wrapper'>
-                                            <button className='action edit' onClick={() => handleEditorActions( 'update', ID ) }>{ 'Edit' }</button>
-                                            <button className='action trash' onClick={() => handleTrashButtonClick( ID, index ) }>{ 'Trash' }</button>
-                                        </div>
-                                    </td> */}
-                                </tr>
-                            {/* ); 
+                {
+                    ( reportData.length > 0 ) ? reportData.map(( order, index ) => {
+                        const { order_id: Id, order_date: date, product_id: productId, user_id: userId } = order
+                        return <tr className='products-element products-table-body' key={ index }>
+                                <td className='body-item'>{ index + 1 }</td>
+                                <td className='body-item'>{ getTheDate( date ) }</td>
+                                <td className='body-item title'>{ 'title' }</td>
+                                <td className='body-item'>{ 'stock' }</td>
+                                <td className='body-item'>{ 'Rs ' + 'price' }</td>
+                                <td className='body-item'>{ 'category' }</td>
+                            </tr>
                         })
                     : <tr className='products-element products-table-body no-products'><td className='body-item' colSpan={8}>No Products</td></tr> 
-                } */}
+                }
             </tbody>
         </table>
     </div>
