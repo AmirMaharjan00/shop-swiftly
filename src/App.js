@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, createContext, useContext } from 'react'
 import AdminLogin from './components/admin/inc/admin-forms/admin-login'
 import AdminForgotPassword from './components/admin/inc/admin-forms/admin-re-password'
 import AdminRegistration from './components/admin/inc/admin-forms/admin-registration'
@@ -17,15 +17,27 @@ import { Single } from './components/content/single'
 import { Search } from './components/content/search'
 import { Archive } from './components/content/archive'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+export const HOMECONTEXT = createContext()
 
 function App() {
   const [ databaseExists, setDatabaseExists ] = useState( false )
+  const [ overlay, setOverlay ] = useState( false )
+  const [ cartActive, setCartActive ] = useState( false )
+
+  const contextObject = {
+    setOverlay,
+    overlay,
+    cartActive,
+    setCartActive
+  }
 
   return (
-    <Router>
-      { databaseExists && <DatabaseForm /> }
-      { ! databaseExists && <AdminFormLinks /> }
-    </Router>
+    <HOMECONTEXT.Provider value={ contextObject }>
+      <Router>
+        { databaseExists && <DatabaseForm /> }
+        { ! databaseExists && <AdminFormLinks /> }
+      </Router>
+    </HOMECONTEXT.Provider>
   );
 }
 

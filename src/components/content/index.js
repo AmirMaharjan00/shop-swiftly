@@ -4,7 +4,7 @@ import Footer from './footer'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSession } from './inc/hooks'
 import { MainBanner, CategoryCollection, TrendingProducts, GridView, YouTube } from './inc/helpers'
-export const HOMECONTEXT = createContext()
+import { HOMECONTEXT } from '../../App'
 
 export default function Index () {
     const location = useLocation()
@@ -12,15 +12,6 @@ export default function Index () {
     const { userId, loggedIn, parsedProductDetails } = useSession()
     const queryParams = new URLSearchParams( location.search );
     const checkoutComplete = queryParams.get('oid');
-    const [ overlay, setOverlay ] = useState( false )
-    const [ cartActive, setCartActive ] = useState( false )
-
-    const contextObject = {
-        setOverlay,
-        overlay,
-        cartActive,
-        setCartActive
-    }
     
     useEffect(() => {
         if( checkoutComplete && loggedIn && parsedProductDetails.length > 0 ) {
@@ -48,31 +39,12 @@ export default function Index () {
         return
     }, [])
 
-    return (
-        <HOMECONTEXT.Provider value={ contextObject }>
-            <Overlay />
-            <Header />
-            <MainBanner />
-            <TrendingProducts />
-            <GridView />
-            <YouTube />
-            <Footer/>
-        </HOMECONTEXT.Provider>
-    );
-}
-
-const Overlay = () => {
-    const homeContext = useContext( HOMECONTEXT )
-    const { setOverlay, overlay, setCartActive } = homeContext
-    const CLASS = 'full-page-overlay' + ( overlay ? ' active' : '' ) 
-    /**
-     * Handle overlay click
-     * 
-     * @since 1.0.0
-     */
-    const handleClick = () => {
-        setOverlay( false )
-        setCartActive( false )
-    }
-    return <div className={ CLASS } onClick={ handleClick }></div>
+    return <>
+        <Header />
+        <MainBanner />
+        <TrendingProducts />
+        <GridView />
+        <YouTube />
+        <Footer/>
+    </>
 }

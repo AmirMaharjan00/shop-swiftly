@@ -10,7 +10,7 @@ export default function Admin() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if( loggedIn ) navigate( '/swt-admin/login' )
+        if( ! loggedIn ) navigate( '/swt-admin/login' )
     }, [])
 
     return <div className='swt-dashboard' id='swt-dashboard'>

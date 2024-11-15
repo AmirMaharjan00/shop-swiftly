@@ -7,7 +7,7 @@ import { SectionWrapper, AddToCartButton } from './inc/extras'
 import { usePostRelatedHooks } from './inc/hooks'
 import { Link } from 'react-router-dom';
 import { Sidebar } from './sidebar'
-import { HOMECONTEXT } from './index'
+import { HOMECONTEXT } from '../../App'
 
 const SINGLECONTEXT = createContext( null );
 

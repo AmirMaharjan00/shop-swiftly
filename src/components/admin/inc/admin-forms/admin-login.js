@@ -1,15 +1,45 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useQuery } from '../../../content/inc/hooks'
 
 export default function AdminLogin() {
     const [ rawInputs, setRawInputs ] = useState({})
     const [ validatedInputs, setValidatedInputs ] = useState({})
     const [ formErrors, setFormErrors ] = useState({})
     const [ isSubmit, setIsSubmit ] = useState( false )
+    const navigate = useNavigate()
+    const { posts: users } = useQuery( 'user' )
+    const [ userData, setUserData ] = useState({})
+    const [ okToStartSession, setOkToStartSession ] = useState( false )
+    const { user_id: userID, user_email: retrievedEmail, user_password: retrievedPassword } = userData
+    const { admin_username: adminUsername, admin_password: adminPassword } = validatedInputs
 
+    /**
+     * Match retrieved values with entered values and grant permission to start session
+     * 
+     * @since 1.0.0
+     */
     useEffect(() => {
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php' )
-    }, [])
+        if( Object.keys( userData ).length > 0 ) {
+            if( adminUsername === retrievedEmail && adminPassword === retrievedPassword ) {
+                setOkToStartSession( true )
+            }
+        }
+    }, [ userData ])
+
+    /**
+     * Set Session variables
+     * 
+     * @since 1.0.0
+     */
+    useEffect(() => {
+        if( okToStartSession ) {
+            sessionStorage.setItem( 'loggedIn', true )
+            sessionStorage.setItem( 'userId', userID )
+            sessionStorage.setItem( 'productDetails', JSON.stringify([]) )
+            navigate( '/swt-admin' )
+        }
+    }, [ okToStartSession ])
 
     // on input field change
     const handleOnChange = ( event ) => {
@@ -23,8 +53,39 @@ export default function AdminLogin() {
         setFormErrors( formValidate( rawInputs ) )
         if( Object.keys( formValidate( rawInputs ) ).length === 0 ) {
             setValidatedInputs( rawInputs )
+            const { admin_username, admin_password } = rawInputs
+            let whereClause = 'user_password="' + admin_password + '" AND ' + 'user_email="' + admin_username + '"'
+            const FORMDATA = new FormData()
+            FORMDATA.append( 'action', 'select_where' )
+            FORMDATA.append( 'table_identity', 'user' )
+            FORMDATA.append( 'where_clause', whereClause )
+            fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
+                method: 'POST',
+                body: FORMDATA
+            })
+            .then(( response ) => response.json() )
+            .then(( data ) => setUserData( data ))
+            event.preventDefault()
         } else {
             event.preventDefault()
+        }
+    }
+
+    /**
+     * Check if user is admin and is valid
+     * 
+     * @since 1.0.0
+     */
+    const isValidUser = ( users, loginInfo ) => {
+        if( users.length > 0 ) {
+            const { admin_password: password, admin_username: username } = loginInfo
+            users.forEach(( user ) => {
+                const { user_email: email, user_password: userPassword } = user
+                if( ( password === userPassword ) && ( username === email ) ) return true
+            })
+            return false
+        } else {
+            return false
         }
     }
 
@@ -37,11 +98,11 @@ export default function AdminLogin() {
 
     return (
         <div className='swt-admin-login' id='swt-admin-login'>
-            <form onSubmit={ handleOnSubmit } action='/swt-admin'>
+            <form onSubmit={ handleOnSubmit } method="get">
                 <h2 className='title'>Login</h2>
                 <p className='form-field'>
                     <span className='label-error-wrap'>
-                        <label htmlFor='admin_username'>Username</label>
+                        <label htmlFor='admin_username'>{ 'Email / Phone Number' }</label>
                         <span className='error-message'>{ ( formErrors.admin_username || '' ) + ' *' }</span>
                     </span>
                     <input type='text' name='admin_username' id='admin_username' onChange={ handleOnChange } value={ rawInputs.admin_username || '' } />

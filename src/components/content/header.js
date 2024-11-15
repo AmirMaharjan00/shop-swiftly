@@ -6,7 +6,7 @@ import { faMagnifyingGlass, faSun, faMoon, faCartShopping, faPlus, faMinus, faAn
 import { SignIn } from './inc/helpers';
 import { fetchFunction } from './functions'
 import { useSession } from './inc/hooks'
-import { HOMECONTEXT } from './index'
+import { HOMECONTEXT } from '../../App'
 
 const HEADERCONTEXT = createContext( null )
 
@@ -65,7 +65,8 @@ export default function Header( props ) {
         setIsUserLoggedIn( false )
     }
 
-    return (
+    return <>
+        <Overlay />
         <header className='site-header'>
             <div className='container'>
                 <div className='row'>
@@ -104,7 +105,7 @@ export default function Header( props ) {
                 </div>
             </div>
         </header>
-    )
+    </>
 }
 
 const SearchBox = () => {
@@ -295,4 +296,25 @@ export const Payment = ( props ) => {
         <input value="http://localhost:3000" type="hidden" name="fu" />
         <input className="checkout-button" value="Checkout" type="submit" onClick={ handleCheckout }/>
     </form> : <div className='no-products'>{ 'No products in cart yet.' }</div>
+}
+
+/**
+ * Overlay
+ * 
+ * @since 1.0.0
+ */
+const Overlay = () => {
+    const homeContext = useContext( HOMECONTEXT )
+    const { setOverlay, overlay, setCartActive } = homeContext
+    const CLASS = 'full-page-overlay' + ( overlay ? ' active' : '' ) 
+    /**
+     * Handle overlay click
+     * 
+     * @since 1.0.0
+     */
+    const handleClick = () => {
+        setOverlay( false )
+        setCartActive( false )
+    }
+    return <div className={ CLASS } onClick={ handleClick }></div>
 }

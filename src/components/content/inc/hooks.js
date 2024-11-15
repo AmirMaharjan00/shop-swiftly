@@ -26,7 +26,7 @@ export const usePostRelatedHooks = () => {
         let year = date.getFullYear()
         let monthIndex = date.getMonth()
         let monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        let month = monthNames[ monthIndex + 1 ]
+        let month = monthNames[ monthIndex ]
         let day = date.getDate()
         return month + " " +  day + ", " + year
     }
