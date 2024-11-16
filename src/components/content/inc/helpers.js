@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { GetTaxonomy, fetchFunction } from '../functions'
 import { Content } from '../template-parts/content'
 import { SectionWrapper } from './extras'
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation } from 'swiper/modules';
+import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleArrowRight, faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { usePostRelatedHooks, useOptions } from './hooks'
@@ -16,6 +16,7 @@ import { Link } from 'react-router-dom';
 
 export const MainBanner = () => {
     const [ posts, setPosts ] = useState([])
+    const swiperRef = useRef(null);
 
     useEffect(() => {
         fetchFunction({
@@ -23,6 +24,9 @@ export const MainBanner = () => {
             tableIdentity: 'post',
             setterFunction: setPosts
         })
+        if (swiperRef.current) {
+            swiperRef.current.swiper.autoplay.start(); // Ensure autoplay starts after component is mounted
+        }
     }, [])
 
     return(
@@ -31,18 +35,20 @@ export const MainBanner = () => {
                 <div className='row'>
                     <div className='main-banner-wrapper'>
                         <Swiper
-                            modules={[Navigation]}
+                            modules={[ Navigation, Autoplay ]}
                             slidesPerView = { 1 }
                             spaceBetween = { 0 }
                             loop = { true }
                             pagination = {{
                                 clickable: true,
                             }}
-                            autoPlay = {{
-                                delay: 3000
+                            autoplay={{
+                                delay: 2500,          // Delay between transitions (in milliseconds)
+                                disableOnInteraction: false,  // Continue autoplay even after interaction
                             }}
                             navigation
                             className = "mySwiper"
+                            ref={swiperRef}
                         >
                             {
                                 posts.map(( current, index ) => {
@@ -79,6 +85,7 @@ export const CategoryCollection = () => {
 export const TrendingProducts = () => {
     const [ posts, setPosts ] = useState([])
     const [ activeTab, setActiveTab ] = useState( 'featured' )
+    // const swiperRef = useRef(null);
 
     useEffect(() => {
         fetchFunction({
@@ -86,6 +93,9 @@ export const TrendingProducts = () => {
             tableIdentity: 'post',
             setterFunction: setPosts
         })
+        // if (swiperRef.current) {
+        //     swiperRef.current.swiper.autoplay.start(); // Ensure autoplay starts after component is mounted
+        // }
     }, [])
 
     const filteredPosts = useMemo(() => {
@@ -119,9 +129,14 @@ export const TrendingProducts = () => {
                         nextEl: '.next',
                         prevEl: '.prev'
                     }}
-                    modules = {[ Navigation ]}
+                    modules = {[ Navigation, Autoplay ]}
                     className = "mySwiper"
                     spaceBetween = { 15 }
+                    autoplay={{
+                        delay: 2500,          // Delay between transitions (in milliseconds)
+                        disableOnInteraction: false,  // Continue autoplay even after interaction
+                    }}
+                    // ref={swiperRef}
                 >
                     {
                         filteredPosts.map(( current, index ) => {
