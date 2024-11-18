@@ -76,8 +76,9 @@ export default function Header( props ) {
                     <nav className='site-menu'>
                         {
                             getPages && getPages.map(( current, index ) => {
+                                const { page_id } = current
                                 let _thisClass = 'nav-item' + ( index === 0 ? ' active' : '' )
-                                return( <span className={ _thisClass } key={ index }><Link>{ current['page_title'] }</Link></span> );
+                                return( <span className={ _thisClass } key={ index }><Link to="/page" state={{ ID: page_id }}>{ current['page_title'] }</Link></span> );
                             })
                         }
                     </nav>

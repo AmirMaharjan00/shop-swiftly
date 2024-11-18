@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Editor from './editor'
 import { PostTypeDeletionPopup } from './functions'
+import { usePostRelatedHooks } from '../content/inc/hooks'
 
 export default function Pages () {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
@@ -11,6 +12,7 @@ export default function Pages () {
     const [ currentPage, setCurrentPage ] = useState( null )
     const [ status, setStatus ] = useState( 'published' )
     const [ postId, setPostId ] = useState( null )
+    const { getTheDate } = usePostRelatedHooks()
 
     useEffect(() => {
         if( getPages.length <= 0 ) setPages( '' )
@@ -148,7 +150,7 @@ export default function Pages () {
                                         <tr className='products-element products-table-body' key={ index }>
                                             <td className='body-item'>{ index + 1 }</td>
                                             <td className='body-item'>{ pageTitle }</td>
-                                            <td className='body-item'>{ pageDate }</td>
+                                            <td className='body-item'>{ getTheDate( pageDate ) }</td>
                                             { status === 'all' && <th className='body-item'>{ THISSTATUS.charAt(0).toUpperCase() + THISSTATUS.slice(1) }</th> }
                                             <td className='body-item action-item'>
                                                 <div className='actions-wrapper'>

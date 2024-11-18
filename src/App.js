@@ -15,6 +15,7 @@ import DatabaseForm from './components/admin/inc/admin-forms/database-form'
 import Index from './components/content/index'
 import { Single } from './components/content/single'
 import { Search } from './components/content/search'
+import { Page } from './components/content/page'
 import { Archive } from './components/content/archive'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 export const HOMECONTEXT = createContext()
@@ -60,6 +61,7 @@ const AdminFormLinks = () => {
       <Route exact path='/' Component={ Index }/>
       <Route path='*' Component={ ErrorPage } />
       <Route path='/single' Component={ Single } />
+      <Route path='/page' Component={ Page } />
       <Route path='/search' Component={ Search } />
       <Route path='/archive' Component={ Archive } />
     </Routes>

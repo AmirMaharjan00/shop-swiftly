@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Editor from './editor'
 import { PostTypeDeletionPopup } from './functions'
+import { usePostRelatedHooks } from '../content/inc/hooks'
 
 export default function Products () {
     const [ editorIsActive, setEditorIsActive ] = useState( false )
@@ -11,6 +12,7 @@ export default function Products () {
     const [ postId, setPostId ] = useState( null )
     const [ deleteAction, setDeleteAction ] = useState( false )
     const [ currentIndex, setCurrentIndex ] = useState( null )
+    const { getTheDate, getCategory } = usePostRelatedHooks()
 
     useEffect(() => {
         if( getProducts.length <= 0 ) setProducts([])
@@ -157,9 +159,9 @@ export default function Products () {
                                             <td className='body-item title'>{ title }</td>
                                             <td className='body-item'>{ stock }</td>
                                             <td className='body-item'>{ 'Rs ' + price }</td>
-                                            <td className='body-item'>{ category }</td>
-                                            <td className='body-item'>{ tags }</td>
-                                            <td className='body-item'>{ date }</td>
+                                            <td className='body-item'>{ getCategory( category ) }</td>
+                                            <td className='body-item'>{ tags || '-' }</td>
+                                            <td className='body-item'>{ getTheDate( date ) || '-' }</td>
                                             { status === 'all' && <th className='body-item'>{ THISSTATUS.charAt(0).toUpperCase() + THISSTATUS.slice(1) }</th> }
                                             <td className='body-item action-item'>
                                                 <div className='actions-wrapper'>

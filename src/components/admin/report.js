@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, createContext, useContext, useRef } from 'react'
 import { fetchFunction } from '../content/functions'
-import { usePostRelatedHooks, useQuery } from '../content/inc/hooks'
+import { usePostRelatedHooks, useQuery, useUsers, usePosts } from '../content/inc/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import { jsPDF } from 'jspdf';
@@ -61,6 +61,8 @@ const ReportTable = () => {
     const context = useContext( REPORTCONTEXT )
     const { getTheDate } = usePostRelatedHooks()
     const { posts } = useQuery( 'post' )
+    const { getUserName } = useUsers()
+    const { getPostTitle } = usePosts()
     const { reportHTML, reportData, time } = context
 
     /**
@@ -143,6 +145,7 @@ const ReportTable = () => {
                 <tr className='products-element products-table-head'>
                     <th className='head-item'>{ 'S.No' }</th>
                     <th className='head-item'>{ 'Date' }</th>
+                    <th className='head-item'>{ 'User' }</th>
                     <th className='head-item title'>{ 'Product Name' }</th>
                     <th className='head-item'>{ 'Quantity Sold' }</th>
                     <th className='head-item'>{ 'Unit Price' }</th>
@@ -156,7 +159,8 @@ const ReportTable = () => {
                         return <tr className='products-element products-table-body' key={ index }>
                             <td className='body-item'>{ index + 1 }</td>
                             <td className='body-item'>{ getTheDate( date ) }</td>
-                            <td className='body-item title'>{ 'title' }</td>
+                            <td className='body-item'>{ getUserName( userId ) || '-' }</td>
+                            <td className='body-item title'>{ getPostTitle( productId ) || '-' }</td>
                             <td className='body-item'>{ quantity }</td>
                             <td className='body-item'>{ 'Rs ' + price }</td>
                             <td className='body-item'>{ 'Rs ' + ( quantity * price ) }</td>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { fetchFunction } from '../functions'
 
 /**
@@ -189,5 +189,116 @@ export const useQuery = ( table ) => {
 
     return {
         posts
+    }
+}
+
+/**
+ * Hook to handle users
+ * 
+ * @since 1.0.0
+ */
+export const useUsers = () => {
+    const [ users, setUsers ] = useState([])
+
+    /**
+     * Get the options
+     * 
+     * @since 1.0.0
+     */
+    useEffect(() => {
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'user',
+            setterFunction: setUsers
+        })
+    }, [])
+
+    /**
+     * Get user name via ID
+     * 
+     * @since 1.0.0
+     */
+    const getUserName = useCallback(( userId ) => {
+        if( users.length > 0 ) {
+            const user = users.reduce(( newValue, user ) => {
+                const { user_id: ID } = user
+                if( ID === userId ) newValue = user
+                return newValue
+            }, {})
+            const { user_name } = user
+            return user_name;
+        } else {
+            return false
+        }
+    }, [ users ])
+
+    return {
+        users,
+        getUserName
+    }
+}
+
+/**
+ * Hook to handle posts
+ * 
+ * @since 1.0.0
+ */
+export const usePosts = () => {
+    const [ posts, setPosts ] = useState([])
+
+    /**
+     * Get the options
+     * 
+     * @since 1.0.0
+     */
+    useEffect(() => {
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'post',
+            setterFunction: setPosts
+        })
+    }, [])
+
+    /**
+     * Get single post details
+     * 
+     * @since 1.0.0
+     */
+    const getPostDetails = useMemo(() => {
+        if( posts.length > 0 ) {
+            return posts.reduce(( newValue, post ) => {
+                const { post_id: ID, ...rest } = post
+                newValue[ ID ] = rest
+                return newValue
+            }, {})
+        } else {
+            return false
+        }
+    }, [ posts ])
+
+    /**
+     * Get user name via ID
+     * 
+     * @since 1.0.0
+     */
+    const getPostTitle = useCallback(( postId ) => {
+        if( ! getPostDetails ) return ''
+        if( postId.includes( ',' ) ) {
+            let postIdsSplit = postId.split(',')
+            let joinedPostTitles = postIdsSplit.reduce(( newValue, id ) => {
+                let { post_title: title } = getPostDetails[ id ]
+                newValue = [ ...newValue, title ]
+                return newValue
+            }, [])
+            return joinedPostTitles.join(', ')
+        } else {
+            let { post_title: title } = getPostDetails[ postId ]
+            return title
+        }
+    }, [ posts ])
+
+    return {
+        posts,
+        getPostTitle
     }
 }

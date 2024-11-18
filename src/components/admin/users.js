@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { fetchFunction } from '../content/functions'
+import { usePostRelatedHooks } from '../content/inc/hooks'
 
 export default function Users ( props ) {
     const [ allUsers, setAllUsers ] = useState( props.registeredUsers )
     const [ activeStatus, setActiveStatus ] = useState( 'all' )
     const [ tempUsers, setTempUsers ] = useState([]);
+    const [ searchKey, setSearchKey ] = useState( '' )
+    const { getTheDate } = usePostRelatedHooks()
 
+    /** Load data from database */
     useEffect(() => {
         fetchFunction({
             action: 'select',
@@ -14,9 +18,45 @@ export default function Users ( props ) {
         })
     }, [])
 
+    /** Set temporary data on status change and all users change */
     useEffect(() => {
-        setTempUsers( allUsers )
-    }, [ allUsers ])
+        setTempUsers( getFilteredUsers( 'status' ) )
+    }, [ allUsers, activeStatus ])
+
+    /** Set temporary data on search key change */
+    useEffect(() => {
+        setActiveStatus( 'all' )
+        setTempUsers( getFilteredUsers( 'search' ) )
+    }, [ searchKey ])
+
+    /**
+     * Get filtered users
+     * 
+     * @since 1.0.0
+     */
+    const getFilteredUsers = useCallback(( action = '' ) => {
+        if( allUsers.length > 0 ) {
+            if( action === 'search' ) {
+                return allUsers.filter( user => { return user.user_name.toLowerCase().includes( searchKey.toLowerCase() ) } )
+            } else {
+                if( activeStatus === 'all' ) return allUsers
+                return allUsers.reduce(( newValue, user ) => {
+                    const { user_role: role } = user
+                    switch( activeStatus ) {
+                        case 'admin':
+                                if( role.toLowerCase() === 'admin' ) newValue = [ ...newValue, user ]
+                            break;
+                        case 'subscriber':
+                                if( role.toLowerCase() === 'subscriber' ) newValue = [ ...newValue, user ]
+                            break;
+                    }
+                    return newValue
+                }, [])
+            }
+        } else {
+            return []
+        }
+    }, [ allUsers, activeStatus, searchKey ])
 
     let currentTime = new Date().toLocaleString()
 
@@ -26,17 +66,6 @@ export default function Users ( props ) {
         {'label': 'subscriber'}
     ]
 
-    /**
-     * 
-     */
-    const updateUsersWithSearch = ( searchKey ) => {
-        if( searchKey == '' ) {
-            setTempUsers( allUsers )
-            return
-        }
-        let productTitles = tempUsers.filter( current => { return current.user_name.toLowerCase().includes( searchKey.toLowerCase() ) } )
-        setTempUsers( productTitles )
-    }
     return (
         <>
             <div className='status-time-wrap'>
@@ -61,7 +90,7 @@ export default function Users ( props ) {
                         }  
                     </nav>
                     <label>
-                        <input type='search' placeholder='Search . . .' onChange={( event ) => updateUsersWithSearch( event.target.value )}/>
+                        <input type='search' placeholder='Search . . .' onChange={( event ) => setSearchKey( event.target.value )}/>
                         <input type='submit' value='Search'/>
                     </label>
                 </div>
@@ -87,7 +116,7 @@ export default function Users ( props ) {
                                         <td className='body-item'>{ name }</td>
                                         <td className='body-item'>{ email }</td>
                                         <td className='body-item'>{ role.charAt( 0 ).toUpperCase() + role.slice( 1 ) }</td>
-                                        <td className='body-item'>{ date }</td>
+                                        <td className='body-item'>{ getTheDate( date ) }</td>
                                         <td className='body-item action-item'>
                                             <div className='actions-wrapper'>
                                                 {/* onClick={() => handleEditorActions( 'update', ID ) } */}
