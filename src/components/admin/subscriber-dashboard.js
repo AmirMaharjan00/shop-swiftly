@@ -1,10 +1,30 @@
-import React, { useState, useEffect, createContext, useContext } from 'react'
+import React, { useState, useEffect, createContext, useContext, useMemo } from 'react'
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import './assets/css/admin.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSession } from '../content/inc/hooks'
 import { faBars, faGauge, faGear, faThumbtack } from '@fortawesome/free-solid-svg-icons'
+import { Doughnut, Pie } from 'react-chartjs-2';
+import { fetchFunction } from '../content/functions';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js';
+
 export const SUBSCRIBERCONTEXT = createContext()
+
+const ChartBackgroundColrs = [
+    'rgba(255, 99, 132)',  // Red
+    'rgba(54, 162, 235)',  // Blue
+    'rgba(255, 206, 86)',  // Yellow
+    'rgba(75, 192, 192)',  // Green
+    'rgba(153, 102, 255)'  // Purple
+]
+
+const ChartBorderColors = [
+    'rgba(255, 99, 132, 1)',  // Red
+    'rgba(54, 162, 235, 1)',  // Blue
+    'rgba(255, 206, 86, 1)',  // Yellow
+    'rgba(75, 192, 192, 1)',  // Green
+    'rgba(153, 102, 255, 1)'  // Purple
+]
 
 export function Subscriber() {
     const { loggedIn } = useSession()
@@ -80,6 +100,10 @@ export const SubscriberDashboard = () => {
         <>
             <h2>Dashboard</h2>
             <Link to='/' target='_blank'>Visit Website</Link>
+            <div className='chart-wrapper'>
+                <DoughnutChart />
+                <PieChart />
+            </div>
         </>
     );
 }
@@ -106,3 +130,190 @@ export const EditorOverlay = () => {
     }
     return <div className={ CLASS } onClick={ handleClick }></div>
 }
+
+/**
+ * Create doughnut chart
+ * 
+ * @since 1.0.0
+ */
+const DoughnutChart = () => {
+    const { userId } = useSession()
+    const [ reportData, setReportData ] = useState([])
+    ChartJS.register(ArcElement, Tooltip, Legend, Title);
+
+    useEffect(() => {
+        fetchFunction({
+            action: 'query',
+            tableIdentity: 'order',
+            setterFunction: setReportData,
+            query: `SELECT post_id, post_title, SUM(order_quantity) AS total_quantity FROM swt_posts JOIN swt_orders ON post_id = product_id where user_id=${userId} GROUP BY post_id, post_title ORDER BY total_quantity DESC LIMIT 5`
+        })
+    }, [])
+
+    /**
+     * labels for chart
+     * 
+     * @since 1.0.0
+     */
+    const labels = useMemo(() => {
+        if( reportData.length > 0 ) {
+            return reportData.reduce(( newValue, order ) => {
+                let { post_title } = order
+                newValue = [ ...newValue, post_title ]
+                return newValue
+            }, [])
+        } else {
+            return []
+        }
+    }, [ reportData ])
+
+    /**
+     * labels for chart
+     * 
+     * @since 1.0.0
+     */
+    const labelData = useMemo(() => {
+        if( reportData.length > 0 ) {
+            return reportData.reduce(( newValue, order ) => {
+                let { total_quantity } = order
+                newValue = [ ...newValue, total_quantity ]
+                return newValue
+            }, [])
+        } else {
+            return []
+        }
+    }, [ reportData ])
+
+    // Define the data for the Doughnut chart
+    const data = {
+        labels: labels, // Labels for segments
+        datasets: [{
+            label: 'Dataset 1',
+            data: labelData, // Data values for each segment
+            backgroundColor: ChartBackgroundColrs,
+            borderColor: ChartBorderColors,
+            borderWidth: 1 // Border width for each segment
+        }],
+    };
+
+    // Define chart options
+    const options = {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Top 5 Items Bought',
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return `${context.label}: ${context.raw} units`; // Custom label format
+                    },
+                },
+            },
+        },
+        cutout: '50%', // This will create the "donut" effect (50% inner radius)
+    };
+
+    return (
+        <div className='user-doughnut chart'>
+            <Doughnut data={data} options={options} />
+        </div>
+    );
+};
+
+/**
+ * Create Pie chart
+ * 
+ * @since 1.0.0
+ */
+const PieChart = () => {
+    const { userId } = useSession()
+    const [ reportData, setReportData ] = useState([])
+    ChartJS.register(ArcElement, Tooltip, Legend);
+
+    useEffect(() => {
+        fetchFunction({
+            action: 'query',
+            tableIdentity: 'order',
+            setterFunction: setReportData,
+            query: `SELECT post_title, (order_price * order_quantity) AS total_sales FROM swt_posts join swt_orders ON post_id = product_id where user_id=${userId} ORDER BY total_sales DESC LIMIT 5`
+        })
+    }, [])
+
+    /**
+     * labels for chart
+     * 
+     * @since 1.0.0
+     */
+    const labels = useMemo(() => {
+        if( reportData.length > 0 ) {
+            return reportData.reduce(( newValue, order ) => {
+                let { post_title } = order
+                newValue = [ ...newValue, post_title ]
+                return newValue
+            }, [])
+        } else {
+            return []
+        }
+    }, [ reportData ])
+
+    /**
+     * labels for chart
+     * 
+     * @since 1.0.0
+     */
+    const labelData = useMemo(() => {
+        if( reportData.length > 0 ) {
+            return reportData.reduce(( newValue, order ) => {
+                let { total_sales } = order
+                newValue = [ ...newValue, total_sales ]
+                return newValue
+            }, [])
+        } else {
+            return []
+        }
+    }, [ reportData ])
+
+    // Define the data for the Doughnut chart
+    const data = {
+        labels: labels, // Labels for segments
+        datasets: [{
+            label: 'Dataset 1',
+            data: labelData, // Data values for each segment
+            backgroundColor: ChartBackgroundColrs,
+            // hoverBackgroundColor: ChartBorderColors,
+            // hoverOffset: 4,
+            borderColor: ChartBorderColors,
+            borderWidth: 1 // Border width for each segment
+        }],
+    };
+
+    // Define chart options
+    const options = {
+        responsive: true,
+        plugins: {
+            title: {
+                display: true,
+                text: '5 Most Expensive Items',
+            },
+            legend: {
+                position: 'top', // Position of the legend
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return `${context.label}: ${context.raw} units`; // Custom label format
+                    },
+                },
+            },
+        },
+        // cutout: '50%', // This will create the "donut" effect (50% inner radius)
+    };
+
+    return (
+        <div className='user-piechart chart'>
+            <Pie data={data} options={options} />
+        </div>
+    );
+};

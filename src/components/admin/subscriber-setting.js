@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useSession, useUsers } from '../content/inc/hooks'
+import { SUBSCRIBERCONTEXT } from './subscriber-dashboard'
 
 export const SubscriberSetting = () => {
     const { userId } = useSession()
@@ -9,6 +10,8 @@ export const SubscriberSetting = () => {
     const [ password, setPassword ] = useState( '' )
     const [ isSuccess, setIsSuccess ] = useState( false )
     const [ hasChanged, setHasChanged ] = useState( false )
+    const subscriberContext = useContext( SUBSCRIBERCONTEXT )
+    const { setOverlay } = subscriberContext
 
     useEffect(() => {
         setName( getUserName( userId ) )
@@ -20,7 +23,8 @@ export const SubscriberSetting = () => {
         if( isSuccess ) {
             setTimeout(() => {
                 setIsSuccess( false )
-            }, 1500); // 3 seconds
+                setOverlay( false )
+            }, 1500); // 1.5 seconds
         }
     }, [ isSuccess ])
 
@@ -49,6 +53,7 @@ export const SubscriberSetting = () => {
                 setIsSuccess( false )
                 setHasChanged( false )
             } else {
+                setOverlay( true )
                 setIsSuccess( true )
                 setHasChanged( false )
             }
@@ -108,7 +113,8 @@ export const SubscriberSetting = () => {
                 <input type="submit" value={ 'Save' } disabled={ ! hasChanged } className={ 'add-user-button' + ( ! hasChanged ? ' is-disabled' : '' ) } />
             </div>
         </form>
-        <SuccessPopup />
+        { isSuccess && <SuccessPopup /> }
+        {/* <SuccessPopup /> */}
     </div>
 }
 

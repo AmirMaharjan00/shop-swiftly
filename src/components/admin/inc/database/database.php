@@ -126,7 +126,8 @@
                     user_id LONGTEXT NOT NULL,
                     order_price INT(11) NOT NULL,
                     order_quantity INT(11) NOT NULL,
-                    FOREIGN KEY (`user_id`) REFERENCES swt_users(`user_id`)
+                    FOREIGN KEY (`user_id`) REFERENCES swt_users(`user_id`),
+                    FOREIGN KEY (`product_id`) REFERENCES swt_posts(`post_id`)
                 )"
             ];
             if( ! empty( $table_queries ) && is_array( $table_queries ) ):
@@ -361,6 +362,24 @@
                 $delete_result = mysqli_query( $this->connection, $update_query );
                 if( ! $delete_result ) return [ 'result' => $update_query ];
                 return $delete_result;
+            endif;
+        }
+
+         /**
+         * Execute the give query
+         *
+         * @since 1.0.0
+         */
+        public function query() {
+            $result = mysqli_query( $this->connection, $_POST['query'] );
+            if( ! $result ) return [ 'result' => $select_query ];
+            if( $result->num_rows > 0 ) :
+                while( $row = mysqli_fetch_assoc( $result ) ) :
+                    $data[] = $row;
+                endwhile;
+                return $data;
+            else:
+                return [];
             endif;
         }
     }

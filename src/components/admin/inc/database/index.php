@@ -25,6 +25,8 @@
                 echo json_encode( $database->signature() );
             elseif( $_POST['action'] === 'delete' ):
                 echo json_encode( $database->delete() );
+            elseif( $_POST['action'] === 'query' ):
+                echo json_encode( $database->query() );
             endif;
         endif;
     else :
