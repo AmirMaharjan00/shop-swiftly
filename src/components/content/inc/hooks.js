@@ -214,27 +214,72 @@ export const useUsers = () => {
     }, [])
 
     /**
-     * Get user name via ID
+     * Get single post details
      * 
      * @since 1.0.0
      */
-    const getUserName = useCallback(( userId ) => {
+    const getUserDetails = useMemo(() => {
         if( users.length > 0 ) {
-            const user = users.reduce(( newValue, user ) => {
-                const { user_id: ID } = user
-                if( ID === userId ) newValue = user
+            return users.reduce(( newValue, user ) => {
+                const { user_id: ID, ...rest } = user
+                newValue[ ID ] = rest
                 return newValue
             }, {})
-            const { user_name } = user
-            return user_name;
         } else {
             return false
         }
     }, [ users ])
 
+    /**
+     * Get user name via ID
+     * 
+     * @since 1.0.0
+     */
+    const getUserName = useCallback(( userId ) => {
+        if( ! getUserDetails ) return ''
+        let { user_name } = getUserDetails[ userId ]
+        return user_name
+    }, [ users ])
+
+    /**
+     * Get user email via ID
+     * 
+     * @since 1.0.0
+     */
+    const getUserEmail = useCallback(( userId ) => {
+        if( ! getUserDetails ) return ''
+        let { user_email } = getUserDetails[ userId ]
+        return user_email
+    }, [ users ])
+
+    /**
+     * Get user email via ID
+     * 
+     * @since 1.0.0
+     */
+    const getUserRole = useCallback(( userId ) => {
+        if( ! getUserDetails ) return ''
+        let { user_role } = getUserDetails[ userId ]
+        return user_role
+    }, [ users ])
+
+    /**
+     * Get user password via ID
+     * 
+     * @since 1.0.0
+     */
+    const getUserPassword = useCallback(( userId ) => {
+        if( ! getUserDetails ) return ''
+        let { user_password } = getUserDetails[ userId ]
+        return user_password
+    }, [ users ])
+
     return {
         users,
-        getUserName
+        getUserName,
+        getUserEmail,
+        getUserRole,
+        getUserPassword
     }
 }
 
@@ -300,5 +345,46 @@ export const usePosts = () => {
     return {
         posts,
         getPostTitle
+    }
+}
+
+/**
+ * Hook to handle Orders
+ * 
+ * @since 1.0.0
+ */
+export const useOrders = () => {
+    const [ orders, setOrders ] = useState([])
+
+    /**
+     * Get the options
+     * 
+     * @since 1.0.0
+     */
+    useEffect(() => {
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'order',
+            setterFunction: setOrders
+        })
+    }, [])
+
+    /**
+     * Get user name via ID
+     * 
+     * @since 1.0.0
+     */
+    const getUserOrders = useCallback(( userId ) => {
+        if( ! orders.length > 0 ) return []
+        return orders.reduce(( newValue, order ) => {
+            let { user_id } = order
+            if( user_id === userId ) newValue = [ ...newValue, order ]
+            return newValue
+        }, [])
+    }, [ orders ])
+
+    return {
+        orders,
+        getUserOrders
     }
 }

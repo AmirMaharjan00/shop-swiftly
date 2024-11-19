@@ -347,20 +347,20 @@
                 $table_name = $this->get_table_name( $table_identity );
                 switch( $table_identity ) {
                     case 'page':
-                        $update_query = "DELETE FROM $table_identity WHERE page_id=$post";
+                        $update_query = "DELETE FROM $table_name WHERE page_id=$post";
                         break;
                     case 'options':
-                        $update_query = "DELETE FROM $table_identity WHERE option_key='$post'";
+                        $update_query = "DELETE FROM $table_name WHERE option_key='$post'";
                         break;
                     case 'user':
-                        $update_query = "DELETE FROM $table_identity WHERE user_id='$post'";
+                        $update_query = "DELETE FROM $table_name WHERE user_id='$post'";
                         break;
                     default:
-                        $update_query = "DELETE FROM $table_identity WHERE post_id=$post";
+                        $update_query = "DELETE FROM $table_name WHERE post_id=$post";
                 }
                 $delete_result = mysqli_query( $this->connection, $update_query );
                 if( ! $delete_result ) return [ 'result' => $update_query ];
-                return $this->get_table_data( true );
+                return $delete_result;
             endif;
         }
     }

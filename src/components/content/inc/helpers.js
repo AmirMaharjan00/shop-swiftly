@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useMemo, useRef, useContext } from 'react'
+import { HOMECONTEXT } from '../../../App'
 import { GetTaxonomy, fetchFunction } from '../functions'
 import { Content } from '../template-parts/content'
 import { SectionWrapper } from './extras'
@@ -13,6 +14,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Link } from 'react-router-dom';
+import { Subscriber } from '../../admin/subscriber-dashboard'
 
 export const MainBanner = () => {
     const [ posts, setPosts ] = useState([])
@@ -292,6 +294,8 @@ export const SignIn = ({ setIsSignInActive }) => {
     const [ userData, setUserData ] = useState({})
     const { email, password } = loginInfo
     const { user_id: userID, user_email: retrievedEmail, user_password: retrievedPassword } = userData
+    const homeContext = useContext( HOMECONTEXT )
+    const { setIsAdmin, setIsSubscriber } = homeContext
 
     /**
      * Execute this function to hide sign in popup
@@ -351,6 +355,15 @@ export const SignIn = ({ setIsSignInActive }) => {
     useEffect(() => {
         if( Object.keys( userData ).length > 0 ) {
             if( email === retrievedEmail && password === retrievedPassword ) {
+                let { user_role } = userData
+                if( user_role.toLowerCase() === 'subscriber' ) {
+                    setIsSubscriber( true )
+                    setIsAdmin( false )
+                }
+                if( user_role.toLowerCase() === 'admin' ) {
+                    setIsSubscriber( false )
+                    setIsAdmin( true )
+                }
                 setOkToStartSession( true )
             }
         }

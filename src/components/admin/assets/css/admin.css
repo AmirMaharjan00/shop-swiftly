@@ -11,7 +11,7 @@
         }
 
         #root {
-            position: relative;
+            /* position: relative; */
         }
 
         #root #swt-dashboard {
@@ -928,7 +928,7 @@
 
         /*
         =============================
-        USER FORM
+        USER FORM ADMIN
         =============================
         */
         .swt-user-page .user-editor-popup,
@@ -1011,6 +1011,7 @@
             padding: 7px 15px;
             border: none;
             cursor: pointer;
+            border-radius: 3px;
         }
 
         .swt-user-page .delete-popup-content .delete-action-wrapper .positive {
@@ -1029,4 +1030,48 @@
 
         .swt-user-page .delete-popup-content .delete-action-wrapper .negetive:hover {
             box-shadow: 0px 0px 20px 0px rgb(194, 3, 3);
+        }
+
+        /*
+        =============================
+        USER FORM USER
+        =============================
+        */
+        #user-settings-page .title {
+            margin-bottom: 20px;
+        }
+
+        #user-settings-page .form-field {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        #user-settings-page .form-field .form-label-wrapper {
+            width: 120px;
+        }
+        
+        #user-settings-page .form-field .required-indicator {
+            color: #ff0000;
+        }
+
+        #user-settings-page .form-field input[type="text"] {
+            padding: 10px;
+            width: 400px;
+            border-radius: 3px;
+            border: 1px solid #69676758;
+        }
+
+        #user-settings-page .add-user-button {
+            background-color: rgb(11, 189, 11);
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #user-settings-page .add-user-button:hover {
+            box-shadow: 0px 0px 10px 0px rgb(11, 189, 11);
         }

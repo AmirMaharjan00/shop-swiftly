@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '../../../content/inc/hooks'
+import { HOMECONTEXT } from '../../../../App'
 
 export default function AdminLogin() {
     const [ rawInputs, setRawInputs ] = useState({})
@@ -13,6 +14,8 @@ export default function AdminLogin() {
     const [ okToStartSession, setOkToStartSession ] = useState( false )
     const { user_id: userID, user_email: retrievedEmail, user_password: retrievedPassword } = userData
     const { admin_username: adminUsername, admin_password: adminPassword } = validatedInputs
+    const homeContext = useContext( HOMECONTEXT )
+    const { setIsAdmin } = homeContext
 
     /**
      * Match retrieved values with entered values and grant permission to start session
@@ -22,7 +25,9 @@ export default function AdminLogin() {
     useEffect(() => {
         if( Object.keys( userData ).length > 0 ) {
             if( adminUsername === retrievedEmail && adminPassword === retrievedPassword ) {
+                const { user_role } = userData
                 setOkToStartSession( true )
+                if( user_role === 'admin' ) setIsAdmin( true )
             }
         }
     }, [ userData ])

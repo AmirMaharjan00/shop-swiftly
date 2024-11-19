@@ -12,6 +12,7 @@ export default function Users ( props ) {
     const [ tempUsers, setTempUsers ] = useState([]);
     const [ searchKey, setSearchKey ] = useState( '' )
     const [ isUpdate, setIsUpdate ] = useState( false )
+    const [ isDeleted, setIsDeleted ] = useState( false )
     const { getTheDate } = usePostRelatedHooks()
     const adminContext = useContext( ADMINCONTEXT )
     const { overlay, setOverlay, setUserEditor, userEditor, setUserTrash, userTrash } = adminContext
@@ -31,12 +32,14 @@ export default function Users ( props ) {
         setOverlay,
         userId,
         setUserTrash,
-        userTrash
+        userTrash,
+        setIsDeleted,
+        isDeleted
     }
 
     /** Load data from database */
     useEffect(() => {
-        if( fetch ) {
+        if( fetch  ) {
             fetchFunction({
                 action: 'select',
                 tableIdentity: 'user',
@@ -45,6 +48,18 @@ export default function Users ( props ) {
             setFetch( false )
         }
     }, [ fetch ])
+
+    /** Refetch data after delete */
+    useEffect(() => {
+        if( isDeleted ) {
+            fetchFunction({
+                action: 'select',
+                tableIdentity: 'user',
+                setterFunction: setAllUsers
+            })
+            setIsDeleted( false )
+        }
+    }, [ isDeleted ])
 
     /** Set temporary data on status change and all users change */
     useEffect(() => {
@@ -303,7 +318,7 @@ const UserEditor = () => {
  * @since 1.0.0
  */
 const DeleteUser = () => {
-    const { setUserTrash, setOverlay, userId } = useContext( USERCONTEXT )
+    const { setUserTrash, setOverlay, userId, setIsDeleted } = useContext( USERCONTEXT )
 
     /**
      * handle no click
@@ -313,7 +328,6 @@ const DeleteUser = () => {
     const handleNoClick = () => {
         setUserTrash( false )
         setOverlay( false )
-        console.log( userId )
     }
 
     /**
@@ -324,6 +338,12 @@ const DeleteUser = () => {
     const handleYesClick = () => {
         setUserTrash( false )
         setOverlay( false )
+        fetchFunction({
+            action: 'delete',
+            tableIdentity: 'user',
+            setterFunction: setIsDeleted,
+            post: userId
+        })
     }
 
     return <div className='delete-popup-content'>

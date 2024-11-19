@@ -7,6 +7,9 @@ import { Dashboard } from './components/admin/dashboard'
 import Media from './components/admin/media'
 import Pages from './components/admin/pages'
 import Products from './components/admin/products'
+import { Subscriber, SubscriberDashboard } from './components/admin/subscriber-dashboard.js'
+import { SubscriberReport } from './components/admin/subscriber-report.js'
+import { SubscriberSetting } from './components/admin/subscriber-setting.js'
 import Settings from './components/admin/settings'
 import { Report } from './components/admin/report.js'
 import Users from './components/admin/users'
@@ -24,12 +27,18 @@ function App() {
   const [ databaseExists, setDatabaseExists ] = useState( false )
   const [ overlay, setOverlay ] = useState( false )
   const [ cartActive, setCartActive ] = useState( false )
+  const [ isSubscriber, setIsSubscriber ] = useState( false )
+  const [ isAdmin, setIsAdmin ] = useState( false )
 
   const contextObject = {
     setOverlay,
     overlay,
     cartActive,
-    setCartActive
+    setCartActive,
+    isSubscriber,
+    setIsSubscriber,
+    isAdmin,
+    setIsAdmin
   }
 
   return (
@@ -46,6 +55,11 @@ const AdminFormLinks = () => {
   const [ allUsers, setAllUsers ] = useState([])
   return (
     <Routes>
+      <Route exact path='/swt-user' Component={ Subscriber }>
+        <Route exact path='/swt-user' Component={ SubscriberDashboard }/>
+        <Route exact path='/swt-user/setting' Component={ SubscriberSetting }/>
+        <Route exact path='/swt-user/report' Component={ SubscriberReport }/>
+      </Route>
       <Route exact path='/swt-admin' Component={ Admin }>
         <Route exact path='/swt-admin' Component={ Dashboard }/>
         <Route exact path='/swt-admin/pages' element={ <Pages /> }/>

@@ -7,7 +7,6 @@ import { SignIn } from './inc/helpers';
 import { fetchFunction } from './functions'
 import { useSession } from './inc/hooks'
 import { HOMECONTEXT } from '../../App'
-
 const HEADERCONTEXT = createContext( null )
 
 export default function Header( props ) {
@@ -19,6 +18,11 @@ export default function Header( props ) {
     const [ isUserLoggedIn, setIsUserLoggedIn ] = useState( false )
     const [ isUserDropdownActive, setIsUserDropdownActive ] = useState( false )
     const { user_name: userName } = userDetails
+    const homeContext = useContext( HOMECONTEXT )
+    const { isAdmin, isSubscriber } = homeContext
+    let dashbaordLInk = '/swt-user'
+    if( isAdmin ) dashbaordLInk = '/swt-admin'
+    if( isSubscriber ) dashbaordLInk = '/swt-user'
 
     useEffect(() => {
         const FORMDATA = new FormData()
@@ -95,7 +99,7 @@ export default function Header( props ) {
                                         <FontAwesomeIcon icon={ isUserDropdownActive ? faAngleUp : faAngleDown } className='dropdown'/>
                                     </div>
                                     { isUserDropdownActive && <div className='user-dropdown-wrapper'>
-                                        <button className='admin-dashboard'><Link to="/swt-admin">{ 'Admin Dashboard' }</Link></button>
+                                        <button className='admin-dashboard'><Link to={ dashbaordLInk }>{ 'Dashboard' }</Link></button>
                                         <button className='logout' onClick={ handleLogout }>{ 'Logout' }</button>
                                     </div> }
                                 </div> :

@@ -1,13 +1,12 @@
 import React, { useState, useEffect, createContext, useContext } from 'react'
-import { HOMECONTEXT } from '../../App'
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import './assets/css/admin.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSession } from '../content/inc/hooks'
-import { faBars, faGauge, faPhotoFilm, faFile, faUserTie, faGear, faThumbtack, faFilePdf } from '@fortawesome/free-solid-svg-icons'
-export const ADMINCONTEXT = createContext()
+import { faBars, faGauge, faGear, faThumbtack } from '@fortawesome/free-solid-svg-icons'
+export const SUBSCRIBERCONTEXT = createContext()
 
-export default function Admin() {
+export function Subscriber() {
     const { loggedIn } = useSession()
     const navigate = useNavigate()
     const [ overlay, setOverlay ] = useState( false )
@@ -24,10 +23,10 @@ export default function Admin() {
       }
 
     useEffect(() => {
-        if( ! loggedIn ) navigate( '/swt-admin/login' )
+        if( ! loggedIn ) navigate( '/' )
     }, [])
 
-    return <ADMINCONTEXT.Provider value={ contextObject }>
+    return <SUBSCRIBERCONTEXT.Provider value={ contextObject }>
         <EditorOverlay />
         <div className='swt-dashboard' id='swt-dashboard'>
             <Sidebar/>
@@ -35,20 +34,16 @@ export default function Admin() {
                 <Outlet/>
             </div>
         </div>
-    </ADMINCONTEXT.Provider>
+    </SUBSCRIBERCONTEXT.Provider>
 }
 
 const Sidebar = () => {
     const [ canvasActive, setCanvasActive ] = useState( false )
     const [ activePage, setActivePage ] = useState( 0 )
     let sidebarItemsArray = [ 
-        { 'label': 'dashboard', 'link': '/swt-admin', 'icon': faGauge },
-        { 'label': 'products', 'link': '/swt-admin/products', 'icon': faThumbtack },
-        { 'label': 'media', 'link': '/swt-admin/media', 'icon': faPhotoFilm },
-        { 'label': 'pages', 'link': '/swt-admin/pages', 'icon': faFile },
-        { 'label': 'users', 'link': '/swt-admin/users', 'icon': faUserTie },
-        { 'label': 'settings', 'link': '/swt-admin/settings', 'icon': faGear },
-        { 'label': 'report', 'link': '/swt-admin/report', 'icon': faFilePdf }
+        { 'label': 'dashboard', 'link': '/swt-user', 'icon': faGauge },
+        { 'label': 'Reports', 'link': '/swt-user/report', 'icon': faThumbtack },
+        { 'label': 'settings', 'link': '/swt-user/setting', 'icon': faGear },
     ]
 
     return  <div className={ 'swt-admin-sidebar' + ( canvasActive ? ' active' : '' ) }>
@@ -80,7 +75,7 @@ const Sidebar = () => {
     </div>
 }
 
-export const Dashboard = () => {
+export const SubscriberDashboard = () => {
     return (
         <>
             <h2>Dashboard</h2>
@@ -95,7 +90,7 @@ export const Dashboard = () => {
  * @since 1.0.0
  */
 export const EditorOverlay = () => {
-    const adminContext = useContext( ADMINCONTEXT )
+    const adminContext = useContext( SUBSCRIBERCONTEXT )
     const { overlay, setOverlay, setUserEditor, setUserTrash } = adminContext
     const CLASS = 'full-page-overlay' + ( overlay ? ' active' : '' ) 
 
