@@ -252,6 +252,9 @@
                     case 'options':
                         $update_query = "UPDATE $table_name SET option_key='$_POST[option_key]', option_value='$_POST[option_value]' WHERE option_key='$post'";
                         break;
+                    case 'user':
+                        $update_query = "UPDATE $table_name SET user_name='$_POST[user_name]', user_password='$_POST[user_password]', user_email='$_POST[user_email]', user_role='$_POST[user_role]' WHERE user_id='$post'";
+                        break;
                     default:
                         $update_query = "UPDATE $table_name SET post_title='$_POST[post_title]', post_excerpt='$_POST[post_excerpt]', post_category='$_POST[post_category]', post_tags='$_POST[post_tags]', post_image='$_POST[post_image]', post_stock=$_POST[post_stock], post_price=$_POST[post_price], post_status='$_POST[post_status]', is_featured='$_POST[is_featured]', meta_data='$_POST[meta_data]' WHERE post_id=$post";
                 }
@@ -330,6 +333,35 @@
         public function signature() {
             $s = hash_hmac('sha256', 'Message', 'secret', true);
             return base64_encode($s); 
+        }
+
+        /**
+         * delete from database
+         * 
+         * @since 1.0.0
+         */
+        public function delete() {
+            if( count( $_POST ) > 0 ) :
+                $post = $_POST['post'];
+                $table_identity = $_POST['table_identity'];
+                $table_name = $this->get_table_name( $table_identity );
+                switch( $table_identity ) {
+                    case 'page':
+                        $update_query = "DELETE FROM $table_identity WHERE page_id=$post";
+                        break;
+                    case 'options':
+                        $update_query = "DELETE FROM $table_identity WHERE option_key='$post'";
+                        break;
+                    case 'user':
+                        $update_query = "DELETE FROM $table_identity WHERE user_id='$post'";
+                        break;
+                    default:
+                        $update_query = "DELETE FROM $table_identity WHERE post_id=$post";
+                }
+                $delete_result = mysqli_query( $this->connection, $update_query );
+                if( ! $delete_result ) return [ 'result' => $update_query ];
+                return $this->get_table_data( true );
+            endif;
         }
     }
  endif;

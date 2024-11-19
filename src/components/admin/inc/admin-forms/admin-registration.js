@@ -10,7 +10,7 @@ export default function AdminRegistration() {
 
     useEffect(() => {
         setRegistrationForm({
-        'user_name': username,
+            'user_name': username,
             'user_password': password,
             'user_email': email,
             'user_role': 'admin',

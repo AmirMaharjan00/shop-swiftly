@@ -23,6 +23,8 @@
                 echo json_encode( $database->swt_query() );
             elseif( $_POST['action'] === 'signature' ):
                 echo json_encode( $database->signature() );
+            elseif( $_POST['action'] === 'delete' ):
+                echo json_encode( $database->delete() );
             endif;
         endif;
     else :

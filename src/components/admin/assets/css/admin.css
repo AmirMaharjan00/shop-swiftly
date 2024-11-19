@@ -10,6 +10,10 @@
             box-sizing: border-box;
         }
 
+        #root {
+            position: relative;
+        }
+
         #root #swt-dashboard {
             display: flex;
         }
@@ -83,7 +87,8 @@
         }
 
         /*========= PRODUCTS =============*/    
-        .swt-admin-main .admin-products .product-add {
+        .swt-admin-main .admin-products .product-add,
+        .swt-user-page .add-user {
             border: 1px dashed blue;
             background: transparent;
             padding: 5px 10px;
@@ -92,7 +97,8 @@
             font-size: 15px;
         }
 
-        .swt-admin-main .admin-products .product-add:hover {
+        .swt-admin-main .admin-products .product-add:hover,
+        .swt-user-page .add-user:hover {
             border: 1px dashed rgba(255, 0, 123, 0.403);
             color: rgba(255, 0, 123, 0.403);
             box-shadow: 0 0 3px rgba(255, 0, 123, 0.403);
@@ -905,4 +911,122 @@
 
         #report-section-wrappper .download-button .download-icon {
             margin-right: 10px;
+        }
+
+        /*
+        ========================
+        OVERLAY
+        ========================
+        */
+        #root .full-page-overlay.active {
+            background: #00000036;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            z-index: 9;
+        }
+
+        /*
+        =============================
+        USER FORM
+        =============================
+        */
+        .swt-user-page .user-editor-popup,
+        .swt-user-page .delete-popup-content {
+            position: absolute;
+            z-index: 99;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0px 0px 20px 0px rgb(144, 147, 144);
+            width: 30%;
+        }
+
+        .swt-user-page .user-editor-popup input[type="text"] {
+            margin-top: 10px;
+        }
+
+        .swt-user-page .user-editor-popup .form-field {
+            margin-bottom: 10px;
+        }
+
+        .swt-user-page .user-editor-popup .required-indicator {
+            color: #ff0000;
+        }
+
+        .swt-user-page .user-editor-popup input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.249);
+        }
+
+        .swt-user-page .user-editor-popup .admin-role {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .swt-user-page .user-editor-popup .admin-role .form-label-wrapper {
+            margin: 0;
+        }
+
+        .swt-user-page .user-editor-popup .radio-wrapper {
+            display: flex;
+            margin: 10px 0;
+            gap: 10px;
+        }
+
+        .swt-user-page .user-editor-popup .radio-wrapper .radio-item {
+            display: flex;
+            gap: 3px;
+        }
+
+        .user-editor-popup .add-user-button {
+            background-color: rgb(11, 189, 11);
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .user-editor-popup .add-user-button:hover {
+            box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);
+        }
+
+        .swt-user-page .delete-popup-content h2.title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .swt-user-page .delete-popup-content .delete-action-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .swt-user-page .delete-popup-content .delete-action-wrapper .action {
+            padding: 7px 15px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .swt-user-page .delete-popup-content .delete-action-wrapper .positive {
+            background:rgb(2, 180, 2);
+            color: #fff;
+        }
+
+        .swt-user-page .delete-popup-content .delete-action-wrapper .positive:hover {
+            box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);
+        }
+
+        .swt-user-page .delete-popup-content .delete-action-wrapper .negetive {
+            background:rgb(194, 3, 3);
+            color: #fff;
+        }
+
+        .swt-user-page .delete-popup-content .delete-action-wrapper .negetive:hover {
+            box-shadow: 0px 0px 20px 0px rgb(194, 3, 3);
         }
