@@ -10,6 +10,18 @@
             box-sizing: border-box;
         }
 
+        h2, th {
+            font-family: Outfit;
+        }
+
+        button, input[type="submit"], input[type="text"], a {
+            font-family: Outfit;
+        }
+
+        p, span, td, li, div {
+            font-family: Jost;
+        }
+
         #root {
             /* position: relative; */
         }
@@ -1097,11 +1109,56 @@
         USER DASHBOARD
         ===========================
         */
-        .swt-admin-main .chart-wrapper {
+        #user-dashboard-page .page-header,
+        #admin-dashboard-page .page-header {
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
         }
 
-        .swt-admin-main .chart {
+        #user-dashboard-page .page-header .toay-date,
+        #admin-dashboard-page .page-header .toay-date {
+            color: #5c5b5bc4;
+        }
+
+        #user-dashboard-page .chart-wrapper {
+            display: flex;
+            justify-content: space-around;
+        }        
+
+        #user-dashboard-page .user-piechart,
+        #user-dashboard-page .user-doughnut {
             width: 30%;
+        }
+
+        #admin-dashboard-page .admin-barchart {
+            width: 80%;
+            display: flex;
+            justify-content: center;
+        }
+
+        #user-dashboard-page .overview-wrapper,
+        #admin-dashboard-page .overview-wrapper {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        #user-dashboard-page .overview-item,
+        #admin-dashboard-page .overview-item {
+            padding: 10px;
+            border: 1px solid black;
+            width: 100%;
+            text-align: center;
+        }
+
+        #root .visit-website {
+            background-color: rgb(11, 189, 11);
+            color: #fff;
+            padding: 10px;
+            border-radius: 3px;
+        }
+
+        #root .visit-website:hover {
+            box-shadow: 0px 0px 10px 0px rgb(11, 189, 11);
         }

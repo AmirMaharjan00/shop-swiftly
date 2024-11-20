@@ -159,7 +159,7 @@ export default function Products () {
                                             <td className='body-item title'>{ title }</td>
                                             <td className='body-item'>{ stock }</td>
                                             <td className='body-item'>{ 'Rs ' + price }</td>
-                                            <td className='body-item'>{ getCategory( category ) }</td>
+                                            <td className='body-item'>{( getCategory( category ).length > 0 ? getCategory( category ) : '-' )}</td>
                                             <td className='body-item'>{ tags || '-' }</td>
                                             <td className='body-item'>{ getTheDate( date ) || '-' }</td>
                                             { status === 'all' && <th className='body-item'>{ THISSTATUS.charAt(0).toUpperCase() + THISSTATUS.slice(1) }</th> }

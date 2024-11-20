@@ -2,29 +2,14 @@ import React, { useState, useEffect, createContext, useContext, useMemo } from '
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import './assets/css/admin.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useSession } from '../content/inc/hooks'
+import { useSession, useOrders, useUsers, usePostRelatedHooks } from '../content/inc/hooks'
 import { faBars, faGauge, faGear, faThumbtack } from '@fortawesome/free-solid-svg-icons'
 import { Doughnut, Pie } from 'react-chartjs-2';
-import { fetchFunction } from '../content/functions';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js';
+import { ChartBackgroundColrs, ChartBorderColors } from './functions';
+import { fetchFunction } from '../content/functions';
 
 export const SUBSCRIBERCONTEXT = createContext()
-
-const ChartBackgroundColrs = [
-    'rgba(255, 99, 132)',  // Red
-    'rgba(54, 162, 235)',  // Blue
-    'rgba(255, 206, 86)',  // Yellow
-    'rgba(75, 192, 192)',  // Green
-    'rgba(153, 102, 255)'  // Purple
-]
-
-const ChartBorderColors = [
-    'rgba(255, 99, 132, 1)',  // Red
-    'rgba(54, 162, 235, 1)',  // Blue
-    'rgba(255, 206, 86, 1)',  // Yellow
-    'rgba(75, 192, 192, 1)',  // Green
-    'rgba(153, 102, 255, 1)'  // Purple
-]
 
 export function Subscriber() {
     const { loggedIn } = useSession()
@@ -96,16 +81,39 @@ const Sidebar = () => {
 }
 
 export const SubscriberDashboard = () => {
-    return (
-        <>
-            <h2>Dashboard</h2>
-            <Link to='/' target='_blank'>Visit Website</Link>
-            <div className='chart-wrapper'>
-                <DoughnutChart />
-                <PieChart />
+    const { getUserOrders } = useOrders()
+    const { getUserName } = useUsers()
+    const { getTheDate } = usePostRelatedHooks()
+    const { userId } = useSession()
+    const reportData = getUserOrders( userId )
+
+    return  <div className='user-dashboard-page' id="user-dashboard-page">
+        <div className='page-header'>
+            <div className='page-title-wrapper'>
+                <h2 className='title'>{ 'Hello, ' + getUserName( userId ) }</h2>
+                <span className='toay-date'>{ 'Today is ' + getTheDate( Date.now() ) }</span>
             </div>
-        </>
-    );
+            <Link to='/' target='_blank' className='visit-website'>{ 'Visit Website' }</Link>
+        </div>
+        <div className="overview-wrapper">
+            <div className="overview-item">
+                <h2 className='overview-label'>{ 'Total Orders' }</h2>
+                <span className='overview-value'>{ reportData.length }</span>
+            </div>
+            <div className="overview-item">
+                <h2 className='overview-label'>{ 'Total Orders' }</h2>
+                <span className='overview-value'>{ '1' }</span>
+            </div>
+            <div className="overview-item">
+                <h2 className='overview-label'>{ 'Total Orders' }</h2>
+                <span className='overview-value'>{ '1' }</span>
+            </div>
+        </div>
+        <div className='chart-wrapper'>
+            <DoughnutChart />
+            <PieChart />
+        </div>
+    </div>
 }
 
 /**

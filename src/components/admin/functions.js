@@ -66,3 +66,19 @@ export const PostTypeDeletionPopup = ( props ) => {
 PostTypeDeletionPopup.defaultProps = {
     postType: 'post'
 }
+
+export const ChartBackgroundColrs = [
+    'rgba(255, 99, 132)',  // Red
+    'rgba(54, 162, 235)',  // Blue
+    'rgba(255, 206, 86)',  // Yellow
+    'rgba(75, 192, 192)',  // Green
+    'rgba(153, 102, 255)'  // Purple
+]
+
+export const ChartBorderColors = [
+    'rgba(255, 99, 132, 1)',  // Red
+    'rgba(54, 162, 235, 1)',  // Blue
+    'rgba(255, 206, 86, 1)',  // Yellow
+    'rgba(75, 192, 192, 1)',  // Green
+    'rgba(153, 102, 255, 1)'  // Purple
+]

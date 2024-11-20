@@ -342,9 +342,24 @@ export const usePosts = () => {
         }
     }, [ posts ])
 
+    /**
+     * Get posts via post status
+     * 
+     * @since 1.0.0
+     */
+    const getPostViaStatus = useCallback(( status = 'publish' ) => {
+        if( posts.length < 0 ) return []
+        return posts.reduce(( newValue, post ) => {
+            let { post_status } = post
+            if( post_status === status ) newValue = [ ...newValue, post ]
+            return newValue
+        }, [])
+    }, [ posts ])
+
     return {
         posts,
-        getPostTitle
+        getPostTitle,
+        getPostViaStatus
     }
 }
 
@@ -383,8 +398,169 @@ export const useOrders = () => {
         }, [])
     }, [ orders ])
 
+    
+    /**
+     * Check if is today
+     * 
+     * @since 1.0.0
+     */
+    const isToday = ( timeStamp ) => {
+        const today = new Date()
+        const date = new Date( parseInt( timeStamp ) )
+
+        today.setHours(0, 0, 0, 0);
+        date.setHours(0, 0, 0, 0);
+
+        return today.getTime() === date.getTime();
+    }
+
+    /**
+     * Check if is week
+     * 
+     * @since 1.0.0
+     */
+    const isWeek = ( timeStamp ) => {
+        const now = new Date();
+        const givenDate = new Date( parseInt( timeStamp ) );
+
+        // Get the current day of the week (0-6, where 0 = Sunday, 1 = Monday, ..., 6 = Saturday)
+        const currentDay = now.getDay();
+
+        // Calculate the start of the current week (Sunday at 00:00)
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - currentDay);  // Go back to Sunday
+        startOfWeek.setHours(0, 0, 0, 0);  // Set to midnight to ignore time
+
+        // Calculate the end of the current week (Saturday at 23:59)
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6); // Move to Saturday
+        endOfWeek.setHours(23, 59, 59, 999); // Set to end of the day
+
+        // Compare if the given date is within this week range
+        return givenDate >= startOfWeek && givenDate <= endOfWeek;
+    }
+
+    /**
+     * Check if is Month
+     * 
+     * @since 1.0.0
+     */
+    const isMonth = ( timeStamp ) => {
+        const now = new Date();
+        const givenDate = new Date( parseInt( timeStamp ) );
+
+        // Check if the year and month match
+        return now.getFullYear() === givenDate.getFullYear() && now.getMonth() === givenDate.getMonth();
+    }
+
+     /**
+     * Get orders using time
+     * 
+     * @since 1.0.0
+     */
+     const getOrdersViaTime = useCallback(( time = 'daily' ) => {
+        if( orders.length > 0 ) {
+            return orders.filter(( order ) => {
+                const { order_date: date } = order
+                if( time === 'daily' ) {
+                    if( isToday( date ) ) return true
+                } else if( time === 'week' ) {
+                    if( isWeek( date ) ) return true
+                } else if( time === 'month' ) {
+                    if( isMonth( date ) ) return true
+                }
+            })
+        } else {
+            return []
+        }
+    }, [ orders ])
+
     return {
         orders,
-        getUserOrders
+        getUserOrders,
+        isToday,
+        isWeek,
+        isMonth,
+        getOrdersViaTime
+    }
+}
+
+/**
+ * Hook to handle pages
+ * 
+ * @since 1.0.0
+ */
+export const usePages = () => {
+    const [ pages, setPages ] = useState([])
+
+    /**
+     * Get the options
+     * 
+     * @since 1.0.0
+     */
+    useEffect(() => {
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'page',
+            setterFunction: setPages
+        })
+    }, [])
+
+    /**
+     * Get single page details
+     * 
+     * @since 1.0.0
+     */
+    const getPageDetails = useMemo(() => {
+        if( pages.length > 0 ) {
+            return pages.reduce(( newValue, page ) => {
+                const { page_id: ID, ...rest } = page
+                newValue[ ID ] = rest
+                return newValue
+            }, {})
+        } else {
+            return false
+        }
+    }, [ pages ])
+
+    /**
+     * Get user name via ID
+     * 
+     * @since 1.0.0
+     */
+    const getPageTitle = useCallback(( pageId ) => {
+        if( ! getPageDetails ) return ''
+        if( pageId.includes( ',' ) ) {
+            let pageIdsSplit = pageId.split(',')
+            let joinedPostTitles = pageIdsSplit.reduce(( newValue, id ) => {
+                let { page_title: title } = getPageDetails[ id ]
+                newValue = [ ...newValue, title ]
+                return newValue
+            }, [])
+            return joinedPostTitles.join(', ')
+        } else {
+            let { page_title: title } = getPageDetails[ pageId ]
+            return title
+        }
+    }, [ pages ])
+
+    /**
+     * Get pages via post status
+     * 
+     * @since 1.0.0
+     */
+    const getPageViaStatus = useCallback(( status = 'publish' ) => {
+        if( pages.length < 0 ) return []
+        return pages.reduce(( newValue, page ) => {
+            let { page_status } = page
+            if( page_status === status ) newValue = [ ...newValue, page ]
+            return newValue
+        }, [])
+    }, [ pages ])
+
+    return {
+        pages,
+        getPageTitle,
+        getPageViaStatus
     }
 }

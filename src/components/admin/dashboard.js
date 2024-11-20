@@ -3,8 +3,11 @@ import { HOMECONTEXT } from '../../App'
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import './assets/css/admin.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useSession } from '../content/inc/hooks'
+import { useSession, useOrders, useUsers, usePostRelatedHooks, usePosts, usePages } from '../content/inc/hooks'
 import { faBars, faGauge, faPhotoFilm, faFile, faUserTie, faGear, faThumbtack, faFilePdf } from '@fortawesome/free-solid-svg-icons'
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { ChartBackgroundColrs, ChartBorderColors } from './functions';
 export const ADMINCONTEXT = createContext()
 
 export default function Admin() {
@@ -81,12 +84,47 @@ const Sidebar = () => {
 }
 
 export const Dashboard = () => {
-    return (
-        <>
-            <h2>Dashboard</h2>
-            <Link to='/' target='_blank'>Visit Website</Link>
-        </>
-    );
+    const { getUserOrders, orders, getOrdersViaTime } = useOrders()
+    const { getUserName, users } = useUsers()
+    const { getTheDate } = usePostRelatedHooks()
+    const { userId } = useSession()
+    const { getPostViaStatus } = usePosts()
+    console.log( usePages() )
+    const { getPageViaStatus } = usePages()
+    const reportData = getUserOrders( userId )
+    const data = [ getPostViaStatus().length, getPageViaStatus().length, users.length, getOrdersViaTime().length ]
+
+    return <div className='admin-dashboard-page' id="admin-dashboard-page">
+        <div className='page-header'>
+            <div className='page-title-wrapper'>
+                <h2 className='title'>{ 'Hello, ' + getUserName( userId ) }</h2>
+                <span className='toay-date'>{ 'Today is ' + getTheDate( Date.now() ) }</span>
+            </div>
+            <Link to='/' target='_blank' className='visit-website'>{ 'Visit Website' }</Link>
+        </div>
+        <div className="overview-wrapper">
+            <div className="overview-item">
+                <h2 className='overview-label'>{ 'Total Products' }</h2>
+                <span className='overview-value'>{ getPostViaStatus().length }</span>
+            </div>
+            <div className="overview-item">
+                <h2 className='overview-label'>{ 'Total Pages' }</h2>
+                <span className='overview-value'>{ getPageViaStatus().length }</span>
+            </div>
+            <div className="overview-item">
+                <h2 className='overview-label'>{ 'Total Users' }</h2>
+                <span className='overview-value'>{ users.length }</span>
+            </div>
+            <div className="overview-item">
+                <h2 className='overview-label'>{ 'Daily Orders' }</h2>
+                <span className='overview-value'>{ getOrdersViaTime().length }</span>
+            </div>
+        </div>
+        <div className='chart-wrapper'>
+            <BarChart data={ data }/>
+        </div>
+    </div>
+    
 }
 
 /**
@@ -111,3 +149,49 @@ export const EditorOverlay = () => {
     }
     return <div className={ CLASS } onClick={ handleClick }></div>
 }
+
+/**
+ * Create Bar chart
+ * 
+ * @since 1.0.0
+ */
+const BarChart = ( props ) => {
+    const { data: itemData } = props
+    ChartJS.register( CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend );
+
+    // Define the data for the Doughnut chart
+    const data = {
+        labels: [ 'Products', 'Pages', 'Users', 'Daily Orders' ],
+        datasets: [{
+            label: 'Overview',
+            data: itemData,
+            backgroundColor: ChartBackgroundColrs,
+            borderColor: ChartBorderColors,
+            borderWidth: 1
+        }]
+    };
+
+    // Define chart options
+    const options = {
+        responsive: true,
+        plugins: {
+            tooltip: {
+                enabled: true,
+            },
+        },
+        scales: {
+            x: {
+                beginAtZero: true,  // Start X-axis at zero
+            },
+            y: {
+                beginAtZero: true,  // Start Y-axis at zero
+            },
+        },
+    };
+
+    return (
+        <div className='admin-barchart chart'>
+            <Bar data={data} options={options} />
+        </div>
+    );
+};
