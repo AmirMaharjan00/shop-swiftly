@@ -20,6 +20,7 @@
 
         p, span, td, li, div {
             font-family: Jost;
+            font-weight: 500;
         }
 
         #root {
@@ -505,6 +506,55 @@
         .swt-admin-main table.products-wrap .body-item {
             padding: 12px 15px;
             text-align: center;
+        }
+
+        .swt-admin-main .report-table-wrapper .body-item .order-status-label {
+            padding: 3px 5px;
+            color: #fff;
+            border-radius: 3px;
+        }
+
+        .swt-admin-main .report-table-wrapper .body-item.pending {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .swt-admin-main .report-table-wrapper .body-item.pending .order-status-cancel {
+            background: #ff0000;
+            color: #fff;
+            padding: 6px 7px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .swt-admin-main .report-table-wrapper .body-item.pending .order-status-complete {
+            background: rgb(2, 180, 2);
+            color: #fff;
+            padding: 6px 7px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .swt-admin-main .report-table-wrapper .body-item.pending .order-status-complete:hover {
+            box-shadow: 0px 0px 10px 0px rgb(2, 180, 2);
+        }
+
+        .swt-admin-main .report-table-wrapper .body-item.pending .order-status-cancel:hover {
+            box-shadow: 0px 0px 10px 0px #ff0000;
+        }
+
+        .swt-admin-main table.products-wrap .body-item.pending .order-status-label {
+            background: rgb(0, 170, 255);
+        }
+
+        .swt-admin-main table.products-wrap .body-item.completed .order-status-label {
+            background: rgb(2, 180, 2);
+        }
+
+        .swt-admin-main table.products-wrap .body-item.cancelled .order-status-label {
+            background: red;
         }
 
         .swt-admin-main table.users-wrap .no-users td,
@@ -1168,7 +1218,22 @@
             padding: 10px;
             border-radius: 3px;
         }
+        
+        #root .dashboard-logout {
+            margin-left: 10px;
+            background-color: #ff0000;
+            color: #fff;
+            padding: 10px;
+            border-radius: 3px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
         #root .visit-website:hover {
             box-shadow: 0px 0px 10px 0px rgb(11, 189, 11);
+        }
+
+        #root .dashboard-logout:hover {
+            box-shadow: 0px 0px 10px 0px #ff0000;
         }

@@ -86,6 +86,17 @@ export const SubscriberDashboard = () => {
     const { getTheDate } = usePostRelatedHooks()
     const { userId } = useSession()
     const reportData = getUserOrders( userId )
+    const navigate = useNavigate()
+
+    /**
+     * Handle Logout
+     * 
+     * @since 1.0.0
+     */
+    const handleLogout = () => {
+        sessionStorage.clear()
+        navigate( '/' )
+    }
 
     return  <div className='user-dashboard-page' id="user-dashboard-page">
         <div className='page-header'>
@@ -93,7 +104,10 @@ export const SubscriberDashboard = () => {
                 <h2 className='title'>{ 'Hello, ' + getUserName( userId ) }</h2>
                 <span className='toay-date'>{ 'Today is ' + getTheDate( Date.now() ) }</span>
             </div>
-            <Link to='/' target='_blank' className='visit-website'>{ 'Visit Website' }</Link>
+            <div>
+                <Link to='/' target='_blank' className='visit-website'>{ 'Visit Website' }</Link>
+                <button className='dashboard-logout' onClick={ handleLogout }>{ 'Logout' }</button>
+            </div>
         </div>
         <div className="overview-wrapper">
             <div className="overview-item">
@@ -154,7 +168,7 @@ const DoughnutChart = () => {
             action: 'query',
             tableIdentity: 'order',
             setterFunction: setReportData,
-            query: `SELECT post_id, post_title, SUM(order_quantity) AS total_quantity FROM swt_posts JOIN swt_orders ON post_id = product_id where user_id=${userId} GROUP BY post_id, post_title ORDER BY total_quantity DESC LIMIT 5`
+            query: `SELECT post_id, post_title, SUM(order_quantity) AS total_quantity FROM swt_posts JOIN swt_orders ON post_id = product_id where user_id=${userId} AND order_status!='cancelled' GROUP BY post_id, post_title ORDER BY total_quantity DESC LIMIT 5`
         })
     }, [])
 
@@ -311,7 +325,7 @@ const PieChart = () => {
             tooltip: {
                 callbacks: {
                     label: function (context) {
-                        return `${context.label}: ${context.raw} units`; // Custom label format
+                        return `${context.label}: Rs. ${context.raw}`; // Custom label format
                     },
                 },
             },

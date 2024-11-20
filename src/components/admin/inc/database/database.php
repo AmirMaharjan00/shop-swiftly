@@ -126,7 +126,7 @@
                     user_id LONGTEXT NOT NULL,
                     order_price INT(11) NOT NULL,
                     order_quantity INT(11) NOT NULL,
-                    order_status varchar(255) NOT NULL,
+                    order_status varchar(255) NOT NULL DEFAULT 'pending',
                     FOREIGN KEY (`user_id`) REFERENCES swt_users(`user_id`),
                     FOREIGN KEY (`product_id`) REFERENCES swt_posts(`post_id`)
                 )"
@@ -374,6 +374,7 @@
         public function query() {
             $result = mysqli_query( $this->connection, $_POST['query'] );
             if( ! $result ) return [ 'result' => $select_query ];
+            if( is_bool( $result ) ) return $result;
             if( $result->num_rows > 0 ) :
                 while( $row = mysqli_fetch_assoc( $result ) ) :
                     $data[] = $row;

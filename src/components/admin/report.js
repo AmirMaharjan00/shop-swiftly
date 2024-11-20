@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, createContext, useContext, useRef } from 
 import { fetchFunction } from '../content/functions'
 import { usePostRelatedHooks, useQuery, useUsers, usePosts, useOrders } from '../content/inc/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownload } from '@fortawesome/free-solid-svg-icons'
+import { faDownload, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { jsPDF } from 'jspdf';
 const REPORTCONTEXT = createContext()
 
@@ -62,10 +62,38 @@ export const ReportTable = () => {
     const { getTheDate } = usePostRelatedHooks()
     const { getUserName } = useUsers()
     const { getPostTitle } = usePosts()
-    const { getOrdersViaTime } = useOrders()
+    const { getOrdersViaTime, setIsCancel, setIsSuccess } = useOrders()
     const { reportHTML, time } = context
 
-    return <div className='report-table-wrapper'>
+    /**
+     * Handle admin cancel button click
+     * 
+     * @since 1.0.0
+     */
+    const cancelOrder = ( orderID ) => {
+        fetchFunction({
+            action: 'query',
+            tableIdentity: 'order',
+            setterFunction: setIsCancel,
+            query: `UPDATE swt_orders SET order_status='cancelled' WHERE order_id=${orderID}`
+        })
+    }
+
+    /**
+     * Handle admin complete button click
+     * 
+     * @since 1.0.0
+     */
+    const completeOrder = ( orderID ) => {
+        fetchFunction({
+            action: 'query',
+            tableIdentity: 'order',
+            setterFunction: setIsSuccess,
+            query: `UPDATE swt_orders SET order_status='completed' WHERE order_id=${orderID}`
+        })
+    }
+
+    return <div className='report-table-wrapper admin'>
         <table className='products-wrap' ref={ reportHTML }>
             <thead>
                 <tr className='products-element products-table-head'>
@@ -88,7 +116,19 @@ export const ReportTable = () => {
                             <td className='body-item'>{ getTheDate( date ) }</td>
                             <td className='body-item'>{ getUserName( userId ) || '-' }</td>
                             <td className='body-item title'>{ getPostTitle( productId ) || '-' }</td>
-                            <td className={ 'body-item ' + status }>{ status.slice( 0 ,1 ).toUpperCase() + status.slice( 1 ) || '-' }</td>
+                            <td className={ 'body-item ' + status }>
+                                { status === 'pending' && <FontAwesomeIcon
+                                    icon = { faCheck } 
+                                    className = 'order-status-complete'
+                                    onClick = {() => completeOrder( Id )}
+                                /> }
+                                <span className="order-status-label">{ status.slice( 0 ,1 ).toUpperCase() + status.slice( 1 ) || '-' }</span>
+                                { status === 'pending' && <FontAwesomeIcon
+                                    icon = { faXmark } 
+                                    className = 'order-status-cancel'
+                                    onClick = {() => cancelOrder( Id )}
+                                /> }
+                            </td>
                             <td className='body-item'>{ quantity }</td>
                             <td className='body-item'>{ 'Rs ' + price }</td>
                             <td className='body-item'>{ 'Rs ' + ( quantity * price ) }</td>

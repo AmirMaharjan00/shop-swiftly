@@ -5,6 +5,7 @@ import { fetchFunction } from '../functions'
  * Post related hooks
  * 
  * @since 1.0.0
+ * MARK: usePostRelatedHooks
  */
 export const usePostRelatedHooks = () => {
     const [ categories, setCategories ] = useState([])
@@ -64,6 +65,7 @@ export const usePostRelatedHooks = () => {
  * Hooks to handle session
  * 
  * @since 1.0.0
+ * MARK: useSession
  */
 export const useSession = () => {
     const userId = sessionStorage.getItem( 'userId' )
@@ -108,6 +110,7 @@ export const useSession = () => {
  * Hooks to handle session
  * 
  * @since 1.0.0
+ * MARK: useOptions
  */
 export const useOptions = () => {
     const [ options, setOptions ] = useState({})
@@ -170,6 +173,7 @@ export const useOptions = () => {
  * Hook to handle posts
  * 
  * @since 1.0.0
+ * MARK: useQuery
  */
 export const useQuery = ( table ) => {
     const [ posts, setPosts ] = useState([])
@@ -196,6 +200,7 @@ export const useQuery = ( table ) => {
  * Hook to handle users
  * 
  * @since 1.0.0
+ * MARK: userUsers
  */
 export const useUsers = () => {
     const [ users, setUsers ] = useState([])
@@ -287,6 +292,7 @@ export const useUsers = () => {
  * Hook to handle posts
  * 
  * @since 1.0.0
+ * MARK: usePosts
  */
 export const usePosts = () => {
     const [ posts, setPosts ] = useState([])
@@ -367,9 +373,35 @@ export const usePosts = () => {
  * Hook to handle Orders
  * 
  * @since 1.0.0
+ * MARK: useOrders
  */
 export const useOrders = () => {
     const [ orders, setOrders ] = useState([])
+    const [ isCancel, setIsCancel ] = useState( false )
+    const [ isSuccess, setIsSuccess ] = useState( false )
+    const [ reset, setReset ] = useState( false )
+
+    /**
+     * Reset the cancel and success state
+     * 
+     * @since 1.0.0
+     */
+    useEffect(() => {
+        if( reset ) {
+            setIsSuccess( false )
+            setIsCancel( false )
+            setReset( false )
+        }
+    }, [ reset ])
+
+    /**
+     * Trigger the reset state
+     * 
+     * @since 1.0.0
+     */
+    useEffect(() => {
+        if( isCancel || isSuccess ) setReset( true )
+    }, [ isCancel, isSuccess ])
 
     /**
      * Get the options
@@ -382,7 +414,7 @@ export const useOrders = () => {
             tableIdentity: 'order',
             setterFunction: setOrders
         })
-    }, [])
+    }, [ isCancel, isSuccess ])
 
     /**
      * Get user name via ID
@@ -396,7 +428,7 @@ export const useOrders = () => {
             if( user_id === userId ) newValue = [ ...newValue, order ]
             return newValue
         }, [])
-    }, [ orders ])
+    }, [ orders, isCancel, isSuccess ])
 
     
     /**
@@ -458,7 +490,7 @@ export const useOrders = () => {
      * 
      * @since 1.0.0
      */
-     const getOrdersViaTime = useCallback(( time = 'daily' ) => {
+     const getOrdersViaTime = useCallback(( time = 'daily', user ) => {
         if( orders.length > 0 ) {
             return orders.filter(( order ) => {
                 const { order_date: date } = order
@@ -473,7 +505,7 @@ export const useOrders = () => {
         } else {
             return []
         }
-    }, [ orders ])
+    }, [ orders, isCancel, isSuccess ])
 
     return {
         orders,
@@ -481,7 +513,9 @@ export const useOrders = () => {
         isToday,
         isWeek,
         isMonth,
-        getOrdersViaTime
+        getOrdersViaTime,
+        setIsCancel,
+        setIsSuccess
     }
 }
 
@@ -489,6 +523,7 @@ export const useOrders = () => {
  * Hook to handle pages
  * 
  * @since 1.0.0
+ * MARK: usePages
  */
 export const usePages = () => {
     const [ pages, setPages ] = useState([])
@@ -558,9 +593,20 @@ export const usePages = () => {
         }, [])
     }, [ pages ])
 
+    /**
+     * Get pages via post status
+     * 
+     * @since 1.0.0
+     */
+    const getPageDetailsFunction = useCallback(( pageId ) => {
+        if( getPageDetails.length < 0 ) return []
+        return getPageDetails[ pageId ]
+    }, [ pages ])
+
     return {
         pages,
         getPageTitle,
-        getPageViaStatus
+        getPageViaStatus,
+        getPageDetailsFunction
     }
 }

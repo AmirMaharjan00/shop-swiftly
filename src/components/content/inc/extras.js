@@ -1,9 +1,9 @@
 import react from 'react'
 import { useSession } from './hooks'
 
-export const SectionWrapper = ({ main, children }) => {
+export const SectionWrapper = ({ main, children, id }) => {
     return (
-        <section className={ main }>
+        <section className={ main } id={ id === undefined ? main : id }>
             <div className='container'>
                 <div className='row'>
                     { children !== undefined && children }

@@ -84,15 +84,24 @@ const Sidebar = () => {
 }
 
 export const Dashboard = () => {
-    const { getUserOrders, orders, getOrdersViaTime } = useOrders()
+    const { getOrdersViaTime } = useOrders()
     const { getUserName, users } = useUsers()
     const { getTheDate } = usePostRelatedHooks()
     const { userId } = useSession()
     const { getPostViaStatus } = usePosts()
-    console.log( usePages() )
     const { getPageViaStatus } = usePages()
-    const reportData = getUserOrders( userId )
     const data = [ getPostViaStatus().length, getPageViaStatus().length, users.length, getOrdersViaTime().length ]
+    const navigate = useNavigate()
+
+     /**
+     * Handle Logout
+     * 
+     * @since 1.0.0
+     */
+     const handleLogout = () => {
+        sessionStorage.clear()
+        navigate( '/' )
+    }
 
     return <div className='admin-dashboard-page' id="admin-dashboard-page">
         <div className='page-header'>
@@ -100,7 +109,10 @@ export const Dashboard = () => {
                 <h2 className='title'>{ 'Hello, ' + getUserName( userId ) }</h2>
                 <span className='toay-date'>{ 'Today is ' + getTheDate( Date.now() ) }</span>
             </div>
-            <Link to='/' target='_blank' className='visit-website'>{ 'Visit Website' }</Link>
+            <div>
+                <Link to='/' target='_blank' className='visit-website'>{ 'Visit Website' }</Link>
+                <button className='dashboard-logout' onClick={ handleLogout }>{ 'Logout' }</button>
+            </div>
         </div>
         <div className="overview-wrapper">
             <div className="overview-item">

@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext, createContext, useMemo } from 'react'
+import React, { useState, useEffect, useContext, createContext } from 'react'
 import './assets/css/main.css'
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faSun, faMoon, faCartShopping, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { SignIn } from './inc/helpers';
@@ -9,7 +9,7 @@ import { useSession } from './inc/hooks'
 import { HOMECONTEXT } from '../../App'
 const HEADERCONTEXT = createContext( null )
 
-export default function Header( props ) {
+export default function Header() {
     const [ getPages, setPages ] = useState([]);
     const [ isLightMode, setIsLightMode ] = useState( true )
     const [ isShoppingCartActive, setIsShoppingCartActive ] = useState( false )
@@ -161,20 +161,8 @@ const ThemeMode = ({ isLightMode, setIsLightMode }) => {
 const ShoppingCart = () => {
     const homeContext = useContext( HOMECONTEXT )
     const { setOverlay, overlay, setCartActive, cartActive } = homeContext
-    const [ checkout, setCheckout ] = useState({})
-    const [ signature, setSignature ] = useState( '' )
     const { loggedIn, products } = useSession()
-
-    useEffect(() => {
-        const FORMDATA = new FormData()
-        FORMDATA.append( 'action', 'signature' )
-        fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
-            method: 'POST',
-            body: FORMDATA
-        })
-        .then(( result ) => result.json())
-        .then( ( data ) => { setSignature( data ) } )
-    }, [ checkout ])
+    const [ productQuantity, setProductQuantity ] = useState( 1 )
 
     /**
      * Handle Shopping cart click
@@ -184,6 +172,24 @@ const ShoppingCart = () => {
     const handleClick = () => {
         setCartActive( ! cartActive )
         setOverlay( ! overlay )
+    }
+
+    /**
+     * Handle quantity decrease
+     * 
+     * @since 1.0.0
+     */
+    const handleQuantityDecrese = () => {
+        if( productQuantity > 1 ) setProductQuantity( productQuantity - 1 )
+    }
+
+    /**
+     * Handle quantity increase
+     * 
+     * @since 1.0.0
+     */
+    const handleQuantityIncrease = () => {
+        setProductQuantity( productQuantity + 1 )
     }
 
     return(
@@ -203,9 +209,9 @@ const ShoppingCart = () => {
                                         <h2 className='post-title'>{ title }</h2>
                                         <span className='post-price'>{ 'Rs. ' + price }</span>
                                         <div className='quantity-wrapper'>
-                                            <button className='quantity-button decrease'><FontAwesomeIcon icon={ faMinus }/></button>
-                                            <span className='quantity-indicator'>{ 1 }</span>
-                                            <button className='quantity-button increase'><FontAwesomeIcon icon={ faPlus }/></button>
+                                            <button className='quantity-button decrease' onClick={ handleQuantityDecrese }><FontAwesomeIcon icon={ faMinus }/></button>
+                                            <span className='quantity-indicator'>{ productQuantity }</span>
+                                            <button className='quantity-button increase' onClick={ handleQuantityIncrease }><FontAwesomeIcon icon={ faPlus }/></button>
                                         </div>
                                     </div>
                                 </div>
@@ -213,7 +219,7 @@ const ShoppingCart = () => {
                         })}
                         <Payment 
                             products = { products }
-                            signature = { signature }
+                            productQuantity = { productQuantity }
                         />
                     </> : <div className='not-logged-in'>
                         <span className='message'>{ 'Sorry, you have not logged in.' }</span>
@@ -239,7 +245,7 @@ const UserLogin = ({ isSignInActive, setIsSignInActive }) => {
  * @since 1.0.0
  */
 export const Payment = ( props ) => {
-    const { products } = props
+    const { products, productQuantity } = props
     const [ amount, setAmount ] = useState( 0 )
     const taxAmount = 10
     const linkEsewa = false
@@ -268,7 +274,7 @@ export const Payment = ( props ) => {
             FORMDATA.append( 'user_id', userId )
             FORMDATA.append( 'order_price', newAmount )
             FORMDATA.append( 'order_status', 'pending' )
-            FORMDATA.append( 'order_quantity', 1 )
+            FORMDATA.append( 'order_quantity', productQuantity )
             fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
                 method: 'POST',
                 body: FORMDATA

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo, useContext, createContext } from 'react'
+import React, { useState, useEffect, useContext, createContext } from 'react'
 import { useLocation  } from 'react-router-dom'
-import { fetchFunction } from './functions'
 import Header from './header'
 import Footer from './footer'
+import { usePages, useSession } from './inc/hooks'
 import { SectionWrapper } from './inc/extras'
 import { Sidebar } from './sidebar'
 import { HOMECONTEXT } from '../../App'
@@ -12,68 +12,48 @@ const SINGLECONTEXT = createContext( null );
 export const Page = () => {
     const { state } = useLocation()
     const { ID } = state
-    const [ allPages, setAllPages ] = useState([])
-    const [ isUserloggedIn, setIsUserLoggedIn ] = useState( false )
+    const { getPageDetailsFunction } = usePages()
+    const { userId } = useSession()
+    const [ isUserloggedIn, setIsUserLoggedIn ] = useState( false )   
 
-    useEffect(() => {
-        fetchFunction({
-            action: 'select_where',
-            tableIdentity: 'page',
-            setterFunction: setAllPages,
-            post: ID
-        })
-        if( sessionStorage.length > 0 ) {
-            const userId = sessionStorage.getItem( 'userId' )
-            const loggedIn = sessionStorage.getItem( 'loggedIn' )
-            setIsUserLoggedIn( loggedIn === 'true' )
-        }
-    }, [])
+    const contextObject = {
+        page: getPageDetailsFunction( ID ),
+        isUserloggedIn
+    }
 
     return (
         <>
             <Header homeContext={ HOMECONTEXT }/>
-            <SINGLECONTEXT.Provider value={{ isUserloggedIn }}>
-                <SingleContent post={ allPages } />
+            <SINGLECONTEXT.Provider value={ contextObject }>
+                <SingleContent />
             </SINGLECONTEXT.Provider>
             <Footer />
         </>
     );
 }
 
-const SingleContent = ({ post }) => {
+const SingleContent = () => {
     const Global = useContext( SINGLECONTEXT )
-    const { isUserloggedIn } = Global
-    const { post_image: image, post_title: title, post_excerpt: excerpt, post_price: price, post_id: ID } = post
+    const { isUserloggedIn, page } = Global
+    let title = '', excerpt = '', image = ''
+    if( page !== undefined ) {
+        title = page.page_title
+        excerpt = page.page_excerpt
+        image = page.page_image
+    }
 
-    return <SectionWrapper main='single-wrapper'>
+    return <SectionWrapper main='page-wrapper' id="swt-page">
         <div className='post-wrapper'>
-            <figure className='post-thumbnail-wrapper'>
-                <img src={ image } alt=""/>
-            </figure>
-            <div className='post-elements'>
-                <div className='element-header'>
-                    <h2 className='post-title'>{ title }</h2>
-                    <span className='post-price'>{ "Rs. " + price }</span>
-                    <div className='rating-wrapper'>
-                        <span className='product-rating'></span>
-                        <span className='total-product-rating'></span>
-                    </div>
-                </div>
-                <div className='element-details'>
-                    <span className='delivery-indicator'></span>
-                    <div className='product-properties'>
-                        <table>
-                            
-                        </table>
-                    </div>
-                </div>
+            <main className='main-article'>
+                <h2 className='post-title'>{ title }</h2>
+                <figure className={ 'post-thumbnail-wrapper' + ( image ? '' : ' no-image' ) }>
+                    <img src={ image } alt=""/>
+                </figure>
                 <div className='element-excerpt'>
                     <p className='post-excerpt'>{ excerpt }</p>
                 </div>
-            </div>
-            <div className='featured-offers-wrapper'>
-                <Sidebar />
-            </div>
+            </main>
+            <Sidebar />
         </div>
     </SectionWrapper>
 }

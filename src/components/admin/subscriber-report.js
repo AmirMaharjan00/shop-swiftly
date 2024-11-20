@@ -1,10 +1,10 @@
-import { useState, useMemo, createContext, useContext, useRef } from 'react'
+import { useState, createContext, useContext, useRef, useEffect, useMemo } from 'react'
 import { usePostRelatedHooks, useUsers, usePosts } from '../content/inc/hooks'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDownload } from '@fortawesome/free-solid-svg-icons'
+import { faDownload, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { jsPDF } from 'jspdf';
 import { useSession, useOrders } from '../content/inc/hooks'
-// import { ReportTable } from './report'
+import { fetchFunction } from '../content/functions'
 const REPORTCONTEXT = createContext()
 
 export const SubscriberReport = () => {
@@ -57,10 +57,35 @@ const ReportTable = () => {
     const { getTheDate } = usePostRelatedHooks()
     const { getUserName } = useUsers()
     const { getPostTitle } = usePosts()
-    const { getOrdersViaTime } = useOrders()
+    const { userId } = useSession()
+    const { getOrdersViaTime, setIsCancel } = useOrders()
     const { reportHTML, time } = context
 
-    return <div className='report-table-wrapper'>
+    /**
+     * Handle user cancel button click
+     * 
+     * @since 1.0.0
+     */
+    const cancelOrder = ( orderID ) => {
+        fetchFunction({
+            action: 'query',
+            tableIdentity: 'order',
+            setterFunction: setIsCancel,
+            query: `UPDATE swt_orders SET order_status='cancelled' WHERE order_id=${orderID}`
+        })
+    }
+
+    /**
+     * Get user Orders
+     * 
+     * @since 1.0.0
+     */
+    const userOrders = useMemo(() =>{
+        if( getOrdersViaTime( time ).length < 0 ) return []
+        return getOrdersViaTime( time ).filter(( order ) => order.user_id === userId )
+    }, [ getOrdersViaTime( time ) ])
+
+    return <div className='report-table-wrapper user'>
         <table className='products-wrap' ref={ reportHTML }>
             <thead>
                 <tr className='products-element products-table-head'>
@@ -76,14 +101,21 @@ const ReportTable = () => {
             </thead>
             <tbody>
                 {
-                    ( getOrdersViaTime( time ).length > 0 ) ? getOrdersViaTime( time ).map(( order, index ) => {
+                    ( userOrders.length > 0 ) ? userOrders.map(( order, index ) => {
                         const { order_id: Id, order_date: date, product_id: productId, user_id: userId, order_price: price, order_quantity: quantity, order_status: status } = order
                         return <tr className='products-element products-table-body' key={ index }>
                             <td className='body-item'>{ index + 1 }</td>
                             <td className='body-item'>{ getTheDate( date ) }</td>
                             <td className='body-item'>{ getUserName( userId ) || '-' }</td>
                             <td className='body-item title'>{ getPostTitle( productId ) || '-' }</td>
-                            <td className={ 'body-item ' + status }>{ status.slice( 0 ,1 ).toUpperCase() + status.slice( 1 ) || '-' }</td>
+                            <td className={ 'body-item ' + status }>
+                                <span className="order-status-label">{ status.slice( 0 ,1 ).toUpperCase() + status.slice( 1 ) || '-' }</span>
+                                { status === 'pending' && <FontAwesomeIcon
+                                    icon = { faXmark } 
+                                    className = 'order-status-cancel'
+                                    onClick = {() => cancelOrder( Id )}
+                                /> }
+                            </td>
                             <td className='body-item'>{ quantity }</td>
                             <td className='body-item'>{ 'Rs ' + price }</td>
                             <td className='body-item'>{ 'Rs ' + ( quantity * price ) }</td>
