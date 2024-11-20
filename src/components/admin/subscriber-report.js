@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownload } from '@fortawesome/free-solid-svg-icons'
 import { jsPDF } from 'jspdf';
 import { useSession, useOrders } from '../content/inc/hooks'
+// import { ReportTable } from './report'
 const REPORTCONTEXT = createContext()
 
 export const SubscriberReport = () => {
@@ -56,81 +57,8 @@ const ReportTable = () => {
     const { getTheDate } = usePostRelatedHooks()
     const { getUserName } = useUsers()
     const { getPostTitle } = usePosts()
-    const { reportHTML, reportData, time } = context
-
-    /**
-     * Check if is today
-     * 
-     * @since 1.0.0
-     */
-    const isToday = ( timeStamp ) => {
-        const today = new Date()
-        const date = new Date( parseInt( timeStamp ) )
-
-        today.setHours(0, 0, 0, 0);
-        date.setHours(0, 0, 0, 0);
-
-        return today.getTime() === date.getTime();
-    }
-
-    /**
-     * Check if is week
-     * 
-     * @since 1.0.0
-     */
-    const isWeek = ( timeStamp ) => {
-        const now = new Date();
-        const givenDate = new Date( parseInt( timeStamp ) );
-
-        // Get the current day of the week (0-6, where 0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-        const currentDay = now.getDay();
-
-        // Calculate the start of the current week (Sunday at 00:00)
-        const startOfWeek = new Date(now);
-        startOfWeek.setDate(now.getDate() - currentDay);  // Go back to Sunday
-        startOfWeek.setHours(0, 0, 0, 0);  // Set to midnight to ignore time
-
-        // Calculate the end of the current week (Saturday at 23:59)
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6); // Move to Saturday
-        endOfWeek.setHours(23, 59, 59, 999); // Set to end of the day
-
-        // Compare if the given date is within this week range
-        return givenDate >= startOfWeek && givenDate <= endOfWeek;
-    }
-
-    /**
-     * Check if is Month
-     * 
-     * @since 1.0.0
-     */
-    const isMonth = ( timeStamp ) => {
-        const now = new Date();
-        const givenDate = new Date( parseInt( timeStamp ) );
-
-        // Check if the year and month match
-        return now.getFullYear() === givenDate.getFullYear() && now.getMonth() === givenDate.getMonth();
-    }
-
-    /**
-     * Filtered Orders
-     */
-    const filteredOrders = useMemo(() => {
-        if( reportData.length > 0 ) {
-            return reportData.filter(( order ) => {
-                const { order_date: date } = order
-                if( time === 'daily' ) {
-                    if( isToday( date ) ) return true
-                } else if( time === 'week' ) {
-                    if( isWeek( date ) ) return true
-                } else if( time === 'month' ) {
-                    if( isMonth( date ) ) return true
-                }
-            })
-        } else {
-            return []
-        }
-    })
+    const { getOrdersViaTime } = useOrders()
+    const { reportHTML, time } = context
 
     return <div className='report-table-wrapper'>
         <table className='products-wrap' ref={ reportHTML }>
@@ -140,6 +68,7 @@ const ReportTable = () => {
                     <th className='head-item'>{ 'Date' }</th>
                     <th className='head-item'>{ 'User' }</th>
                     <th className='head-item title'>{ 'Product Name' }</th>
+                    <th className='head-item'>{ 'Status' }</th>
                     <th className='head-item'>{ 'Quantity Sold' }</th>
                     <th className='head-item'>{ 'Unit Price' }</th>
                     <th className='head-item'>{ 'Total Sales' }</th>
@@ -147,13 +76,14 @@ const ReportTable = () => {
             </thead>
             <tbody>
                 {
-                    ( filteredOrders.length > 0 ) ? filteredOrders.map(( order, index ) => {
-                        const { order_id: Id, order_date: date, product_id: productId, user_id: userId, order_price: price, order_quantity: quantity } = order
+                    ( getOrdersViaTime( time ).length > 0 ) ? getOrdersViaTime( time ).map(( order, index ) => {
+                        const { order_id: Id, order_date: date, product_id: productId, user_id: userId, order_price: price, order_quantity: quantity, order_status: status } = order
                         return <tr className='products-element products-table-body' key={ index }>
                             <td className='body-item'>{ index + 1 }</td>
                             <td className='body-item'>{ getTheDate( date ) }</td>
                             <td className='body-item'>{ getUserName( userId ) || '-' }</td>
                             <td className='body-item title'>{ getPostTitle( productId ) || '-' }</td>
+                            <td className={ 'body-item ' + status }>{ status.slice( 0 ,1 ).toUpperCase() + status.slice( 1 ) || '-' }</td>
                             <td className='body-item'>{ quantity }</td>
                             <td className='body-item'>{ 'Rs ' + price }</td>
                             <td className='body-item'>{ 'Rs ' + ( quantity * price ) }</td>

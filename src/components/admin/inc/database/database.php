@@ -126,6 +126,7 @@
                     user_id LONGTEXT NOT NULL,
                     order_price INT(11) NOT NULL,
                     order_quantity INT(11) NOT NULL,
+                    order_status varchar(255) NOT NULL,
                     FOREIGN KEY (`user_id`) REFERENCES swt_users(`user_id`),
                     FOREIGN KEY (`product_id`) REFERENCES swt_posts(`post_id`)
                 )"
@@ -163,7 +164,7 @@
                     $insert_query = "INSERT INTO swt_options ( option_key, option_value ) VALUES ( '$_POST[option_key]', '$_POST[option_value]' )";
                     break;
                 case 'order':
-                    $insert_query = "INSERT INTO swt_orders ( order_date, product_id, user_id, order_price, order_quantity ) VALUES ( '$_POST[order_date]', '$_POST[product_id]', '$_POST[user_id]', '$_POST[order_price]', '$_POST[order_quantity]' )";
+                    $insert_query = "INSERT INTO swt_orders ( order_date, product_id, user_id, order_price, order_quantity, order_status ) VALUES ( '$_POST[order_date]', '$_POST[product_id]', '$_POST[user_id]', '$_POST[order_price]', '$_POST[order_quantity]', '$_POST[order_status]' )";
                     break;
                 default:
                     $insert_query = "INSERT INTO swt_posts ( post_title, post_excerpt, post_category, post_tags, post_image, post_stock, post_price, post_date, post_status, is_featured, meta_data ) VALUES ( '$_POST[post_title]', '$_POST[post_excerpt]', '$_POST[post_category]', '$_POST[post_tags]', '$_POST[post_image]', '$_POST[post_stock]', '$_POST[post_price]', '$_POST[post_date]', '$_POST[post_status]', '$_POST[is_featured]', '$_POST[meta_data]' )";

@@ -346,10 +346,14 @@
             position: absolute;
             background: #5125d2;
             width: 90%;
-            height: 90%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+        }
+
+        #swt-admin-editor .editor-popup {
+            overflow-y: scroll;
+            height: 500px;
         }
 
         #swt-admin-editor .editor-inner {
@@ -378,18 +382,19 @@
         #swt-admin-editor .editor-area .editor-main {
             display: flex;
             flex-direction: column;
-            flex: 0 1 75%;
-            padding: 30px;
+            margin: 20px;
         }
 
         #swt-admin-editor .editor-main input,
         #swt-admin-editor .editor-main textarea {
             border: none;
-            padding: 10px;
             width: 100%;
             margin-bottom: 10px;
             background: transparent;
             font-size: 20px;
+            padding: 10px;
+            border: 1px solid #00000050;
+            border-radius: 3px;
         }
 
         #swt-admin-editor .editor-main textarea {
@@ -654,11 +659,16 @@
 
         #root input[type="number"] {
             width: 150px;
+            padding: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.384);
+            border-radius: 3px;
+            color: #fff;
         }
 
         #root .meta label {
-            flex: 0 1 5%;
+            width: 100px;
             color: #fff;
+            font-size: 16px;
         }
 
         /*

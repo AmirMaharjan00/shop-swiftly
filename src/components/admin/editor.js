@@ -112,7 +112,7 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
             <div className='swt-admin-editor' id='swt-admin-editor'>
                 <div className='editor-inner'>
                     <span className='editor-close' onClick={ () => { editorClose() } }>X</span>
-                    <form onSubmit={ handleFormSubmit } >
+                    <form onSubmit={ handleFormSubmit } className='editor-popup'>
                         <div className='editor-area'>
                             <div className='editor-main'>
                                 <input type='text' placeholder='Title' value={ title } name={ prefix + '_title' } id={ prefix + '_title' } onChange={( event ) => setTitle( event.target.value ) } />

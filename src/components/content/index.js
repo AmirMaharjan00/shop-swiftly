@@ -24,6 +24,7 @@ export default function Index () {
             FORMDATA.append( 'user_id', userId )
             FORMDATA.append( 'order_price', 100 )
             FORMDATA.append( 'order_quantity', 1 )
+            FORMDATA.append( 'order_status', 'pending' )
             fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
                 method: 'POST',
                 body: FORMDATA

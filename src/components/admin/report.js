@@ -57,7 +57,7 @@ const TimePeriod = () => {
  * 
  * @since 1.0.0
  */
-const ReportTable = () => {
+export const ReportTable = () => {
     const context = useContext( REPORTCONTEXT )
     const { getTheDate } = usePostRelatedHooks()
     const { getUserName } = useUsers()
@@ -73,6 +73,7 @@ const ReportTable = () => {
                     <th className='head-item'>{ 'Date' }</th>
                     <th className='head-item'>{ 'User' }</th>
                     <th className='head-item title'>{ 'Product Name' }</th>
+                    <th className='head-item'>{ 'Status' }</th>
                     <th className='head-item'>{ 'Quantity Sold' }</th>
                     <th className='head-item'>{ 'Unit Price' }</th>
                     <th className='head-item'>{ 'Total Sales' }</th>
@@ -81,12 +82,13 @@ const ReportTable = () => {
             <tbody>
                 {
                     ( getOrdersViaTime( time ).length > 0 ) ? getOrdersViaTime( time ).map(( order, index ) => {
-                        const { order_id: Id, order_date: date, product_id: productId, user_id: userId, order_price: price, order_quantity: quantity } = order
+                        const { order_id: Id, order_date: date, product_id: productId, user_id: userId, order_price: price, order_quantity: quantity, order_status: status } = order
                         return <tr className='products-element products-table-body' key={ index }>
                             <td className='body-item'>{ index + 1 }</td>
                             <td className='body-item'>{ getTheDate( date ) }</td>
                             <td className='body-item'>{ getUserName( userId ) || '-' }</td>
                             <td className='body-item title'>{ getPostTitle( productId ) || '-' }</td>
+                            <td className={ 'body-item ' + status }>{ status.slice( 0 ,1 ).toUpperCase() + status.slice( 1 ) || '-' }</td>
                             <td className='body-item'>{ quantity }</td>
                             <td className='body-item'>{ 'Rs ' + price }</td>
                             <td className='body-item'>{ 'Rs ' + ( quantity * price ) }</td>

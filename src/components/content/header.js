@@ -267,6 +267,7 @@ export const Payment = ( props ) => {
             FORMDATA.append( 'product_id', parsedProductDetails.toString() )
             FORMDATA.append( 'user_id', userId )
             FORMDATA.append( 'order_price', newAmount )
+            FORMDATA.append( 'order_status', 'pending' )
             FORMDATA.append( 'order_quantity', 1 )
             fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
                 method: 'POST',
