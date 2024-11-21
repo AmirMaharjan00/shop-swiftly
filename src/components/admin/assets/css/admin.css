@@ -498,6 +498,7 @@
         .swt-admin-main table.products-wrap .body-item.title {
             width: 300px;
             text-align: left;
+            font-weight: 600;
         }
         
         .swt-admin-main table.users-wrap .head-item,
@@ -506,6 +507,11 @@
         .swt-admin-main table.products-wrap .body-item {
             padding: 12px 15px;
             text-align: center;
+        }
+        
+        .swt-admin-main table.users-wrap .body-item.user,
+        .swt-admin-main table.products-wrap .body-item.user {
+            font-weight: 600;
         }
 
         .swt-admin-main .report-table-wrapper .body-item .order-status-label {

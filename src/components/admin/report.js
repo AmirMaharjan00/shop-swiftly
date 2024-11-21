@@ -99,7 +99,7 @@ export const ReportTable = () => {
                 <tr className='products-element products-table-head'>
                     <th className='head-item'>{ 'S.No' }</th>
                     <th className='head-item'>{ 'Date' }</th>
-                    <th className='head-item'>{ 'User' }</th>
+                    <th className='head-item user'>{ 'User' }</th>
                     <th className='head-item title'>{ 'Product Name' }</th>
                     <th className='head-item'>{ 'Status' }</th>
                     <th className='head-item'>{ 'Quantity Sold' }</th>
@@ -114,7 +114,7 @@ export const ReportTable = () => {
                         return <tr className='products-element products-table-body' key={ index }>
                             <td className='body-item'>{ index + 1 }</td>
                             <td className='body-item'>{ getTheDate( date ) }</td>
-                            <td className='body-item'>{ getUserName( userId ) || '-' }</td>
+                            <td className='body-item user'>{ getUserName( userId ) || '-' }</td>
                             <td className='body-item title'>{ getPostTitle( productId ) || '-' }</td>
                             <td className={ 'body-item ' + status }>
                                 { status === 'pending' && <FontAwesomeIcon
