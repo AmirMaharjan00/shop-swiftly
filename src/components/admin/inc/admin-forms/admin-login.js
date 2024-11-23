@@ -69,7 +69,7 @@ export default function AdminLogin() {
                 body: FORMDATA
             })
             .then(( response ) => response.json() )
-            .then(( data ) => setUserData( data ))
+            .then(( data ) => setUserData( data )) 
             event.preventDefault()
         } else {
             event.preventDefault()
@@ -77,7 +77,7 @@ export default function AdminLogin() {
     }
 
     /**
-     * Check if user is admin and is valid
+     * Check if user is admin and is valid 
      * 
      * @since 1.0.0
      */

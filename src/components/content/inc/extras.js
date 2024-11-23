@@ -13,6 +13,11 @@ export const SectionWrapper = ({ main, children, id }) => {
     )
 }
 
+/**
+ * Add to cart
+ * 
+ * @since 1.0.0
+ */
 export const AddToCartButton = ( props ) => {
     const { productId: ID } = props
     const { loggedIn, parsedProductDetails } = useSession()
