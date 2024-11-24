@@ -81,12 +81,33 @@ const Sidebar = () => {
 }
 
 export const SubscriberDashboard = () => {
-    const { getUserOrders } = useOrders()
+    const { orders, getUserOrders } = useOrders()
     const { getUserName } = useUsers()
     const { getTheDate } = usePostRelatedHooks()
     const { userId } = useSession()
     const reportData = getUserOrders( userId )
     const navigate = useNavigate()
+    const [ totalUserProducts, setTotalUserProducts ] = useState([])
+    const [ totalPrice, setTotalPrice ] = useState([])
+
+    /**
+     * 
+     */
+    useEffect(() => {
+        fetchFunction({
+            action: 'query',
+            tableIdentity: 'order',
+            setterFunction: setTotalUserProducts,
+            query: `SELECT DISTINCT product_id FROM swt_orders WHERE user_id=${userId} ANd order_status!='cancelled'`
+        })
+        fetchFunction({
+            action: 'query',
+            tableIdentity: 'order',
+            setterFunction: setTotalPrice,
+            query: `SELECT sum(order_price * order_quantity) as total FROM swt_orders where user_id=${userId} AND order_status!='cancelled'`
+
+        })
+    }, [ orders ])
 
     /**
      * Handle Logout
@@ -115,12 +136,12 @@ export const SubscriberDashboard = () => {
                 <span className='overview-value'>{ reportData.length }</span>
             </div>
             <div className="overview-item">
-                <h2 className='overview-label'>{ 'Total Orders' }</h2>
-                <span className='overview-value'>{ '1' }</span>
+                <h2 className='overview-label'>{ 'Total Number of Products' }</h2>
+                <span className='overview-value'>{ totalUserProducts.length }</span>
             </div>
             <div className="overview-item">
-                <h2 className='overview-label'>{ 'Total Orders' }</h2>
-                <span className='overview-value'>{ '1' }</span>
+                <h2 className='overview-label'>{ 'Total Price' }</h2>
+                <span className='overview-value'>{ 'Rs. ' + totalPrice[0]?.total || 0 }</span>
             </div>
         </div>
         <div className='chart-wrapper'>
