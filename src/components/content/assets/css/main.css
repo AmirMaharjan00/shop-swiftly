@@ -343,10 +343,24 @@
         margin-bottom: 14px;
     }
 
+    .sign-up-inner .form-label,
+    .sign-in-inner .form-label {
+        margin-right: 10px;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    .sign-up-inner .form-required,
+    .sign-in-inner .form-required {
+        color: #ff0000;
+    }
+
     .site-header .sign-in-inner input,
     .site-header .sign-up-inner input {
         width: 100%;
         height: 31px;
+        border: 1px solid #000;
+        border-radius: 3px;
     }
 
     .site-header .sign-up-inner input::placeholder {

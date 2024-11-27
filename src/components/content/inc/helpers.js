@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation, Autoplay } from 'swiper/modules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleArrowRight, faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons'
-import { usePostRelatedHooks, useOptions } from './hooks'
+import { usePostRelatedHooks, useOptions, useUsers } from './hooks'
 
 // Import Swiper styles
 import 'swiper/css';
@@ -171,8 +171,10 @@ export const TrendingProducts = () => {
 
 export const SignUp = ({ isSignUpActive, setIsSignUpActive, setIsSignInActive }) => {
     const [ userInfo, setUserInfo ] = useState({})
-    const [ isErrorActive, setIsErrorActive ] = useState( false )
-    const [ errorMessage, setErrorMessage ] = useState( '' )
+    const [ nameError, setNameError ] = useState( '*' )
+    const [ emailError, setEmailError ] = useState( '*' )
+    const [ passwordError, setPasswordError ] = useState( '*' )
+    const [ rePasswordError, setRePasswordError ] = useState( '*' )
 
     /**
      * Register new user
@@ -181,38 +183,22 @@ export const SignUp = ({ isSignUpActive, setIsSignUpActive, setIsSignInActive })
      */
     const register = () => {
         const { name, email, password, reEnterPassword } = userInfo
-        if( password !== reEnterPassword ) {
-            setIsErrorActive( true )
-            setErrorMessage( 'Passwords don\'t match. Please retype them.' )
-        } else {
-            setIsErrorActive( false )
-        }
 
-        if( name === undefined ) {
-            setIsErrorActive( true )
-            setErrorMessage( 'Name cannot be empty.' )
-        } else {
-            setIsErrorActive( false )
-        }
+        if( name === undefined || name === '' ) setNameError( 'Name cannot be empty.' )
 
-        if( email === undefined ) {
-            setIsErrorActive( true )
-            setErrorMessage( 'Email cannot be empty.' )
-        } else {
-            setIsErrorActive( false )
-        }
+        if( email === undefined || email === '' ) setEmailError( 'Email cannot be empty.' )
 
-        if( password === undefined ) {
-            setIsErrorActive( true )
-            setErrorMessage( 'Password cannot be empty.' )
+        if( password === undefined || password === '' ) {
+            setPasswordError( 'Password cannot be empty.' )
         } else if( password.length < 6 ){
-            setIsErrorActive( true )
-            setErrorMessage( 'Length of password should be atleast 6 characters.' )
-        } else {
-            setIsErrorActive( false )
+            setPasswordError( 'Length of password should be atleast 6 characters.' )
         }
 
-        if( ! isErrorActive && name && email && password ) {
+        if( reEnterPassword === undefined ) setRePasswordError( 'Cannot be empty.' )
+
+        if( password !== reEnterPassword ) setRePasswordError( 'Passwords don\'t match.' )
+
+        if( name && email && ( password === reEnterPassword ) ) {
             const FORMDATA = new FormData()
             FORMDATA.append( 'action', 'insert' )
             FORMDATA.append( 'post_type', 'user' )
@@ -229,14 +215,6 @@ export const SignUp = ({ isSignUpActive, setIsSignUpActive, setIsSignInActive })
         }
     }
 
-    useEffect(() => {
-        if( isErrorActive ) {
-            setTimeout(() => {
-                setIsErrorActive( false )
-            }, 3000 );
-        }
-    }, [ isErrorActive ] )
-
     /**
      * Execute this function to hide sign in popup
      * 
@@ -252,34 +230,43 @@ export const SignUp = ({ isSignUpActive, setIsSignUpActive, setIsSignInActive })
     return (
         <>
             { ( isSignUpActive ) ? <div className='sign-up-wrapper' onClick={( event ) => signUpOutsideClick( event )}>
-                <div className='sign-up-inner'>
+                <form className='sign-up-inner'>
                     <h2 className='section-header'>{ 'Create account' }</h2>
                     <p className='sign-up-field'>
-                        <label htmlFor='your-name'>{ 'Your name' }</label>
+                        <label htmlFor='your-name'>
+                            <span className='form-label'>{ 'Your name' }</span>
+                            <span className='form-required'>{ nameError }</span>
+                        </label>
                         <input type='text' id="your-name" placeholder='First and last name' required onChange={( event ) => setUserInfo({ ...userInfo, name: event.target.value })} />
                     </p>
                     <p className='sign-up-field'>
-                        <label htmlFor='mobile-number-or-email'>{ 'Mobile number or email' }</label>
+                        <label htmlFor='mobile-number-or-email'>
+                            <span className='form-label'>{ 'Email' }</span>
+                            <span className='form-required'>{ emailError }</span>
+                        </label>
                         <input type='email' id="mobile-number-or-email" required onChange={( event ) => setUserInfo({ ...userInfo, email: event.target.value })} />
                     </p>
                     <p className='sign-up-field'>
-                        <label htmlFor='password'>{ 'Password' }</label>
-                        <input type='text' id="password" placeholder='At least 6 characters' required onChange={( event ) => setUserInfo({ ...userInfo, password: event.target.value })} />
+                        <label htmlFor='password'>
+                            <span className='form-label'>{ 'Password' }</span>
+                            <span className='form-required'>{ passwordError }</span>
+                        </label>
+                        <input type='password' id="password" placeholder='At least 6 characters' required onChange={( event ) => setUserInfo({ ...userInfo, password: event.target.value })} />
                     </p>
                     <p className='sign-up-field'>
-                        <label htmlFor='re-enter-password'>{ 'Re-enter password' }</label>
-                        <input type='text' id="re-enter-password" required onChange={( event ) => setUserInfo({ ...userInfo, reEnterPassword: event.target.value })} />
+                        <label htmlFor='re-enter-password'>
+                            <span className='form-label'>{ 'Re-enter password' }</span>
+                            <span className='form-required'>{ rePasswordError }</span>
+                        </label>
+                        <input type='password' id="re-enter-password" required onChange={( event ) => setUserInfo({ ...userInfo, reEnterPassword: event.target.value })} />
                     </p>
-                    <button className='sign-up-button' onClick={() => register()}>{ 'Continue' }</button>
+                    <button type="submit" className='sign-up-button' onClick={() => register()}>{ 'Continue' }</button>
                     <p className='sign-up-field notification'>{ 'By creating an account, you agree to Shop Swiftly\'s condition of use and privacy notice.' }</p>
                     <p className='sign-up-field already-have-account'>
                         { 'Already have an account? ' }
-                        <button onClick={() => setIsSignUpActive( false )}>{ 'Sign in' }</button>
+                        <button type="button" onClick={() => setIsSignUpActive( false )}>{ 'Sign in' }</button>
                     </p>
-                </div>
-                { isErrorActive && <div className='sign-up-error-wrapper'>
-                    { errorMessage }
-                </div> }
+                </form>
             </div> : <SignIn setIsSignInActive={ true } /> }
         </>
     )
@@ -287,15 +274,16 @@ export const SignUp = ({ isSignUpActive, setIsSignUpActive, setIsSignInActive })
 
 export const SignIn = ({ setIsSignInActive }) => {
     const [ isSignUpActive, setIsSignUpActive ] = useState( false )
-    const [ isErrorActive, setIsErrorActive ] = useState( false )
-    const [ errorMessage, setErrorMessage ] = useState( '' )
+    const [ emailError, setEmailError ] = useState( '*' )
+    const [ passwordError, setPasswordError ] = useState( '*' )
     const [ okToStartSession, setOkToStartSession ] = useState( false )
     const [ loginInfo, setLoginInfo ] = useState({})
     const [ userData, setUserData ] = useState({})
     const { email, password } = loginInfo
-    const { user_id: userID, user_email: retrievedEmail, user_password: retrievedPassword } = userData
+    const { user_id: userID, user_email: retrievedEmail, user_password: retrievedPassword, user_role } = userData
     const homeContext = useContext( HOMECONTEXT )
     const { setIsAdmin, setIsSubscriber } = homeContext
+    const { users } = useUsers()
 
     /**
      * Execute this function to hide sign in popup
@@ -315,35 +303,27 @@ export const SignIn = ({ setIsSignInActive }) => {
      * @since 1.0.0
      */
     const login = () => {
-        if( email === undefined ) {
-            setIsErrorActive( true )
-            setErrorMessage( 'Email cannot be empty.' )
-        } else {
-            setIsErrorActive( false )
-        }
+        if( email === undefined || email === '' ) setEmailError( 'Email cannot be empty.' )
+        if( password === undefined || password === '' ) setPasswordError( 'Password cannot be empty.' )
 
-        if( password === undefined ) {
-            setIsErrorActive( true )
-            setErrorMessage( 'Password cannot be empty.' )
-        } else if( password.length < 6 ){
-            setIsErrorActive( true )
-            setErrorMessage( 'Length of password should be atleast 6 characters.' )
-        } else {
-            setIsErrorActive( false )
-        }
-
-        if( ! isErrorActive && email && password ) {
-            let whereClause = 'user_password="' + password + '" AND ' + 'user_email="' + email + '"'
-            const FORMDATA = new FormData()
-            FORMDATA.append( 'action', 'select_where' )
-            FORMDATA.append( 'table_identity', 'user' )
-            FORMDATA.append( 'where_clause', whereClause )
-            fetch( 'http://localhost/shop-swiftly/src/components/admin/inc/database/index.php', {
-                method: 'POST',
-                body: FORMDATA
-            })
-            .then(( response ) => response.json() )
-            .then(( data ) => setUserData( data ))
+        if( email && password ) {
+            let data = users.reduce(( newValue, user ) => {
+                let { user_email, user_password } = user
+                newValue.email = [ ...newValue.email, user_email ]
+                newValue.password = [ ...newValue.password, user_password ]
+                if( email === user_email && password === user_password ) newValue.user = user
+                return newValue
+            }, { email: [], password: [], user: {} })
+            let { email: userEmails, password: userPasswords, user } = data
+            if( ! userEmails.includes( email ) ) setEmailError( 'Email does not exist' )
+            if( ! userPasswords.includes( password ) && userEmails.includes( email ) ) {
+                if( password.length < 6 ) {
+                    setPasswordError( 'Length of password should be atleast 6 characters.' )
+                } else {
+                    setPasswordError( 'Password does not match' )
+                }
+            }
+            setUserData( user )
         }
     }
 
@@ -355,7 +335,6 @@ export const SignIn = ({ setIsSignInActive }) => {
     useEffect(() => {
         if( Object.keys( userData ).length > 0 ) {
             if( email === retrievedEmail && password === retrievedPassword ) {
-                let { user_role } = userData
                 if( user_role.toLowerCase() === 'subscriber' ) {
                     setIsSubscriber( true )
                     setIsAdmin( false )
@@ -389,21 +368,24 @@ export const SignIn = ({ setIsSignInActive }) => {
                 <div className='sign-in-inner'>
                     <h2 className='section-header'>{ 'Sign in' }</h2>
                     <p className='sign-in-field'>
-                        <label htmlFor='email-or-mobile-number'>{ 'Email or mobile number' }</label>
-                        <input type="email" id="email-or-mobile-number" onChange={( event ) => setLoginInfo({ ...loginInfo, email: event.target.value })} />
+                        <label htmlFor='email-or-mobile-number'>
+                            <span className='form-label'>{ 'Email' }</span>
+                            <span className='form-required'>{ emailError }</span>
+                        </label>
+                        <input type="email" id="email-or-mobile-number" onChange={( event ) => setLoginInfo({ ...loginInfo, email: event.target.value })} required />
                     </p>
                     <p className='sign-in-field'>
-                        <label htmlFor='password'>{ 'Password' }</label>
-                        <input type="text" id="password" onChange={( event ) => setLoginInfo({ ...loginInfo, password: event.target.value })} />
+                        <label htmlFor='password'>
+                            <span className="form-label">{ 'Password' }</span>
+                            <span className="form-required">{ passwordError }</span>
+                        </label>
+                        <input type="password" id="password" onChange={( event ) => setLoginInfo({ ...loginInfo, password: event.target.value })} required />
                     </p>
                     <button className='sign-in-button' onClick={ login }>{ 'Continue' }</button>
                     <p className='sign-in-field notification'>{ 'By continuing, you agree to Shop Swiftly\'s conditions of use and privacy notice' }</p>
                     <p className='new-to-shop-swiftly'>{ 'New to Shop Swiftly?' }</p>
                     <button className='create-new-user' onClick={() => setIsSignUpActive( true )}>{ 'Create your Shop Swiftly account' }</button>
                 </div>
-                { isErrorActive && <div className='sign-up-error-wrapper'>
-                    { errorMessage }
-                </div> }
             </div> : <SignUp isSignUpActive={ true } setIsSignUpActive={ setIsSignUpActive } setIsSignInActive={ setIsSignInActive }/> }
         </>
     )
