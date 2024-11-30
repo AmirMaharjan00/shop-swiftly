@@ -149,7 +149,7 @@ export default function Pages () {
                                     return(
                                         <tr className='products-element products-table-body' key={ index }>
                                             <td className='body-item'>{ index + 1 }</td>
-                                            <td className='body-item'>{ pageTitle }</td>
+                                            <td className='body-item page-title'>{ pageTitle }</td>
                                             <td className='body-item'>{ getTheDate( pageDate ) }</td>
                                             { status === 'all' && <th className='body-item'>{ THISSTATUS.charAt(0).toUpperCase() + THISSTATUS.slice(1) }</th> }
                                             <td className='body-item action-item'>

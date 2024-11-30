@@ -506,6 +506,18 @@
             text-align: left;
             font-weight: 600;
         }
+
+        .swt-admin-main table.products-wrap .body-item.title {
+            cursor: pointer;
+        }
+
+        .swt-admin-main table.products-wrap .body-item.title .post-title {
+            font-weight: 600;
+        }
+
+        .swt-admin-main table.products-wrap .body-item.title .post-title:hover {
+            color: var(--hover-color)
+        }
         
         .swt-admin-main table.users-wrap .head-item,
         .swt-admin-main table.users-wrap .body-item,
@@ -513,6 +525,11 @@
         .swt-admin-main table.products-wrap .body-item {
             padding: 12px 15px;
             text-align: center;
+        }
+
+        .swt-admin-main table.users-wrap .body-item.username,
+        .swt-admin-main table.products-wrap .body-item.page-title {
+            font-weight: 600;
         }
         
         .swt-admin-main table.users-wrap .body-item.user,
@@ -740,18 +757,24 @@
         */
         #root .swt-admin-main .page-header {
             display: flex;
-            gap: 30px;
+            gap: 20px;
             align-items: center;
         }
 
         #root .swt-admin-main .save-settings {
-            background-color: rgb(11, 189, 11);
-            padding: 10px 20px;
-            border: none;
+            color: var(--hover-color);
+            border: 1px dashed var(--hover-color);
+            padding: 5px 20px;
+            cursor: pointer;
+            background: var(--hover-color);
             border-radius: 3px;
             color: #fff;
+            transition: transform 0.2s;
+        }
+
+        #root .swt-admin-main .save-settings:hover {
             box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);
-            cursor: pointer;
+            transform: scale(1.05);
         }
 
         #root .swt-admin-main .api-wrapper {
@@ -934,22 +957,32 @@
 
         .swt-admin-main .repeater-wrapper .repeater-field .remove-url {
             background-color: #ff0000;
-            padding: 10px 15px;
+            padding: 10px 10px;
             border: none;
             border-radius: 3px;
             color: #fff;
-            box-shadow: 0px 0px 20px 0px #ff0000;;
             cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .swt-admin-main .repeater-wrapper .repeater-field .remove-url:hover {
+            box-shadow: 0px 0px 20px 0px #ff0000;
+            transform: scale(1.03);
         }
 
         .swt-admin-main .add-url {
-            background-color: rgb(11, 189, 11);;
-            padding: 10px 15px;
+            background-color: rgb(11, 189, 11);
+            padding: 5px 10px;
             border: none;
             border-radius: 3px;
             color: #fff;
-            box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);;;
             cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .swt-admin-main .add-url:hover {
+            box-shadow: 0px 0px 20px 0px rgb(11, 189, 11);
+            transform: scale(1.03);
         }
 
         /*

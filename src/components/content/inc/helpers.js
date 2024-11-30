@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo, useRef, useContext } from 'react'
+import React, { useState, useEffect, useMemo, useContext } from 'react'
 import { HOMECONTEXT } from '../../../App'
 import { GetTaxonomy, fetchFunction } from '../functions'
 import { Content } from '../template-parts/content'
 import { SectionWrapper } from './extras'
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation, Autoplay } from 'swiper/modules';
+import { Navigation, Autoplay } from 'swiper/modules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleArrowRight, faCircleArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { usePostRelatedHooks, useOptions, useUsers } from './hooks'
@@ -14,11 +14,10 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Link } from 'react-router-dom';
-import { Subscriber } from '../../admin/subscriber-dashboard'
 
 export const MainBanner = () => {
     const [ posts, setPosts ] = useState([])
-    const swiperRef = useRef(null);
+    const [ swiperInstance, setSwiperInstance ] = useState( null );
 
     useEffect(() => {
         fetchFunction({
@@ -26,9 +25,7 @@ export const MainBanner = () => {
             tableIdentity: 'post',
             setterFunction: setPosts
         })
-        if (swiperRef.current) {
-            swiperRef.current.swiper.autoplay.start(); // Ensure autoplay starts after component is mounted
-        }
+        if ( swiperInstance ) swiperInstance.autoplay.start(); // Ensure autoplay starts after component is mounted
     }, [])
 
     return(
@@ -45,12 +42,12 @@ export const MainBanner = () => {
                                 clickable: true,
                             }}
                             autoplay={{
-                                delay: 2500,          // Delay between transitions (in milliseconds)
+                                delay: 3000,          // Delay between transitions (in milliseconds)
                                 disableOnInteraction: false,  // Continue autoplay even after interaction
                             }}
                             navigation
                             className = "mySwiper"
-                            ref={swiperRef}
+                            onSwiper = { setSwiperInstance }
                         >
                             {
                                 posts.map(( current, index ) => {
@@ -87,44 +84,43 @@ export const CategoryCollection = () => {
 export const TrendingProducts = () => {
     const [ posts, setPosts ] = useState([])
     const [ activeTab, setActiveTab ] = useState( 'featured' )
-    // const swiperRef = useRef(null);
+    const [ swiperInstance, setSwiperInstance ] = useState( null );
 
     useEffect(() => {
+        let query = ''
+        if( activeTab === 'latest' ) {
+            query = 'SELECT * FROM swt_posts WHERE post_status!="trash"'
+        } else if( activeTab === 'best-seller' ) {
+            query= 'SELECT * FROM swt_posts p INNER JOIN swt_orders o ON p.post_id = o.product_id GROUP BY p.post_title ORDER BY SUM(o.order_quantity) DESC'
+        } else {
+            query = 'SELECT * FROM swt_posts WHERE is_featured=1 AND post_status!="trash"'
+        }
         fetchFunction({
-            action: 'select',
-            tableIdentity: 'post',
-            setterFunction: setPosts
+            action: 'query',
+            setterFunction: setPosts,
+            query
         })
-        // if (swiperRef.current) {
-        //     swiperRef.current.swiper.autoplay.start(); // Ensure autoplay starts after component is mounted
-        // }
-    }, [])
+    }, [ activeTab ])
 
-    const filteredPosts = useMemo(() => {
-        let filtered = posts.filter(( post ) => {
-            const { is_featured: featured, post_status: status } = post
-            if( status !== 'publish' ) return
-            if( activeTab === 'featured' ) {
-                return featured === "1"
-            } else if( activeTab === 'latest' ){
-                return post
-            } else {
-                return post
-            }
-        })
-        return filtered
-    }, [ activeTab, posts ])
+    /* Handle tab click */
+    const handleTabClick = ( value ) => {
+        if( value !== activeTab ){
+            setActiveTab( value )
+            if ( swiperInstance ) swiperInstance.slideTo( 0 ); // Reset to the first slide
+        }
+    }
 
     return(
         <SectionWrapper main='swt-trending-products'>
             <div className='trending-products-wrapper'>
                 <h2 className='section-header'>{ '# Trending Products #' }</h2>
                 <div className='section-menu'>
-                    <button className={ 'menu-item' + (( activeTab === 'featured' ) ? ' active' : '' )} onClick={() => setActiveTab( 'featured' )}>{ 'Featured' }</button>
-                    <button className={ 'menu-item' + (( activeTab === 'latest' ) ? ' active' : '' )} onClick={() => setActiveTab( 'latest' )}>{ 'Latest' }</button>
-                    <button className={ 'menu-item' + (( activeTab === 'best-seller' ) ? ' active' : '' )} onClick={() => setActiveTab( 'best-seller' )}>{ 'Bestseller' }</button>
+                    <button className={ 'menu-item' + (( activeTab === 'featured' ) ? ' active' : '' )} onClick={() => handleTabClick( 'featured' )}>{ 'Featured' }</button>
+                    <button className={ 'menu-item' + (( activeTab === 'latest' ) ? ' active' : '' )} onClick={() => handleTabClick( 'latest' )}>{ 'Latest' }</button>
+                    <button className={ 'menu-item' + (( activeTab === 'best-seller' ) ? ' active' : '' )} onClick={() => handleTabClick( 'best-seller' )}>{ 'Bestseller' }</button>
                 </div>
                 <Swiper
+                    onSwiper = { setSwiperInstance }
                     slidesPerView = { 4 }
                     loop = { true }
                     navigation = {{
@@ -138,31 +134,28 @@ export const TrendingProducts = () => {
                         delay: 2500,          // Delay between transitions (in milliseconds)
                         disableOnInteraction: false,  // Continue autoplay even after interaction
                     }}
-                    // ref={swiperRef}
                 >
                     {
-                        filteredPosts.map(( current, index ) => {
+                        (activeTab === 'latest' ? [...posts].reverse() : posts).map(( current, index ) => {
                             return <SwiperSlide className='item' key={ index }>
                                 <Content post={ current } exclude={[]}/>
                             </SwiperSlide>
                         })
                     }
-                    {/* <div className='section-pagination'> */}
-                        <button className='pagination-item prev'>
-                            <FontAwesomeIcon
-                                icon = { faCircleArrowLeft } 
-                                className = 'button-icon'
-                            />
-                            <span className='button-label'>{ 'Prev' }</span>
-                        </button>
-                        <button className='pagination-item next'>
-                            <span className='button-label'>{ 'Next' }</span>
-                            <FontAwesomeIcon
-                                icon = { faCircleArrowRight } 
-                                className = 'button-icon'
-                            />
-                        </button>
-                    {/* </div> */}
+                    <button className='pagination-item prev'>
+                        <FontAwesomeIcon
+                            icon = { faCircleArrowLeft } 
+                            className = 'button-icon'
+                        />
+                        <span className='button-label'>{ 'Prev' }</span>
+                    </button>
+                    <button className='pagination-item next'>
+                        <span className='button-label'>{ 'Next' }</span>
+                        <FontAwesomeIcon
+                            icon = { faCircleArrowRight } 
+                            className = 'button-icon'
+                        />
+                    </button>
                 </Swiper>
             </div>
         </SectionWrapper>
@@ -399,23 +392,54 @@ export const SignIn = ({ setIsSignInActive }) => {
 export const GridView = () => {
     const [ posts, setPosts ] = useState([])
     const { getTheDate, getCategory } = usePostRelatedHooks()
+    const [ currentPage, setCurrentPage ] = useState( 1 )
+    const productsPerPage = 15
 
     useEffect(() => {
         fetchFunction({
-            action: 'select',
-            tableIdentity: 'post',
-            setterFunction: setPosts
+            action: 'query',
+            setterFunction: setPosts,
+            query: `SELECT * FROM swt_posts WHERE post_status!='trash'`
         })
     }, [])
 
+    /* Total number of pages */
+    const totalPages = useMemo(() => {
+        if( posts.length > 0 ) {
+            let test = posts.length / productsPerPage
+            if( test > 0 ) return Math.round( test )
+        }
+        return 0;
+    }, [ posts ])
+
+    /* Handle Previous Click */
+    const handlePreviousClick = () => {
+        if( currentPage > 1 ) setCurrentPage( currentPage - 1 )
+    }
+
+    /* Handle Next Click */
+    const handleNextClick = () => {
+        if( currentPage <= totalPages ) setCurrentPage( currentPage + 1 )
+    }
+
+    /* Pagination products */
+    const paginationProducts = useMemo(() => {
+        if( posts.length > 0 ) {
+            let from = productsPerPage * ( currentPage - 1 )
+            let to = productsPerPage * currentPage
+            return posts.slice( from, to )
+        }
+        return []
+    }, [ currentPage, posts ])
+
     return <SectionWrapper main="grid-view-wrapper">
-        <div className='grid-view-main'>
+        { paginationProducts.length > 0 && <div className='grid-view-main'>
             <div className='section-details'>
                 <h2 className='section-header'>{ '# Recently Added #' }</h2>
             </div>
             <div className='articles-wrapper'>
                 {
-                    posts.map(( post, index ) => {
+                    paginationProducts.map(( post, index ) => {
                         const { post_id, post_image: image, post_title: title, post_date: date, post_excerpt: excerpt, post_category: categories, post_status: status } = post
                         if( status !== 'publish' ) return
                         let newCategories = getCategory( categories )
@@ -441,12 +465,16 @@ export const GridView = () => {
                     })
                 }
             </div>
-        </div>
+            { totalPages >= 1 && <div className='pagination-wrapper'>
+                { <button className="pagination grid-prev" onClick={ handlePreviousClick }>{ 'Previous' }</button> }
+                { <button className="pagination grid-next" onClick={ handleNextClick }>{ 'Next' }</button> }
+            </div> }
+        </div> }
     </SectionWrapper>
 } 
 
 export const YouTube = () => {
-    const { options, keys, keyValuePairs } = useOptions()
+    const { keyValuePairs } = useOptions()
     const apiKey = ( keyValuePairs['api_key'] !== undefined ? keyValuePairs['api_key'] : '' )
     const youtubeUrl = ( keyValuePairs['youtube_urls'] !== undefined ? keyValuePairs['youtube_urls'].split(',') : [] )
     const [ videos, setVideos ] = useState([])
@@ -459,13 +487,16 @@ export const YouTube = () => {
      * @since 1.0.0
      */
     const uniqueUrlIds = useMemo(() => {
-        return youtubeUrl.reduce(( newValue, url ) => {
-            const parsedUrl = new URL( url )
-            const { searchParams } = parsedUrl
-            const videoId = searchParams.get('v')
-            newValue = [ ...newValue, videoId ]
-            return newValue
-        }, [])
+        if( youtubeUrl.length > 0 ) {
+            return youtubeUrl.reduce(( newValue, url ) => {
+                const parsedUrl = new URL( url )
+                const { searchParams } = parsedUrl
+                const videoId = searchParams.get('v')
+                newValue = [ ...newValue, videoId ]
+                return newValue
+            }, [])
+        }
+        return []
     }, [ youtubeUrl ])
 
     /**
@@ -507,7 +538,6 @@ export const YouTube = () => {
                 <iframe width="560" height="315" src={ "https://www.youtube.com/embed/" + activeVideo + "?enablejsapi=1&mute=1&autoplay=" + autoplay } frameBorder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>
                 <h2></h2>
             </div>
-            {/* { activeVideoDetails?.snippet.title } */}
             <div className='active-player-info'>
                 <h2 className='video-title'></h2>
                 <span className='channel-title'></span>

@@ -205,7 +205,7 @@ export default function Users ( props ) {
                                 return(
                                     <tr className='users-element users-table-body' key={ index }>
                                         <td className='body-item'>{ index + 1 }</td>
-                                        <td className='body-item'>{ name }</td>
+                                        <td className='body-item username'>{ name }</td>
                                         <td className='body-item'>{ email }</td>
                                         <td className='body-item'>{ role.charAt( 0 ).toUpperCase() + role.slice( 1 ) }</td>
                                         <td className='body-item'>{ getTheDate( date ) }</td>
@@ -283,13 +283,13 @@ const UserEditor = () => {
                 </label>
                 <input type='text' value={ userName || '' } onChange={( event ) => setUserInfo({ ...userInfo, userName: event.target.value })} />
             </div>
-            <div className='form-field'>
+            { ! isUpdate && <div className='form-field'>
                 <label className='form-label-wrapper'>
                     <span className='form-label'>{ 'Password ' }</span>
                     <span className='required-indicator'>{ '*' }</span>
                 </label>
                 <input type='text' value={ password || '' } onChange={( event ) => setUserInfo({ ...userInfo, password: event.target.value })} />
-            </div>
+            </div> }
             <div className='form-field admin-role'>
                 <label className='form-label-wrapper'>
                     <span className='form-label'>{ 'Role : ' }</span>

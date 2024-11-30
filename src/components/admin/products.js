@@ -12,7 +12,7 @@ export default function Products () {
     const [ postId, setPostId ] = useState( null )
     const [ deleteAction, setDeleteAction ] = useState( false )
     const [ currentIndex, setCurrentIndex ] = useState( null )
-    const { getTheDate, getCategory } = usePostRelatedHooks()
+    const { getTheDate, getCategory, getTag } = usePostRelatedHooks()
 
     useEffect(() => {
         if( getProducts.length <= 0 ) setProducts([])
@@ -156,11 +156,13 @@ export default function Products () {
                                     return(
                                         <tr className='products-element products-table-body' key={ index }>
                                             <td className='body-item'>{ index + 1 }</td>
-                                            <td className='body-item title'>{ title }</td>
+                                            <td className='body-item title' onClick={() => handleEditorActions( 'update', ID ) }>
+                                                <span class="post-title">{ title }</span>
+                                            </td>
                                             <td className='body-item'>{ stock }</td>
                                             <td className='body-item'>{ 'Rs ' + price }</td>
                                             <td className='body-item'>{( getCategory( category ).length > 0 ? getCategory( category ) : '-' )}</td>
-                                            <td className='body-item'>{ tags || '-' }</td>
+                                            <td className='body-item'>{( getTag( tags ).length > 0 ? getTag( tags ) : '-' )}</td>
                                             <td className='body-item'>{ getTheDate( date ) || '-' }</td>
                                             { status === 'all' && <th className='body-item'>{ THISSTATUS.charAt(0).toUpperCase() + THISSTATUS.slice(1) }</th> }
                                             <td className='body-item action-item'>

@@ -604,31 +604,33 @@
     }
 
     .swt-trending-products .pagination-item {
-        padding: 6px;
+        padding: 5px 10px;
         border: none;
         font-size: 15px;
         border-radius: 3px;
         cursor: pointer;
+        color: #fff;
     }
 
     .swt-trending-products .pagination-item .button-label {
         margin: 0 5px;
+        font-weight: 600;
     }
 
     .swt-trending-products .pagination-item.prev {
-        background: rgba(255, 0, 0, 0.691);
+        background: #ff0000;
         margin-right: 10px;
     }
     .swt-trending-products .pagination-item.prev:hover {
-        box-shadow: 0px 0px 10px 0px rgba(255, 0, 0, 0.691);
+        box-shadow: 0px 0px 10px 0px #ff0000;
     }
 
     .swt-trending-products .pagination-item.next {
-        background: rgba(0, 249, 0, 0.74);
+        background: var(--hover-color)
     }
 
     .swt-trending-products .pagination-item.next:hover {
-        box-shadow: 0px 0px 10px 0px rgba(0, 249, 0, 0.74);
+        box-shadow: 0px 0px 10px 0px var(--hover-color)
     }
 
     /*
@@ -782,6 +784,39 @@
         gap: 15px;
     }
 
+    .grid-view-wrapper .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    .grid-view-wrapper .pagination-wrapper .pagination {
+        padding: 5px 10px;
+        background: none;
+        border: none;
+        border-radius: 3px;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .grid-view-wrapper .pagination-wrapper .pagination.grid-prev {
+        background: #ff0000;
+    }
+
+    .grid-view-wrapper .pagination-wrapper .pagination.grid-prev:hover {
+        box-shadow: 0px 0px 10px 0px #ff0000;
+    }
+
+    .grid-view-wrapper .pagination-wrapper .pagination.grid-next {
+        background: var(--hover-color);
+    }
+
+    .grid-view-wrapper .pagination-wrapper .pagination.grid-next:hover {
+        box-shadow: 0px 0px 10px 0px var(--hover-color);
+    }
+
     .grid-view-main article.post,
     .related-products-wrapper article.post,
     .archive-wrapper .post-wrapper article.post {
@@ -919,6 +954,7 @@
         display: flex;
         gap: 15px;
         cursor: pointer;
+        margin-bottom: 10px;
     }
 
     .swt-youtube .youtube-wrapper .video:hover .video-title {

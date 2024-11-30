@@ -9,12 +9,18 @@ import { fetchFunction } from '../functions'
  */
 export const usePostRelatedHooks = () => {
     const [ categories, setCategories ] = useState([])
+    const [ tags, setTags ] = useState([])
 
     useEffect(() => {
         fetchFunction({
             action: 'select',
             tableIdentity: 'category',
             setterFunction: setCategories
+        })
+        fetchFunction({
+            action: 'select',
+            tableIdentity: 'tag',
+            setterFunction: setTags
         })
     }, [])
     /**
@@ -55,9 +61,33 @@ export const usePostRelatedHooks = () => {
         return catArray
     }
 
+    /**
+     * Get the tag name from the given tag index
+     * 
+     * @since 1.0.0
+     */
+    const getTag = ( indexString ) => {
+        let removeFirstComma = indexString.replace( ',', '' )
+        let indexArray
+        if( removeFirstComma.includes(',') ) {
+            indexArray = removeFirstComma.split(',')
+        } else {
+            indexArray = [ removeFirstComma ]
+        }
+
+        let tagArray = []
+        tags.map(( tag ) => {
+            const { tag_id: ID, tag_title: title } = tag
+            if( indexArray.includes( ID.toString() ) ) tagArray.push( title )
+        })
+
+        return tagArray
+    }
+
     return {
         getTheDate,
-        getCategory
+        getCategory,
+        getTag
     }
 }
 
