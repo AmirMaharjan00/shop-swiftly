@@ -324,7 +324,7 @@ export const useUsers = () => {
  * @since 1.0.0
  * MARK: usePosts
  */
-export const usePosts = () => {
+export const usePosts = ( isQuery = false ) => {
     const [ posts, setPosts ] = useState([])
 
     /**
@@ -333,11 +333,19 @@ export const usePosts = () => {
      * @since 1.0.0
      */
     useEffect(() => {
-        fetchFunction({
-            action: 'select',
-            tableIdentity: 'post',
-            setterFunction: setPosts
-        })
+        if( isQuery ) {
+            fetchFunction({
+                action: 'query',
+                setterFunction: setPosts,
+                query: 'SELECT * FROM swt_posts WHERE post_status!="trash"'
+            })
+        } else {
+            fetchFunction({
+                action: 'select',
+                tableIdentity: 'post',
+                setterFunction: setPosts
+            })
+        }
     }, [])
 
     /**
@@ -351,7 +359,7 @@ export const usePosts = () => {
                 const { post_id: ID, ...rest } = post
                 newValue[ ID ] = rest
                 return newValue
-            }, {})
+            }, [])
         } else {
             return false
         }
@@ -395,7 +403,8 @@ export const usePosts = () => {
     return {
         posts,
         getPostTitle,
-        getPostViaStatus
+        getPostViaStatus,
+        getPostDetails
     }
 }
 

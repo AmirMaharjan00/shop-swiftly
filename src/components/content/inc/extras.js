@@ -1,4 +1,4 @@
-import react from 'react'
+import { useState } from 'react'
 import { useSession } from './hooks'
 
 export const SectionWrapper = ({ main, children, id }) => {
@@ -21,6 +21,7 @@ export const SectionWrapper = ({ main, children, id }) => {
 export const AddToCartButton = ( props ) => {
     const { productId: ID } = props
     const { loggedIn, parsedProductDetails } = useSession()
+    const [ label, setLabel ] = useState( 'Add to cart' )
 
     /**
      * Handle click event
@@ -30,10 +31,13 @@ export const AddToCartButton = ( props ) => {
     const handleClick = () => {
         if( loggedIn && ! parsedProductDetails.includes( ID ) ) {
             sessionStorage.setItem( 'productDetails', JSON.stringify([ ...parsedProductDetails, ID ]) )
+            setLabel( 'Added' )
+        } else {
+            setLabel( 'Sorry, You are not logged in.' )
         }
     }
 
     return <div className='add-to-cart'>
-        <button onClick={ handleClick }>{ 'Add to cart' }</button>
+        <button onClick={ handleClick }>{ label }</button>
     </div>
 }

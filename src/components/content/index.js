@@ -1,10 +1,9 @@
-import React, { useEffect, useState, createContext, useContext } from 'react'
+import React, { useEffect } from 'react'
 import Header from './header'
 import Footer from './footer'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSession } from './inc/hooks'
-import { MainBanner, CategoryCollection, TrendingProducts, GridView, YouTube } from './inc/helpers'
-import { HOMECONTEXT } from '../../App'
+import { MainBanner, TrendingProducts, GridView, YouTube } from './inc/helpers'
 
 export default function Index () {
     const location = useLocation()

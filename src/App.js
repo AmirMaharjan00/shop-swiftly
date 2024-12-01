@@ -29,6 +29,7 @@ function App() {
   const [ cartActive, setCartActive ] = useState( false )
   const [ isSubscriber, setIsSubscriber ] = useState( false )
   const [ isAdmin, setIsAdmin ] = useState( false )
+  const [ compareActive, setCompareActive ] = useState( false )
 
   const contextObject = {
     setOverlay,
@@ -38,7 +39,9 @@ function App() {
     isSubscriber,
     setIsSubscriber,
     isAdmin,
-    setIsAdmin
+    setIsAdmin,
+    compareActive,
+    setCompareActive
   }
 
   return (

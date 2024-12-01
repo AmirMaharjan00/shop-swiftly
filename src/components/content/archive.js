@@ -6,6 +6,7 @@ import Footer from './footer'
 import { SectionWrapper } from './inc/extras'
 import { usePostRelatedHooks } from './inc/hooks'
 import { Link } from 'react-router-dom';
+import { Sidebar } from './sidebar'
 
 const ARCHIVECONTEXT = createContext( null );
 
@@ -31,7 +32,6 @@ export const Archive = () => {
 
     return (
         <>
-
             <Header />
             <ARCHIVECONTEXT.Provider value={{ isUserloggedIn }}>
                 <ArchiveContent post={ allCategories } />
@@ -42,8 +42,9 @@ export const Archive = () => {
 }
 
 export const ArchiveContent = ( props ) => {
+    console.log( props.post )
     const [ posts, setPosts ] = useState([])
-    const { category_id: catId } = props.post
+    const { category_id: catId, category_title: title } = props.post
 
     const archivePosts = useMemo(() => {
         return posts.filter(( post ) => {
@@ -61,7 +62,9 @@ export const ArchiveContent = ( props ) => {
     }, [])
 
     return <SectionWrapper main='archive-wrapper'>
+        <h2 className='category-title'>{ title }</h2>
         <div className='post-wrapper'>
+            <main>
             {
                 archivePosts.map(( post, index ) => {
                     const { post_id: ID, post_title: title, post_image: image, post_excerpt: excerpt, post_status: status, post_category: category } = post
@@ -77,6 +80,8 @@ export const ArchiveContent = ( props ) => {
                     </article>
                 })
             }
+            </main>
+            {/* <Sidebar /> */}
         </div>
     </SectionWrapper>
 }

@@ -12,7 +12,6 @@ const HEADERCONTEXT = createContext( null )
 export default function Header() {
     const [ getPages, setPages ] = useState([]);
     const [ isLightMode, setIsLightMode ] = useState( true )
-    const [ isShoppingCartActive, setIsShoppingCartActive ] = useState( false )
     const [ isSignInActive, setIsSignInActive ] = useState( false )
     const [ userDetails, setUserDetails ] = useState({})
     const [ isUserLoggedIn, setIsUserLoggedIn ] = useState( false )
@@ -23,6 +22,14 @@ export default function Header() {
     let dashbaordLInk = '/swt-user'
     if( isAdmin ) dashbaordLInk = '/swt-admin'
     if( isSubscriber ) dashbaordLInk = '/swt-user'
+
+    const headerContext = {
+        isLightMode,
+        setIsLightMode,
+        isSignInActive,
+        setIsSignInActive,
+        isUserLoggedIn
+    }
 
     useEffect(() => {
         const FORMDATA = new FormData()
@@ -87,10 +94,10 @@ export default function Header() {
                         }
                     </nav>
                     <div className='site-actions'>
-                        <HEADERCONTEXT.Provider value={{ isSignInActive: isSignInActive, setIsSignInActive:{ setIsSignInActive }, isUserLoggedIn: isUserLoggedIn }}>
+                        <HEADERCONTEXT.Provider value={ headerContext }>
                             <SearchBox />
-                            <ThemeMode isLightMode={ isLightMode } setIsLightMode={ setIsLightMode }/>
-                            <ShoppingCart isShoppingCartActive={ isShoppingCartActive } setIsShoppingCartActive={ setIsShoppingCartActive }/>
+                            <ThemeMode />
+                            <ShoppingCart />
                             { 
                                 isUserLoggedIn ? 
                                 <div className="user-login-wrapper" onClick={ handleUserClick }>
@@ -103,7 +110,7 @@ export default function Header() {
                                         <button className='logout' onClick={ handleLogout }>{ 'Logout' }</button>
                                     </div> }
                                 </div> :
-                                <UserLogin isSignInActive={ isSignInActive } setIsSignInActive={ setIsSignInActive }/>
+                                <UserLogin />
                             }
                         </HEADERCONTEXT.Provider>
                     </div>
@@ -150,10 +157,24 @@ const SearchBox = () => {
     )
 }
 
-const ThemeMode = ({ isLightMode, setIsLightMode }) => {
+const ThemeMode = () => {
+    const context = useContext( HEADERCONTEXT )
+    const { isLightMode, setIsLightMode } = context
+
+    /* Handle dark mode */
+    const handleDarkMode = () => {
+        setIsLightMode( ! isLightMode )
+        let root = document.getElementById('root')
+        if( root.classList.contains( 'is-dark' ) ) {
+            root.classList.remove( 'is-dark' )
+        } else {
+            root.classList.add( 'is-dark' )
+        }
+    }
+
     return(
         <div className='theme-mode-wrapper'>
-            <FontAwesomeIcon icon={ isLightMode ? faSun : faMoon } className='site-action site-theme-mode' onClick={() => setIsLightMode( ! isLightMode ) }/>
+            <FontAwesomeIcon icon={ isLightMode ? faSun : faMoon } className='site-action site-theme-mode' onClick={ handleDarkMode }/>
         </div>
     )
 }
@@ -230,7 +251,9 @@ const ShoppingCart = () => {
     )
 }
 
-const UserLogin = ({ isSignInActive, setIsSignInActive }) => {
+const UserLogin = () => {
+    const context = useContext( HEADERCONTEXT )
+    const { isSignInActive, setIsSignInActive } = context
     return(
         <div className='login-form-wrapper'>
             <button className='user-sign-in' onClick={() => setIsSignInActive( ! isSignInActive )}>{ 'Sign in' }</button>
@@ -317,7 +340,7 @@ export const Payment = ( props ) => {
  */
 const Overlay = () => {
     const homeContext = useContext( HOMECONTEXT )
-    const { setOverlay, overlay, setCartActive } = homeContext
+    const { setOverlay, overlay, setCartActive, compareActive, setCompareActive } = homeContext
     const CLASS = 'full-page-overlay' + ( overlay ? ' active' : '' ) 
     /**
      * Handle overlay click
@@ -327,6 +350,7 @@ const Overlay = () => {
     const handleClick = () => {
         setOverlay( false )
         setCartActive( false )
+        setCompareActive( false )
     }
     return <div className={ CLASS } onClick={ handleClick }></div>
 }

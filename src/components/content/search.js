@@ -66,7 +66,7 @@ const SearchedResults = ( props ) => {
                             <span className='post-date'>{ getTheDate( date ) }</span>
                             <span className='post-category'>{ getCategory( category ) }</span>
                         </div>
-                        <p className='post-excerpt'>{ excerpt }</p>
+                        <p className='post-excerpt'>{ excerpt.split(" ").slice(0, 30).join(" ") + "..." }</p>
                     </div>
                 </article>
             })
