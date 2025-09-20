@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 export default function Taxonomy( props ) {
     const [ list, setList ] = useState([])
-    const [ checkedTaxonomy, setCheckedTaxonomy ] = useState( '' )
+    const [ checkedTaxonomy, setCheckedTaxonomy ] = useState([])
     const [ searched, setSearched ] = useState( '' )
     const PLACEHOLDER = props.placeholder
     const LABEL = props.label
@@ -25,7 +25,7 @@ export default function Taxonomy( props ) {
     }, [])
 
     useEffect(() => {
-        props.handleCheckbox( checkedTaxonomy )
+        props.handleCheckbox( checkedTaxonomy.join( ',' ) )
     }, [ checkedTaxonomy ])
 
     /**
@@ -48,10 +48,9 @@ export default function Taxonomy( props ) {
         let value = event.target.value
         let checked = event.target.checked
         if( checked ) {
-            let taxonomyArray = [ ...taxonomy.split(','), value ]
-            setCheckedTaxonomy( taxonomyArray.join( ',' ) )
+            if( ! checkedTaxonomy.includes( value ) ) setCheckedTaxonomy([ ...checkedTaxonomy, value ])
         } else {
-            setCheckedTaxonomy( taxonomy.split(',').filter( current => current !== value ).join(',') )
+            if( checkedTaxonomy.includes( value ) ) setCheckedTaxonomy(checkedTaxonomy.filter(item => item !== value))
         }
     }
 
@@ -100,7 +99,7 @@ export default function Taxonomy( props ) {
                 <div className='taxonomy-list'>
                     {
                         list.map( ( current, index ) => {
-                            const ID = current[ TYPE + '_id' ]
+                            const ID = current[ TYPE + '_id' ] ? current[ TYPE + '_id' ] : '0'
 
                             return <p key={ index } className={ 'taxonomy-item' }>
                                 <input type='checkbox' id={ ID } value={ ID } onChange={( event ) => handleCheckboxFieldChange( event ) } checked={ taxonomy.includes( ID ) }/>

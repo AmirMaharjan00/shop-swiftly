@@ -4,8 +4,8 @@ import { MediaCollection } from './media'
 
 export default function Editor( { prefix, editorClose, updateNewData, action, post } ) {
     const [ activeSidebarElement, setActiveSidebarElement ] = useState( 'category' )
-    const [ checkedCategory, setCheckedCategory ] = useState('')
-    const [ checkedTag, setCheckedTag ] = useState('')
+    const [ checkedCategory, setCheckedCategory ] = useState( null )
+    const [ checkedTag, setCheckedTag ] = useState( null )
     const [ title, setTitle ] = useState( '' )
     const [ excerpt, setExcerpt ] = useState( '' )
     const [ price, setPrice ] = useState( 0 )
@@ -74,8 +74,8 @@ export default function Editor( { prefix, editorClose, updateNewData, action, po
         FORMDATA.append( prefix + '_status', 'publish' )
         FORMDATA.append( 'post_type', prefix )
         if( prefix === 'post' ) {
-            FORMDATA.append( 'post_category', checkedCategory )
-            FORMDATA.append( 'post_tags', checkedTag )
+            FORMDATA.append( 'post_category', ( checkedCategory ? checkedCategory : null ) )
+            FORMDATA.append( 'post_tags', ( checkedTag ? checkedTag : null ) )
             FORMDATA.append( 'post_stock', stock )
             FORMDATA.append( 'post_price', price )
             FORMDATA.append( 'is_featured', featured )

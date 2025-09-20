@@ -453,7 +453,7 @@ export const GridView = () => {
                                     { date && <span className='post-date'>{ getTheDate( date ) }</span> }
                                     <ul className='post-categories'>
                                         {
-                                            newCategories.map(( cat, index ) => (
+                                            newCategories?.map(( cat, index ) => (
                                                 <li className='cat-item' key={ index }>{ cat }</li>
                                             ))
                                         }

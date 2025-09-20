@@ -44,6 +44,7 @@ export const usePostRelatedHooks = () => {
      * @since 1.0.0
      */
     const getCategory = ( indexString ) => {
+        if( ! indexString ) return []
         let removeFirstComma = indexString.replace( ',', '' )
         let indexArray
         if( removeFirstComma.includes(',') ) {
@@ -67,6 +68,7 @@ export const usePostRelatedHooks = () => {
      * @since 1.0.0
      */
     const getTag = ( indexString ) => {
+        if( ! indexString ) return []
         let removeFirstComma = indexString.replace( ',', '' )
         let indexArray
         if( removeFirstComma.includes(',') ) {
